@@ -1,17 +1,31 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "monicahq/monica",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Monica is a personal relationship manager.",
     "keywords": [
         "laravel",
-        "framework"
+        "crm",
+        "prm",
+        "social"
     ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Regis Freyd",
+            "homepage": "https://github.com/djaiss"
+        },
+        {
+            "name": "Alexis Saettler",
+            "homepage": "https://github.com/asbiin"
+        }
+    ],
     "require": {
         "php": "^8.2",
+        "joshbrw/laravel-module-installer": "^2.0",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "nwidart/laravel-modules": "^12.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -70,8 +84,10 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "joshbrw/laravel-module-installer": true,
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
         }
     },
     "minimum-stability": "stable",
