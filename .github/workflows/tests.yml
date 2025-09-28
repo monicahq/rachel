@@ -27,9 +27,9 @@ jobs:
       connections: "['sqlite', 'mysql', 'pgsql']"
       default-php-version: '8.4'
       default-connection: sqlite
-      project: monica
+      project: monicahq_rachel
     secrets:
-      SONAR_TOKEN: "" # ${{ secrets.SONAR_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   assets:
     name: Build assets
