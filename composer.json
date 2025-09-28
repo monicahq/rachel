@@ -22,6 +22,7 @@
     ],
     "require": {
         "php": "^8.2",
+        "driftingly/rector-laravel": "^2.0",
         "joshbrw/laravel-module-installer": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
@@ -30,12 +31,13 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.24",
+        "laravel/pint": "^1.25",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.1",
-        "pestphp/pest-plugin-laravel": "^4.0"
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "rector/rector": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -72,7 +74,9 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "monica:pint": "./vendor/bin/pint --parallel",
+        "monica:rector": "./vendor/bin/rector"
     },
     "extra": {
         "laravel": {
