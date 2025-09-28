@@ -23,3 +23,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .php-cs-fixer.cache
+modules_statuses.json
+/Modules
