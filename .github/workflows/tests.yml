@@ -1,0 +1,38 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  release:
+    types: [created]
+
+concurrency:
+  group: Build ${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  id-token: write
+
+jobs:
+  tests:
+    name: Run tests
+    uses: monicahq/workflows/.github/workflows/laravel.yml@v3
+    with:
+      php-versions: "['8.4']"
+      connections: "['sqlite', 'mysql', 'pgsql']"
+      default-php-version: '8.4'
+      default-connection: sqlite
+      project: monica
+    secrets:
+      SONAR_TOKEN: "" # ${{ secrets.SONAR_TOKEN }}
+
+  assets:
+    name: Build assets
+    uses: monicahq/workflows/.github/workflows/build_assets.yml@v3
+    with:
+      node-version: 22
