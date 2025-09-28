@@ -1,0 +1,41 @@
+#!/bin/bash
+set -e
+
+# if "--local" is passed, use local path for modules
+# otherwise, use VCS repository
+if [ "$1" == "--local" ]; then
+  local=true
+fi
+
+add_vcs_repo() {
+  echo "Adding VCS repository: $1"
+  repo_url=$1
+  type="vcs"
+
+  if [ "$local" == true ]; then
+    module_name=$(basename "$repo_url")
+    repo_url="../$module_name"
+    type="path"
+  fi
+  if ! jq -e --arg url "$repo_url" '.repositories[] | select(.url == $url)' composer.json > /dev/null; then
+    cp composer.json composer.json.tmp
+    jq --arg url "$repo_url" --arg type "$type" '.repositories += [{"type":$type,"url":$url}]' composer.json.tmp > composer.json
+    rm -f composer.json.tmp
+  fi
+}
+
+modules=("monicahq/marketingsite-module")
+
+for module in "${modules[@]}"; do
+  add_vcs_repo "https://github.com/$module"
+done
+
+for module in "${modules[@]}"; do
+  echo "Installing module: $module"
+  composer require "$module:@dev"
+done
+
+for module in $(ls Modules); do
+  echo "Enabling module: $module"
+  php artisan module:enable "$module"
+done
