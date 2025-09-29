@@ -17,9 +17,16 @@ add_vcs_repo() {
     repo_url="../$module_name"
     type="path"
   fi
-  if ! jq -e --arg url "$repo_url" '.repositories[] | select(.url == $url)' composer.json > /dev/null; then
+
+  # Ensure repositories key exists in composer.json
+  jq 'if .repositories == null then .repositories = [] else . end' composer.json > composer.json.tmp
+  mv composer.json.tmp composer.json
+
+  # Only add repo if not already present
+  if ! jq -e --arg url "$repo_url" '.repositories[]? | select(.url == $url)' composer.json > /dev/null; then
     cp composer.json composer.json.tmp
-    jq --arg url "$repo_url" --arg type "$type" '.repositories += [{"type":$type,"url":$url}]' composer.json.tmp > composer.json
+    jq --arg url "$repo_url" --arg type "$type" \
+       '.repositories += [{"type":$type,"url":$url}]' composer.json.tmp > composer.json
     rm -f composer.json.tmp
   fi
 }
@@ -35,7 +42,19 @@ for module in "${modules[@]}"; do
   composer require "$module:@dev"
 done
 
-for module in $(ls Modules); do
+# Ensure Modules directory exists and is actually a directory
+if [ -e Modules ] && [ ! -d Modules ]; then
+  echo "Removing file/symlink named 'Modules'..."
+  rm -rf Modules
+fi
+
+if [ ! -d Modules ]; then
+  echo "Creating Modules directory..."
+  mkdir Modules
+fi
+
+# Enable modules (ignore hidden files like .DS_Store)
+for module in $(ls Modules | grep -v '^\.' ); do
   echo "Enabling module: $module"
   php artisan module:enable "$module"
 done
