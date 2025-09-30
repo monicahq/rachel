@@ -26,6 +26,7 @@
     "joshbrw/laravel-module-installer": "^2.0",
     "laravel/framework": "^12.0",
     "laravel/tinker": "^2.10.1",
+    "monicahq/marketingsite-module": "@dev",
     "nwidart/laravel-modules": "^12.0"
   },
   "require-dev": {
@@ -95,5 +96,11 @@
     }
   },
   "minimum-stability": "stable",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../marketingsite-module"
+    }
+  ]
 }

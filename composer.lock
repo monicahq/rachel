@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c19ee5c7354c246f60fd3bef58cc6aa",
+    "content-hash": "98f157c23e64f155bbe212ec570f95b6",
     "packages": [
         {
             "name": "brick/math",
@@ -2086,6 +2086,47 @@
                 }
             ],
             "time": "2024-12-08T08:18:47+00:00"
+        },
+        {
+            "name": "monicahq/marketingsite-module",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../marketingsite-module",
+                "reference": "5fe9ac17bdf7d83e56d42c5d992cecc34f79a2d4"
+            },
+            "type": "laravel-module",
+            "extra": {
+                "laravel": {
+                    "providers": [],
+                    "aliases": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Modules\\MarketingSite\\": "app/",
+                    "Modules\\MarketingSite\\Database\\Factories\\": "database/factories/",
+                    "Modules\\MarketingSite\\Database\\Seeders\\": "database/seeders/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Modules\\MarketingSite\\Tests\\": "tests/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Regis Freyd",
+                    "homepage": "https://github.com/djaiss"
+                },
+                {
+                    "name": "Alexis Saettler",
+                    "homepage": "https://github.com/asbiin"
+                }
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "monolog/monolog",
@@ -9714,7 +9755,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "monicahq/marketingsite-module": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

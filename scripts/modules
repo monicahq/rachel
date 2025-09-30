@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Change to the root directory of the repository
+cd "$(dirname "$0")/.."
+
 # if "--local" is passed, use local path for modules
 # otherwise, use VCS repository
 if [ "$1" == "--local" ]; then
