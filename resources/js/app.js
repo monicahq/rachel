@@ -8,16 +8,15 @@ window.Turbo = Turbo;
 Turbo.session.drive = true; // explicit (enabled by default)
 
 // --- Alpine ---
-import Alpine from "alpinejs";
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import ajax from "@imacrayon/alpine-ajax";
 
-window.Alpine = Alpine;
 Alpine.plugin(ajax);
 
 // Start Alpine on the initial load (once)
 document.addEventListener("DOMContentLoaded", () => {
   if (!document.documentElement.__alpined) {
-    Alpine.start();
+    Livewire.start();
     document.documentElement.__alpined = true;
   }
 });
