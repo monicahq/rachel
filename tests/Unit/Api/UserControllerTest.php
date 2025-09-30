@@ -24,7 +24,7 @@ test('api user get', function () {
         ['read']
     );
 
-    $response = $this->get('/api/users/' . $user->id)
+    $response = $this->get('/api/users/'.$user->id)
         ->assertOk();
 
     expect($response->json('data.id'))
