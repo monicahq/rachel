@@ -25,3 +25,5 @@ Thumbs.db
 .php-cs-fixer.cache
 modules_statuses.json
 /Modules
+npm-debug.log
+yarn-error.log
