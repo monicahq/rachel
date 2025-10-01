@@ -37,3 +37,4 @@ jobs:
     with:
       node-version: 22
       php-install: true
+      php-version: '8.4'
