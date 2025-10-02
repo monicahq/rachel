@@ -33,7 +33,7 @@ jobs:
 
   assets:
     name: Build assets
-    uses: monicahq/workflows/.github/workflows/build_assets.yml@assets-php-install
+    uses: monicahq/workflows/.github/workflows/build_assets.yml@v3
     with:
       node-version: 22
       php-install: true
