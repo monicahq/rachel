@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "prepare": "husky || true"
   },
   "devDependencies": {
     "@hotwired/turbo": "^8.0.13",
