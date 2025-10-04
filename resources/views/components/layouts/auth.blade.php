@@ -1,3 +1,3 @@
 <x-layouts.auth.split :title="$title ?? null">
-    {{ $slot }}
+  {{ $slot }}
 </x-layouts.auth.split>
