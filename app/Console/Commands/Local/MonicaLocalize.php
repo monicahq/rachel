@@ -113,7 +113,9 @@ final class MonicaLocalize extends Command
             // now we need to save the array back to the file
             ksort($strings, SORT_NATURAL | SORT_FLAG_CASE);
 
-            Storage::disk('lang')->put($locale.'.json', json_encode($strings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $encoded = json_encode($strings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $encoded = Str::replaceMatches('/    "/', '  "', $encoded);
+            Storage::disk('lang')->put($locale.'.json', $encoded);
         }
     }
 
