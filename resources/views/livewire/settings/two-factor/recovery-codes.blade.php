@@ -4,46 +4,45 @@ use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
-    #[Locked]
-    public array $recoveryCodes = [];
+new class extends Component {
+  #[Locked]
+  public array $recoveryCodes = [];
 
-    /**
-     * Mount the component.
-     */
-    public function mount(): void
-    {
-        $this->loadRecoveryCodes();
+  /**
+   * Mount the component.
+   */
+  public function mount(): void
+  {
+    $this->loadRecoveryCodes();
+  }
+
+  /**
+   * Generate new recovery codes for the user.
+   */
+  public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
+  {
+    $generateNewRecoveryCodes(auth()->user());
+
+    $this->loadRecoveryCodes();
+  }
+
+  /**
+   * Load the recovery codes for the user.
+   */
+  private function loadRecoveryCodes(): void
+  {
+    $user = auth()->user();
+
+    if ($user->hasEnabledTwoFactorAuthentication() && $user->two_factor_recovery_codes) {
+      try {
+        $this->recoveryCodes = json_decode(decrypt($user->two_factor_recovery_codes), true);
+      } catch (Exception) {
+        $this->addError('recoveryCodes', 'Failed to load recovery codes');
+
+        $this->recoveryCodes = [];
+      }
     }
-
-    /**
-     * Generate new recovery codes for the user.
-     */
-    public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
-    {
-        $generateNewRecoveryCodes(auth()->user());
-
-        $this->loadRecoveryCodes();
-    }
-
-    /**
-     * Load the recovery codes for the user.
-     */
-    private function loadRecoveryCodes(): void
-    {
-        $user = auth()->user();
-
-        if ($user->hasEnabledTwoFactorAuthentication() && $user->two_factor_recovery_codes) {
-            try {
-                $this->recoveryCodes = json_decode(decrypt($user->two_factor_recovery_codes), true);
-            } catch (Exception) {
-                $this->addError('recoveryCodes', 'Failed to load recovery codes');
-
-                $this->recoveryCodes = [];
-            }
-        }
-    }
+  }
 }; ?>
 
 <div class="space-y-6 rounded-xl border border-zinc-200 py-6 shadow-sm dark:border-white/10" wire:cloak x-data="{ showRecoveryCodes: false }">

@@ -7,39 +7,38 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component
-{
-    /**
-     * Send an email verification notification to the user.
-     */
-    public function sendVerification(): void
-    {
-        Auth::user()->sendEmailVerificationNotification();
+new #[Layout('components.layouts.auth')] class extends Component {
+  /**
+   * Send an email verification notification to the user.
+   */
+  public function sendVerification(): void
+  {
+    Auth::user()->sendEmailVerificationNotification();
 
-        Session::flash('status', 'verification-link-sent');
+    Session::flash('status', 'verification-link-sent');
+  }
+
+  /**
+   * Log the current user out of the application.
+   */
+  public function logout(Logout $logout): void
+  {
+    $logout();
+
+    $this->redirect('/', navigate: true);
+  }
+
+  /**
+   * Handle the component's rendering hook.
+   */
+  public function rendering(View $view): void
+  {
+    if (Auth::user()->hasVerifiedEmail()) {
+      $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+
+      return;
     }
-
-    /**
-     * Log the current user out of the application.
-     */
-    public function logout(Logout $logout): void
-    {
-        $logout();
-
-        $this->redirect('/', navigate: true);
-    }
-
-    /**
-     * Handle the component's rendering hook.
-     */
-    public function rendering(View $view): void
-    {
-        if (Auth::user()->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-
-            return;
-        }
-    }
+  }
 }; ?>
 
 <div class="mt-4 flex flex-col gap-6">

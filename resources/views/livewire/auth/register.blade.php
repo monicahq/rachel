@@ -9,37 +9,33 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component
-{
-    public string $name = '';
+new #[Layout('components.layouts.auth')] class extends Component {
+  public string $name = '';
+  public string $email = '';
+  public string $password = '';
+  public string $password_confirmation = '';
 
-    public string $email = '';
+  /**
+   * Handle an incoming registration request.
+   */
+  public function register(): void
+  {
+    $validated = $this->validate([
+      'name' => ['required', 'string', 'max:255'],
+      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+      'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-    public string $password = '';
+    $validated['password'] = Hash::make($validated['password']);
 
-    public string $password_confirmation = '';
+    event(new Registered(($user = User::create($validated))));
 
-    /**
-     * Handle an incoming registration request.
-     */
-    public function register(): void
-    {
-        $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-        ]);
+    Auth::login($user);
 
-        $validated['password'] = Hash::make($validated['password']);
+    Session::regenerate();
 
-        event(new Registered(($user = User::create($validated))));
-
-        Auth::login($user);
-
-        Session::regenerate();
-
-        $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
-    }
+    $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+  }
 }; ?>
 
 <div class="flex flex-col gap-6">

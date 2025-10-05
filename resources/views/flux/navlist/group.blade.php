@@ -4,7 +4,7 @@
   'heading' => null,
 ])
 
-<?php if ($expandable && $heading) { ?>
+<?php if ($expandable && $heading): ?>
 
 <ui-disclosure {{ $attributes->class('group/disclosure') }} @if ($expanded === true) open @endif data-flux-navlist-group>
   <button type="button" class="group/disclosure-button mb-[2px] flex h-10 w-full items-center rounded-lg text-zinc-500 hover:bg-zinc-800/5 hover:text-zinc-800 lg:h-8 dark:text-white/80 dark:hover:bg-white/[7%] dark:hover:text-white">
@@ -23,7 +23,7 @@
   </div>
 </ui-disclosure>
 
-<?php } elseif ($heading) { ?>
+<?php elseif ($heading): ?>
 
 <div {{ $attributes->class('block space-y-[2px]') }}>
   <div class="px-1 py-2">
@@ -35,10 +35,10 @@
   </div>
 </div>
 
-<?php } else { ?>
+<?php else: ?>
 
 <div {{ $attributes->class('block space-y-[2px]') }}>
   {{ $slot }}
 </div>
 
-<?php } ?>
+<?php endif; ?>
