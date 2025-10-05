@@ -27,6 +27,12 @@
     "lightningcss-linux-x64-gnu": "^1.29.1"
   },
   "lint-staged": {
+    "*.js|resources/**/*.js": [
+      "prettier --write --ignore-unknown"
+    ],
+    "**/*.{yml,md}|resources/**/*.{css,scss,json,blade.php}": [
+      "prettier --write --ignore-unknown"
+    ],
     "**/*.php": [
       "vendor/bin/pint"
     ]
