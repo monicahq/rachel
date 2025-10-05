@@ -84,6 +84,7 @@
             "@php artisan test"
         ],
         "monica:pint": "./vendor/bin/pint --parallel",
+        "monica:prettier": "npx prettier --write resources/",
         "monica:rector": "./vendor/bin/rector"
     },
     "extra": {
