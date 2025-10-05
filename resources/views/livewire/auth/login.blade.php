@@ -102,7 +102,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
 
 <div class="grid min-h-screen w-screen grid-cols-1 lg:grid-cols-2">
   <!-- Left side - Login form -->
-  <div class="mx-auto gap-y-10 flex w-full max-w-2xl flex-1 flex-col justify-center px-5 py-10 sm:px-30">
+  <div class="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-y-10 px-5 py-10 sm:px-30">
     <p class="group flex items-center gap-x-1 text-sm text-gray-600">
       <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
       <x-link href="" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>

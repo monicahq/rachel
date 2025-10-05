@@ -5,8 +5,7 @@
   'navigate' => true,
 ])
 
-<a @if ($external) target="_blank" @endif
-  @if ($navigate) wire:navigate @endif {{
+<a @if ($external) target="_blank" @endif @if ($navigate) wire:navigate @endif {{
   $attributes->class([
     'inline underline',
     'underline-offset-4',
