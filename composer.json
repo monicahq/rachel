@@ -83,6 +83,7 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
+        "monica:localize-check": "php artisan monica:localize --check",
         "monica:pint": "./vendor/bin/pint --parallel",
         "monica:prettier": "npx prettier --write resources/",
         "monica:rector": "./vendor/bin/rector"

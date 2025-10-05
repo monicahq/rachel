@@ -23,6 +23,7 @@ final class MonicaLocalize extends Command
      * @var string
      */
     protected $signature = 'monica:localize
+                            {--check : Check current translations.}
                             {--update : Update the current locales.}
                             {--remove-missing : Remove missing translations.}
                             {--restart : Restart translation of all messages.}';
@@ -36,10 +37,12 @@ final class MonicaLocalize extends Command
 
     private GoogleTranslate $googleTranslate;
 
+    private int $result = 0;
+
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $this->googleTranslate = (new GoogleTranslate)->setSource('en');
 
@@ -52,10 +55,13 @@ final class MonicaLocalize extends Command
             'lang' => implode(',', $langs),
             '--remove-missing' => $this->option('remove-missing'),
         ]);
+        exec(__DIR__.'/../../../../vendor/bin/pint --quiet lang');
 
         $this->loadTranslations($locales);
 
         $this->fixPagination($locales);
+
+        return $this->result;
     }
 
     private function updateLocales(array $locales): void
@@ -88,7 +94,7 @@ final class MonicaLocalize extends Command
             $this->info('Loading locale: '.$locale);
 
             $content = Storage::disk('lang')->get($locale.'.json');
-            $strings = json_decode($content, true);
+            $strings = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
             $this->translateStrings($locale, $strings);
         }
     }
@@ -101,13 +107,18 @@ final class MonicaLocalize extends Command
 
                 foreach ($strings as $index => $value) {
                     if ($value === '' || $this->option('restart')) {
+                        if ($this->option('check')) {
+                            $this->warn('missing translation for: `'.$index.'`');
+                            $this->result++;
+
+                            continue;
+                        }
                         // we store the translated string in the array
                         $strings[$index] = $this->translate($locale, $index);
                     }
                 }
             }
         } finally {
-
             $strings = collect($strings)->map(fn ($value) => Str::replace(['\''], ['’'], $value))->all();
 
             // now we need to save the array back to the file
