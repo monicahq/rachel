@@ -19,7 +19,7 @@ final class AccountFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'has_lifetime_access' => false,
