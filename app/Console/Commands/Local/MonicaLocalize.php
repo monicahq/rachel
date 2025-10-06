@@ -158,16 +158,17 @@ final class MonicaLocalize extends Command
             $str = $str->replace($match->toArray(), $replacements->toArray());
         }
 
-        $translated = $this->googleTranslate->translate((string) $str);
+        $translated = Str::of($this->googleTranslate->translate((string) $str));
 
         // replace the generic string with the placeholders
         if ($match->count() > 0) {
-            $translated = Str::replace($replacements->toArray(), $match->toArray(), $translated);
+            $translated = Str::of($translated)->replace('{{# ', '{{#')
+                ->replace($replacements->toArray(), $match->toArray());
         }
 
-        $translated = Str::replace(['\''], ['’'], $translated);
+        $translated = $translated->replace(['\''], ['’']);
 
-        return $translated;
+        return (string) $translated;
     }
 
     private function translateCount(string $locale, string $text): string
@@ -199,6 +200,17 @@ final class MonicaLocalize extends Command
                 } else {
                     $translated = $this->translateText($message);
                 }
+                $translated = Str::of(Translate::text($str, $locale, Locale::English->value));
+
+                // replace the generic string with the placeholders
+                if ($match->count() > 0) {
+                    $translated = Str::of($translated)->replace('{{# ', '{{#')
+                        ->replace($replacements->toArray(), $match->toArray());
+                }
+
+                $translated = $translated->replace(['\''], ['’']);
+
+                return (string) $translated;
 
                 $result->put($j, $translated);
             }
