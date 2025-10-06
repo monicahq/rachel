@@ -1,41 +1,49 @@
 <?php
 
 use App\Models\User;
+use App\Services\CreateAccount;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
-  public string $name = '';
-  public string $email = '';
-  public string $password = '';
-  public string $password_confirmation = '';
+new #[Layout('components.layouts.auth')] class extends Component
+{
+    public string $name = '';
 
-  /**
-   * Handle an incoming registration request.
-   */
-  public function register(): void
-  {
-    $validated = $this->validate([
-      'name' => ['required', 'string', 'max:255'],
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-      'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-    ]);
+    public string $email = '';
 
-    $validated['password'] = Hash::make($validated['password']);
+    public string $password = '';
 
-    event(new Registered(($user = User::create($validated))));
+    public string $password_confirmation = '';
 
-    Auth::login($user);
+    /**
+     * Handle an incoming registration request.
+     */
+    public function register(): void
+    {
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-    Session::regenerate();
+        $user = new CreateAccount(
+            email: $validated['email'],
+            password: $validated['password'],
+            name: $validated['name'],
+        )->execute();
 
-    $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
-  }
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        Session::regenerate();
+
+        $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+    }
 }; ?>
 
 <div class="flex flex-col gap-6">
