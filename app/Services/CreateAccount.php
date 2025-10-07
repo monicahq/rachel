@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Account;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -25,8 +26,10 @@ final class CreateAccount
 
     public function execute(): User
     {
-        $this->create();
-        $this->addFirstUser();
+        DB::transaction(function () {
+            $this->create();
+            $this->addFirstUser();
+        });
 
         return $this->user;
     }
