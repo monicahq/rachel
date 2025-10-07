@@ -1,4 +1,4 @@
-<x-layouts.auth>
+<x-layouts.guest>
   <div class="flex flex-col gap-6">
     <x-auth-header :title="__('Confirm password')" :description="__('This is a secure area of the application. Please confirm your password before continuing.')" />
 
@@ -14,4 +14,4 @@
       </flux:button>
     </form>
   </div>
-</x-layouts.auth>
+</x-layouts.guest>
