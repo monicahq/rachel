@@ -22,6 +22,8 @@
     ],
     "require": {
         "php": "^8.2",
+        "asbiin/laravel-localizer": "^4.0",
+        "codeat3/blade-phosphor-icons": "^2.3",
         "driftingly/rector-laravel": "^2.0",
         "joshbrw/laravel-module-installer": "^2.0",
         "laravel/fortify": "^1.30",
@@ -33,7 +35,9 @@
         "nwidart/laravel-modules": "^12.0"
     },
     "require-dev": {
+        "amirami/localizator": "^0.14.0-alpha",
         "fakerphp/faker": "^1.23",
+        "laravel-lang/common": "^6.7",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.25",
         "laravel/sail": "^1.41",
@@ -41,7 +45,8 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.1",
         "pestphp/pest-plugin-laravel": "^4.0",
-        "rector/rector": "^2.1"
+        "rector/rector": "^2.1",
+        "stichoza/google-translate-php": "^5.3"
     },
     "autoload": {
         "psr-4": {
@@ -79,6 +84,7 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
+        "monica:localize-check": "php artisan monica:localize --check",
         "monica:pint": "./vendor/bin/pint --parallel",
         "monica:prettier": "npx prettier --write resources/",
         "monica:rector": "./vendor/bin/rector"

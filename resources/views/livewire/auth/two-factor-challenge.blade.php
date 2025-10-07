@@ -1,4 +1,4 @@
-<x-layouts.auth>
+<x-layouts.guest>
   <div class="flex flex-col gap-6">
     <div class="relative h-auto w-full" x-cloak x-data="{
       showRecoveryInput: @js($errors->has('recovery_code')),
@@ -70,4 +70,4 @@
       </form>
     </div>
   </div>
-</x-layouts.auth>
+</x-layouts.guest>

@@ -4,7 +4,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -13,7 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.guest')] class extends Component {
   #[Validate('required|string|email')]
   public string $email = '';
 
@@ -100,41 +99,67 @@ new #[Layout('components.layouts.auth')] class extends Component {
   }
 }; ?>
 
-<div class="flex flex-col gap-6">
-  <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+<div class="grid min-h-screen w-screen grid-cols-1 lg:grid-cols-2">
+  <!-- Left side - Login form -->
+  <div class="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-y-10 px-5 py-10 sm:px-30">
+    <p class="group flex items-center gap-x-1 text-sm text-gray-600">
+      <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
+      <x-link href="" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+    </p>
 
-  <!-- Session Status -->
-  <x-auth-session-status class="text-center" :status="session('status')" />
+    <!-- Session Status -->
+    <x-auth-session-status class="text-center" :status="session('status')" />
 
-  <form method="POST" wire:submit="login" class="flex flex-col gap-6">
-    <!-- Email Address -->
-    <flux:input wire:model="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
-
-    <!-- Password -->
-    <div class="relative">
-      <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" viewable />
-
-      @if (Route::has('password.request'))
-        <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-          {{ __('Forgot your password?') }}
-        </flux:link>
-      @endif
+    <!-- Title -->
+    <div class="flex items-center gap-x-2">
+      <a href="" class="group flex items-center gap-x-2 transition-transform ease-in-out">
+        <div class="flex h-7 w-7 items-center justify-center transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
+          <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
+        </div>
+      </a>
+      <h1 class="text-2xl font-semibold text-gray-900">
+        {{ __('Welcome back') }}
+      </h1>
     </div>
 
-    <!-- Remember Me -->
-    <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+    <!-- login form -->
+    <x-box>
+      <form method="POST" wire:submit="login" class="flex flex-col gap-4">
+        <!-- Email address -->
+        <flux:input wire:model="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
 
-    <div class="flex items-center justify-end">
-      <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
-        {{ __('Log in') }}
-      </flux:button>
-    </div>
-  </form>
+        <!-- Password -->
+        <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" viewable />
 
-  @if (Route::has('register'))
-    <div class="space-x-1 text-center text-sm text-zinc-600 rtl:space-x-reverse dark:text-zinc-400">
-      <span>{{ __('Don\'t have an account?') }}</span>
-      <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
-    </div>
-  @endif
+        <!-- Remember Me -->
+        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+
+        <div class="flex items-center justify-between">
+          <x-link :href="route('password.request')" class="text-sm">
+            {{ __('Forgot your password?') }}
+          </x-link>
+
+          <flux:button variant="primary" type="submit" data-test="login-button">
+            {{ __('Log in') }}
+          </flux:button>
+        </div>
+      </form>
+    </x-box>
+
+    <!-- Register link -->
+    <x-box class="text-center text-sm">
+      {{ __('New to :name?', ['name' => config('app.name')]) }}
+      <x-link :href="route('register')">{{ __('Sign up') }}</x-link>
+    </x-box>
+
+    <ul class="text-xs text-gray-600">
+      <li>&copy; {{ config('app.name') }} {{ now()->format('Y') }}</li>
+    </ul>
+  </div>
+
+  <!-- Right side - Image -->
+  <div class="relative hidden bg-gray-400 lg:block">
+    <!-- Quote Box -->
+    <div class="absolute inset-0 flex items-center justify-center">bla</div>
+  </div>
 </div>
