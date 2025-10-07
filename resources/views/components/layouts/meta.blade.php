@@ -9,6 +9,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/favicon/apple-touch-icon.png') }}" />
 <link rel="manifest" href="{{ asset('images/favicon/site.webmanifest') }}" />
 
+<meta name="description" content="{{ __('Monica is a personal relationship manager.') }}" />
+
 <link rel="preconnect" href="https://fonts.bunny.net" />
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 

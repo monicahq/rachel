@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c49effa47003adc62b96c49adc42069",
+    "content-hash": "58dd594dbf6bfeed3c2b2e196c78d896",
     "packages": [
         {
             "name": "asbiin/laravel-localizer",
@@ -140,6 +140,87 @@
             "time": "2024-10-01T13:55:55+00:00"
         },
         {
+            "name": "blade-ui-kit/blade-icons",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/driesvints/blade-icons.git",
+                "reference": "7b743f27476acb2ed04cb518213d78abe096e814"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/driesvints/blade-icons/zipball/7b743f27476acb2ed04cb518213d78abe096e814",
+                "reference": "7b743f27476acb2ed04cb518213d78abe096e814",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/view": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.4|^8.0",
+                "symfony/console": "^5.3|^6.0|^7.0",
+                "symfony/finder": "^5.3|^6.0|^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5.1",
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.0|^10.5|^11.0"
+            },
+            "bin": [
+                "bin/blade-icons-generate"
+            ],
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BladeUI\\Icons\\BladeIconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "BladeUI\\Icons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": "A package to easily make use of icons in your Laravel Blade views.",
+            "homepage": "https://github.com/blade-ui-kit/blade-icons",
+            "keywords": [
+                "blade",
+                "icons",
+                "laravel",
+                "svg"
+            ],
+            "support": {
+                "issues": "https://github.com/blade-ui-kit/blade-icons/issues",
+                "source": "https://github.com/blade-ui-kit/blade-icons"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/driesvints",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.paypal.com/paypalme/driesvints",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2025-02-13T20:35:06+00:00"
+        },
+        {
             "name": "brick/math",
             "version": "0.14.0",
             "source": {
@@ -267,6 +348,77 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "codeat3/blade-phosphor-icons",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeat3/blade-phosphor-icons.git",
+                "reference": "2812a27ec642359344429d344c7f7bbdfad489ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeat3/blade-phosphor-icons/zipball/2812a27ec642359344429d344c7f7bbdfad489ce",
+                "reference": "2812a27ec642359344429d344c7f7bbdfad489ce",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "codeat3/blade-icon-generation-helpers": "^0.10",
+                "codeat3/phpcs-styles": "^1.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.0|^10.5|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codeat3\\BladePhosphorIcons\\BladePhosphorIconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codeat3\\BladePhosphorIcons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Swapnil Sarwe",
+                    "homepage": "https://swapnilsarwe.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": "A package to easily make use of \"Phosphor Icons\" in your Laravel Blade views.",
+            "homepage": "https://github.com/codeat3/blade-phosphor-icons",
+            "keywords": [
+                "blade",
+                "laravel",
+                "phosphor-icons"
+            ],
+            "support": {
+                "issues": "https://github.com/codeat3/blade-phosphor-icons/issues",
+                "source": "https://github.com/codeat3/blade-phosphor-icons/tree/2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/swapnilsarwe",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-25T06:29:09+00:00"
         },
         {
             "name": "codezero/browser-locale",
@@ -4214,21 +4366,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "2.1.7",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "c34cc07c4698f007a20dc5c99ff820089ae413ce"
+                "reference": "e1aaf3061e9ae9342ed0824865e3a3360defddeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/c34cc07c4698f007a20dc5c99ff820089ae413ce",
-                "reference": "c34cc07c4698f007a20dc5c99ff820089ae413ce",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/e1aaf3061e9ae9342ed0824865e3a3360defddeb",
+                "reference": "e1aaf3061e9ae9342ed0824865e3a3360defddeb",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4|^8.0",
-                "phpstan/phpstan": "^2.1.18"
+                "phpstan/phpstan": "^2.1.26"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -4262,7 +4414,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.1.7"
+                "source": "https://github.com/rectorphp/rector/tree/2.2.1"
             },
             "funding": [
                 {
@@ -4270,7 +4422,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-10T11:13:58+00:00"
+            "time": "2025-10-06T21:25:14+00:00"
         },
         {
             "name": "symfony/clock",
@@ -7211,16 +7363,16 @@
         },
         {
             "name": "brianium/paratest",
-            "version": "v7.14.0",
+            "version": "v7.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paratestphp/paratest.git",
-                "reference": "5dc47b3a4638a1c6c6b4941bee5908b2e2154b84"
+                "reference": "e1a93c38a94f4808faf75552e835666d3a6f8bb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/5dc47b3a4638a1c6c6b4941bee5908b2e2154b84",
-                "reference": "5dc47b3a4638a1c6c6b4941bee5908b2e2154b84",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/e1a93c38a94f4808faf75552e835666d3a6f8bb2",
+                "reference": "e1a93c38a94f4808faf75552e835666d3a6f8bb2",
                 "shasum": ""
             },
             "require": {
@@ -7234,21 +7386,20 @@
                 "phpunit/php-code-coverage": "^12.4.0",
                 "phpunit/php-file-iterator": "^6",
                 "phpunit/php-timer": "^8",
-                "phpunit/phpunit": "^12.3.15",
+                "phpunit/phpunit": "^12.4.0",
                 "sebastian/environment": "^8.0.3",
                 "symfony/console": "^6.4.20 || ^7.3.4",
                 "symfony/process": "^6.4.20 || ^7.3.4"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^13.0.1",
+                "doctrine/coding-standard": "^14.0.0",
                 "ext-pcntl": "*",
                 "ext-pcov": "*",
                 "ext-posix": "*",
-                "phpstan/phpstan": "^2.1.29",
+                "phpstan/phpstan": "^2.1.30",
                 "phpstan/phpstan-deprecation-rules": "^2.0.3",
                 "phpstan/phpstan-phpunit": "^2.0.7",
                 "phpstan/phpstan-strict-rules": "^2.0.7",
-                "squizlabs/php_codesniffer": "^3.13.4",
                 "symfony/filesystem": "^6.4.13 || ^7.3.2"
             },
             "bin": [
@@ -7289,7 +7440,7 @@
             ],
             "support": {
                 "issues": "https://github.com/paratestphp/paratest/issues",
-                "source": "https://github.com/paratestphp/paratest/tree/v7.14.0"
+                "source": "https://github.com/paratestphp/paratest/tree/v7.14.1"
             },
             "funding": [
                 {
@@ -7301,7 +7452,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2025-09-30T08:03:23+00:00"
+            "time": "2025-10-06T08:26:52+00:00"
         },
         {
             "name": "composer/class-map-generator",
@@ -8528,16 +8679,16 @@
         },
         {
             "name": "laravel-lang/lang",
-            "version": "15.25.0",
+            "version": "15.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/lang.git",
-                "reference": "4db5447efd09546a2dff3f2e00cfbf182cdc0abb"
+                "reference": "c6d4125fd8ee2870a610b6a8941a4ddfdb36ca36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/4db5447efd09546a2dff3f2e00cfbf182cdc0abb",
-                "reference": "4db5447efd09546a2dff3f2e00cfbf182cdc0abb",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/c6d4125fd8ee2870a610b6a8941a4ddfdb36ca36",
+                "reference": "c6d4125fd8ee2870a610b6a8941a4ddfdb36ca36",
                 "shasum": ""
             },
             "require": {
@@ -8588,7 +8739,7 @@
                 "issues": "https://github.com/Laravel-Lang/lang/issues",
                 "source": "https://github.com/Laravel-Lang/lang"
             },
-            "time": "2025-09-14T01:43:56+00:00"
+            "time": "2025-10-03T15:46:48+00:00"
         },
         {
             "name": "laravel-lang/locale-list",
@@ -9256,16 +9407,16 @@
         },
         {
             "name": "laravel-lang/starter-kits",
-            "version": "1.3.10",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/starter-kits.git",
-                "reference": "90260cfad7436ef11802eeb7adf18485905d8cf0"
+                "reference": "72659ccc398d9233bbc8af291406d2278dc765ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/90260cfad7436ef11802eeb7adf18485905d8cf0",
-                "reference": "90260cfad7436ef11802eeb7adf18485905d8cf0",
+                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/72659ccc398d9233bbc8af291406d2278dc765ee",
+                "reference": "72659ccc398d9233bbc8af291406d2278dc765ee",
                 "shasum": ""
             },
             "require": {
@@ -9317,9 +9468,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/starter-kits/issues",
-                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.3.10"
+                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.4.0"
             },
-            "time": "2025-06-23T09:36:35+00:00"
+            "time": "2025-10-05T08:30:38+00:00"
         },
         {
             "name": "laravel/pail",
@@ -9773,16 +9924,16 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v4.1.1",
+            "version": "v4.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "8e3444e1db7a6bd06b7f3683c3d82db77406357b"
+                "reference": "08b09f2e98fc6830050c0237968b233768642d46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/8e3444e1db7a6bd06b7f3683c3d82db77406357b",
-                "reference": "8e3444e1db7a6bd06b7f3683c3d82db77406357b",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/08b09f2e98fc6830050c0237968b233768642d46",
+                "reference": "08b09f2e98fc6830050c0237968b233768642d46",
                 "shasum": ""
             },
             "require": {
@@ -9794,20 +9945,20 @@
                 "pestphp/pest-plugin-mutate": "^4.0.1",
                 "pestphp/pest-plugin-profanity": "^4.1.0",
                 "php": "^8.3.0",
-                "phpunit/phpunit": "^12.3.15",
-                "symfony/process": "^7.3.3"
+                "phpunit/phpunit": "^12.4.0",
+                "symfony/process": "^7.3.4"
             },
             "conflict": {
                 "filp/whoops": "<2.18.3",
-                "phpunit/phpunit": ">12.3.15",
+                "phpunit/phpunit": ">12.4.0",
                 "sebastian/exporter": "<7.0.0",
                 "webmozart/assert": "<1.11.0"
             },
             "require-dev": {
                 "pestphp/pest-dev-tools": "^4.0.0",
-                "pestphp/pest-plugin-browser": "^4.1.0",
+                "pestphp/pest-plugin-browser": "^4.1.1",
                 "pestphp/pest-plugin-type-coverage": "^4.0.2",
-                "psy/psysh": "^0.12.10"
+                "psy/psysh": "^0.12.12"
             },
             "bin": [
                 "bin/pest"
@@ -9873,7 +10024,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pestphp/pest/issues",
-                "source": "https://github.com/pestphp/pest/tree/v4.1.1"
+                "source": "https://github.com/pestphp/pest/tree/v4.1.2"
             },
             "funding": [
                 {
@@ -9885,7 +10036,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-01T13:30:25+00:00"
+            "time": "2025-10-05T19:09:49+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
@@ -10909,16 +11060,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.3.15",
+            "version": "12.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "b035ee2cd8ecad4091885b61017ebb1d80eb0e57"
+                "reference": "f62aab5794e36ccd26860db2d1bbf89ac19028d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b035ee2cd8ecad4091885b61017ebb1d80eb0e57",
-                "reference": "b035ee2cd8ecad4091885b61017ebb1d80eb0e57",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f62aab5794e36ccd26860db2d1bbf89ac19028d9",
+                "reference": "f62aab5794e36ccd26860db2d1bbf89ac19028d9",
                 "shasum": ""
             },
             "require": {
@@ -10954,7 +11105,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "12.3-dev"
+                    "dev-main": "12.4-dev"
                 }
             },
             "autoload": {
@@ -10986,7 +11137,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.15"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.4.0"
             },
             "funding": [
                 {
@@ -11010,7 +11161,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-28T12:10:54+00:00"
+            "time": "2025-10-03T04:28:03+00:00"
         },
         {
             "name": "sebastian/cli-parser",

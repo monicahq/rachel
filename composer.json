@@ -23,6 +23,7 @@
     "require": {
         "php": "^8.2",
         "asbiin/laravel-localizer": "^4.0",
+        "codeat3/blade-phosphor-icons": "^2.3",
         "driftingly/rector-laravel": "^2.0",
         "joshbrw/laravel-module-installer": "^2.0",
         "laravel/fortify": "^1.30",
