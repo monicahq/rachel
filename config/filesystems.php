@@ -40,6 +40,11 @@ return [
             'report' => false,
         ],
 
+        'lang' => [
+            'driver' => 'local',
+            'root' => lang_path(),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
