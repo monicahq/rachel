@@ -11,8 +11,11 @@ use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.guest')] class extends Component {
   public string $name = '';
+
   public string $email = '';
+
   public string $password = '';
+
   public string $password_confirmation = '';
 
   /**
@@ -65,16 +68,16 @@ new #[Layout('components.layouts.guest')] class extends Component {
     <x-box>
       <form method="POST" wire:submit="register" class="flex flex-col gap-4">
         <!-- Name -->
-        <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" :placeholder="__('Full name')" />
+        <x-input wire:model="name" id="name" :label="__('Name')" type="text" required autofocus autocomplete="name" :placeholder="__('Full name')" />
 
         <!-- Email Address -->
-        <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
+        <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
 
         <!-- Password -->
-        <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="new-password" :placeholder="__('Password')" viewable />
+        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
 
         <!-- Confirm Password -->
-        <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" viewable />
+        <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm password')" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" />
 
         <div class="flex items-center justify-between">
           <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
