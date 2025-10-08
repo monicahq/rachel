@@ -4,7 +4,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -104,8 +103,8 @@ new #[Layout('components.layouts.guest')] class extends Component {
   <!-- Left side - Login form -->
   <div class="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-y-10 px-5 py-10 sm:px-30">
     <p class="group flex items-center gap-x-1 text-sm text-gray-600">
-      <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-      <x-link href="" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+      <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1 dark:text-gray-100" />
+      <x-link href="" class="group-hover:underline dark:text-gray-100">{{ __('Back to the marketing website') }}</x-link>
     </p>
 
     <!-- Session Status -->
@@ -118,7 +117,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
           <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
         </div>
       </a>
-      <h1 class="text-2xl font-semibold text-gray-900">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-200">
         {{ __('Welcome back') }}
       </h1>
     </div>
