@@ -28,6 +28,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
         ]);
+        $middleware->web(remove: [
+            Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
+        $middleware->web(append: [
+            CodeZero\Localizer\Middleware\SetLocale::class,
+            Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
         $middleware->api(prepend: [
             Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
