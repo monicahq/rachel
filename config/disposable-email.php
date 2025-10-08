@@ -13,7 +13,7 @@ return [
     | it manually or via the `erag:sync-disposable-email-list` artisan command.
     |
     */
-    'blacklist_file' => database_path('blacklist_domains'),
+    'blacklist_file' => storage_path('app/blacklist_domains'),
 
     /*
     |--------------------------------------------------------------------------
