@@ -12,6 +12,7 @@
     'hover:decoration-[1.15px]',
     'decoration-gray-300',
     'hover:text-blue-600 hover:decoration-blue-400',
+    'dark:hover:text-neutral-400 dark:hover:decoration-neutral-400',
     'transition-colors duration-200',
   ])
 }}>{{ $slot }}</a>
