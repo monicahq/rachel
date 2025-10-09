@@ -126,10 +126,10 @@ new #[Layout('components.layouts.guest')] class extends Component {
     <x-box>
       <form method="POST" wire:submit="login" class="flex flex-col gap-4">
         <!-- Email address -->
-        <flux:input wire:model="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
+        <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
 
         <!-- Password -->
-        <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" viewable />
+        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" />
 
         <!-- Remember Me -->
         <flux:checkbox wire:model="remember" :label="__('Remember me')" />
