@@ -1,107 +1,119 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
-  <head>
-    @include('components.layouts.meta')
-  </head>
-  <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-      <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+<header {{ $attributes->class(['flex w-full max-w-[1920px] items-center px-2 sm:pr-4 sm:pl-9 dark:bg-[#151B23]']) }}>
+  <!-- normal desktop header -->
+  <nav class="hidden flex-1 items-center gap-3 pt-3 pb-3 sm:flex">
+    <a href="" class="flex h-7 w-7 items-center">
+      <x-app-logo-icon />
+    </a>
 
-      <a href="{{ route('dashboard') }}" class="ms-2 me-5 flex items-center space-x-2 lg:ms-0 rtl:space-x-reverse" wire:navigate>
-        <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
+    <!-- menu -->
+    <div class="-ml-4 flex-1">
+      <div class="flex items-center justify-center">
+        <div class="flex space-x-1 rounded-lg border border-gray-200 p-0.5 dark:border-0 dark:ring-1 dark:ring-gray-700">
+          <!-- dashboard -->
+          <x-header-link icon="house-line-fill" href="/" selected>{{ __('Dashboard') }}</x-header-link>
+
+          <!-- search -->
+          <x-header-link icon="magnifying-glass-fill" href="/">{{ __('Search') }}</x-header-link>
+
+          <!-- contacts -->
+          <x-header-link icon="users-three-fill" href="/">{{ __('Contacts') }}</x-header-link>
+
+          <!-- me -->
+          <x-header-link icon="binoculars-fill" href="/">{{ __('Me') }}</x-header-link>
+        </div>
+      </div>
+    </div>
+
+    <!-- user menu -->
+    <div class="flex items-center gap-1">
+      <a href="" class="flex items-center gap-2 rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:text-white hover:dark:border-gray-500 hover:dark:bg-[#202830]">
+        <x-phosphor-lifebuoy class="size-4 text-gray-600 transition-transform duration-150" />
+        {{ __('Docs') }}
       </a>
 
-      <flux:navbar class="-mb-px max-lg:hidden">
-        <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-          {{ __('Dashboard') }}
-        </flux:navbar.item>
-      </flux:navbar>
+      <div x-data="{ menuOpen: false }" @click.away="menuOpen = false" class="relative">
+        <button @click="menuOpen = !menuOpen" :class="{ 'bg-gray-100' : menuOpen }" class="flex cursor-pointer items-center gap-2 rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:text-white hover:dark:border-gray-500 hover:dark:bg-[#202830]">
+          {{ __('Menu') }}
+          <x-phosphor-caret-down class="size-4 text-gray-600 transition-transform duration-150" x-bind:class="{ 'rotate-180' : menuOpen }" />
+        </button>
 
-      <flux:spacer />
+        <div x-cloak x-show="menuOpen" x-transition:enter="transition duration-50 ease-linear" x-transition:enter-start="-translate-y-1 opacity-90" x-transition:enter-end="translate-y-0 opacity-100" class="absolute top-0 right-0 z-50 mt-10 w-48 min-w-[8rem] rounded-md border border-gray-200/70 bg-white p-1 text-sm text-gray-800 shadow-md dark:border-gray-700 dark:bg-[#202830] dark:text-white" x-cloak>
+          <a @click="menuOpen = false" href="" class="relative flex w-full cursor-default items-center rounded px-2 py-1.5 outline-none select-none hover:bg-gray-100 hover:text-gray-900 hover:dark:bg-gray-600">
+            <x-phosphor-user class="mr-2 size-4 text-gray-600" />
+            {{ __('Profile') }}
+          </a>
 
-      <flux:navbar class="me-1.5 space-x-0.5 py-0! rtl:space-x-reverse">
-        <flux:tooltip :content="__('Search')" position="bottom">
-          <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
-        </flux:tooltip>
-        <flux:tooltip :content="__('Repository')" position="bottom">
-          <flux:navbar.item class="h-10 max-lg:hidden [&>div>svg]:size-5" icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank" :label="__('Repository')" />
-        </flux:tooltip>
-        <flux:tooltip :content="__('Documentation')" position="bottom">
-          <flux:navbar.item class="h-10 max-lg:hidden [&>div>svg]:size-5" icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank" label="Documentation" />
-        </flux:tooltip>
-      </flux:navbar>
-
-      <!-- Desktop User Menu -->
-      <flux:dropdown position="top" align="end">
-        <flux:profile class="cursor-pointer" :initials="auth()->user()->initials()" />
-
-        <flux:menu>
-          <flux:menu.radio.group>
-            <div class="p-0 text-sm font-normal">
-              <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                  <span class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                    {{ auth()->user()->initials() }}
-                  </span>
-                </span>
-
-                <div class="grid flex-1 text-start text-sm leading-tight">
-                  <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                  <span class="truncate text-xs">{{ auth()->user()->email }}</span>
-                </div>
-              </div>
-            </div>
-          </flux:menu.radio.group>
-
-          <flux:menu.separator />
-
-          <flux:menu.radio.group>
-            <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
-          </flux:menu.radio.group>
-
-          <flux:menu.separator />
+          <div class="-mx-1 my-1 h-px bg-gray-200"></div>
 
           <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
-            <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
-              {{ __('Log Out') }}
-            </flux:menu.item>
+            <button @click="menuOpen = false" type="submit" class="relative flex w-full cursor-default items-center rounded px-2 py-1.5 outline-none select-none hover:bg-gray-100 hover:text-gray-900 hover:dark:bg-gray-600">
+              <x-phosphor-sign-out class="mr-2 size-4 text-gray-600" />
+              {{ __('Logout') }}
+            </button>
           </form>
-        </flux:menu>
-      </flux:dropdown>
-    </flux:header>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Mobile Menu -->
-    <flux:sidebar stashable sticky class="border-e border-zinc-200 bg-zinc-50 lg:hidden dark:border-zinc-700 dark:bg-zinc-900">
-      <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
+  <!-- mobile header -->
+  <nav class="flex w-full items-center justify-between gap-3 pt-2 pb-2 sm:hidden" x-data="{ mobileMenuOpen: false }" aria-label="Global">
+    <a href="/" class="flex h-7 w-7">
+      <x-app-logo-icon size="7" />
+    </a>
 
-      <a href="{{ route('dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-        <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
-      </a>
+    <button @click="mobileMenuOpen = true" class="flex items-center gap-2 rounded-md border border-transparent py-1 font-medium hover:border-gray-200 hover:bg-gray-100">
+      <x-phosphor-list class="size-5 text-gray-600 transition-transform duration-150" />
+    </button>
 
-      <flux:navlist variant="outline">
-        <flux:navlist.group :heading="__('Platform')">
-          <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+    <!-- Mobile menu overlay -->
+    <div x-cloak x-show="mobileMenuOpen" x-transition:enter="transition duration-50 ease-out" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition duration-50 ease-in" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 bg-white dark:bg-gray-900">
+      <div class="flex h-full flex-col">
+        <!-- Mobile menu header -->
+        <div class="flex items-center justify-between border-b border-gray-200 px-2 py-1 dark:border-gray-700">
+          <div class="flex h-7 w-7">
+            <x-app-logo-icon size="7" />
+          </div>
+
+          <button @click="mobileMenuOpen = false" class="flex items-center gap-2 rounded-md border border-transparent py-2 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-600 dark:hover:bg-gray-800">
+            <x-phosphor-x class="size-5 text-gray-600 dark:text-gray-400" />
+          </button>
+        </div>
+
+        <!-- Mobile menu content -->
+        <div class="flex-1 space-y-4 p-4">
+          <a @click="mobileMenuOpen = false" href="/" class="flex items-center gap-3 rounded-md p-3 text-lg font-medium text-gray-800 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">
             {{ __('Dashboard') }}
-          </flux:navlist.item>
-        </flux:navlist.group>
-      </flux:navlist>
+          </a>
 
-      <flux:spacer />
+          <a @click="mobileMenuOpen = false" href="/" class="flex items-center gap-3 rounded-md p-3 text-lg font-medium text-gray-800 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">
+            <x-phosphor-magnifying-glass class="size-5 text-gray-600 dark:text-gray-400" />
+            {{ __('Search') }}
+          </a>
 
-      <flux:navlist variant="outline">
-        <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-          {{ __('Repository') }}
-        </flux:navlist.item>
+          <a @click="mobileMenuOpen = false" href="/" class="flex items-center gap-3 rounded-md p-3 text-lg font-medium text-gray-800 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">
+            <x-phosphor-lifebuoy class="size-5 text-gray-600 dark:text-gray-400" />
+            {{ __('Docs') }}
+          </a>
 
-        <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-          {{ __('Documentation') }}
-        </flux:navlist.item>
-      </flux:navlist>
-    </flux:sidebar>
+          <a @click="mobileMenuOpen = false" href="" class="flex items-center gap-3 rounded-md p-3 text-lg font-medium text-gray-800 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">
+            <x-phosphor-user class="size-5 text-gray-600 dark:text-gray-400" />
+            {{ __('Profile') }}
+          </a>
+        </div>
 
-    {{ $slot }}
-
-    @fluxScripts
-  </body>
-</html>
+        <!-- Mobile menu footer -->
+        <div class="border-t border-gray-200 p-4 dark:border-gray-700">
+          <form method="POST" action="{{ route('logout') }}" class="w-full">
+            @csrf
+            <button @click="mobileMenuOpen = false" type="submit" class="flex w-full items-center gap-3 rounded-md p-3 text-lg font-medium text-gray-800 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">
+              <x-phosphor-sign-out class="size-5 text-gray-600 dark:text-gray-400" />
+              {{ __('Logout') }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

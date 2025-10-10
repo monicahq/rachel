@@ -56,7 +56,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
     <div class="flex items-center gap-x-2">
       <a href="" class="group flex items-center gap-x-2 transition-transform ease-in-out">
         <div class="flex h-7 w-7 items-center justify-center transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-          <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
+          <x-app-logo-icon />
         </div>
       </a>
       <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-200">
