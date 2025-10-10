@@ -25,6 +25,7 @@
         "asbiin/laravel-localizer": "^4.0",
         "codeat3/blade-phosphor-icons": "^2.3",
         "driftingly/rector-laravel": "^2.0",
+        "erag/laravel-disposable-email": "^3.7",
         "joshbrw/laravel-module-installer": "^2.0",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
@@ -63,7 +64,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@monica:update-blacklist-domains"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
@@ -88,7 +90,8 @@
         "monica:localize-check": "php artisan monica:localize --check",
         "monica:pint": "./vendor/bin/pint --parallel",
         "monica:prettier": "npx prettier --write resources/",
-        "monica:rector": "./vendor/bin/rector"
+        "monica:rector": "./vendor/bin/rector",
+        "monica:update-blacklist-domains": "php artisan erag:sync-disposable-email-list"
     },
     "extra": {
         "laravel": {
