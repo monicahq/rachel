@@ -45,7 +45,7 @@
 
           <div x-show="showRecoveryInput">
             <div class="my-5">
-              <flux:input type="text" name="recovery_code" x-ref="recovery_code" x-bind:required="showRecoveryInput" autocomplete="one-time-code" x-model="recovery_code" />
+              <x-input type="text" name="recovery_code" x-ref="recovery_code" x-bind:required="showRecoveryInput" autocomplete="one-time-code" x-model="recovery_code" />
             </div>
 
             @error('recovery_code')

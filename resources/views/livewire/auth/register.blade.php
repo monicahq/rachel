@@ -45,8 +45,8 @@ new #[Layout('components.layouts.guest')] class extends Component {
   <!-- Left side - Register form -->
   <div class="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-y-10 px-5 py-10 sm:px-30">
     <p class="group flex items-center gap-x-1 text-sm text-gray-600">
-      <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-      <x-link href="" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+      <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1 dark:text-gray-100" />
+      <x-link href="" class="group-hover:underline dark:text-gray-100">{{ __('Back to the marketing website') }}</x-link>
     </p>
 
     <!-- Session Status -->
@@ -59,7 +59,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
           <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
         </div>
       </a>
-      <h1 class="text-2xl font-semibold text-gray-900">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-200">
         {{ __('Sign up for an account') }}
       </h1>
     </div>
@@ -68,16 +68,16 @@ new #[Layout('components.layouts.guest')] class extends Component {
     <x-box>
       <form method="POST" wire:submit="register" class="flex flex-col gap-4">
         <!-- Name -->
-        <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" :placeholder="__('Full name')" />
+        <x-input wire:model="name" id="name" :label="__('Name')" type="text" required autofocus autocomplete="name" :placeholder="__('Full name')" />
 
         <!-- Email Address -->
-        <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
+        <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
 
         <!-- Password -->
-        <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="new-password" :placeholder="__('Password')" viewable />
+        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
 
         <!-- Confirm Password -->
-        <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" viewable />
+        <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm password')" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" />
 
         <div class="flex items-center justify-between">
           <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
