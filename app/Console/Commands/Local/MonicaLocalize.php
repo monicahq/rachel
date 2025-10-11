@@ -162,7 +162,7 @@ final class MonicaLocalize extends Command
 
         // replace the generic string with the placeholders
         if ($match->count() > 0) {
-            $translated = Str::of($translated)->replace('{{# ', '{{#')
+            $translated = $translated->replace('{{# ', '{{#')
                 ->replace($replacements->toArray(), $match->toArray());
         }
 
