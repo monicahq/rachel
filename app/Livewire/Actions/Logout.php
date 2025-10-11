@@ -12,7 +12,7 @@ final class Logout
     /**
      * Log the current user out of the application.
      */
-    public function __invoke(): \Illuminate\Http\RedirectResponse
+    public function __invoke(): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse // @phpstan-ignore return.unusedType
     {
         Auth::guard('web')->logout();
 
