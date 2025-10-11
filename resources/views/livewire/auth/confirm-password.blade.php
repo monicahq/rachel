@@ -7,7 +7,7 @@
     <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
       @csrf
 
-      <flux:input name="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" viewable />
+      <x-input name="password" id="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" />
 
       <flux:button variant="primary" type="submit" class="w-full" data-test="confirm-password-button">
         {{ __('Confirm') }}
