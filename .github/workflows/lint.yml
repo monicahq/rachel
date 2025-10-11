@@ -12,3 +12,31 @@ jobs:
   php:
     name: Lint PHP files
     uses: monicahq/workflows/.github/workflows/lint_php.yml@v4
+
+  rector:
+    runs-on: ubuntu-latest
+    name: Run Rector
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+
+      - name: Install php dependencies
+        uses: monicahq/workflows/.github/actions/php@v4
+        with:
+          php-version: 8.4
+
+      - name: Run rector
+        run: vendor/bin/rector process
+
+      - name: Check if there is any file update needed
+        run: |
+          status=$(git status --porcelain)
+          if [ -n "$status" ]; then
+            echo -e "Waiting modifications:\n$status"
+            echo "::error::Laravel pint found fixes. Please run 'vendor/bin/pint' prior to your next commit."
+            exit -1
+          fi
