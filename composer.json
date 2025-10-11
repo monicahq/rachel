@@ -24,7 +24,6 @@
         "php": "^8.2",
         "asbiin/laravel-localizer": "^4.0",
         "codeat3/blade-phosphor-icons": "^2.3",
-        "driftingly/rector-laravel": "^2.0",
         "erag/laravel-disposable-email": "^3.7",
         "joshbrw/laravel-module-installer": "^2.0",
         "laravel/fortify": "^1.30",
@@ -37,6 +36,7 @@
     },
     "require-dev": {
         "amirami/localizator": "^0.14.0-alpha",
+        "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.7",
         "laravel-lang/common": "^6.7",
@@ -94,7 +94,7 @@
         "monica:localize-check": "php artisan monica:localize --check",
         "monica:pint": "./vendor/bin/pint --parallel",
         "monica:prettier": "npx prettier --write resources/",
-        "monica:rector": "./vendor/bin/rector",
+        "monica:rector": "./vendor/bin/rector process",
         "monica:static-check": "./vendor/bin/phpstan analyse",
         "monica:update-blacklist-domains": "php artisan erag:sync-disposable-email-list"
     },
