@@ -119,10 +119,11 @@ final class MonicaLocalize extends Command
                 }
             }
         } finally {
-            $strings = collect($strings)->map(fn ($value) => Str::replace(['\''], ['’'], $value))->all();
-
             // now we need to save the array back to the file
-            ksort($strings, SORT_NATURAL | SORT_FLAG_CASE);
+            $strings = collect($strings)
+                ->map(fn ($value) => Str::replace(['\''], ['’'], $value))
+                ->sortKeys(SORT_STRING | SORT_FLAG_CASE)
+                ->all();
 
             $encoded = json_encode($strings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $encoded = Str::replaceMatches('/    "/', '  "', $encoded);
