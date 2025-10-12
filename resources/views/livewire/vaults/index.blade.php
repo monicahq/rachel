@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Vault;
 use App\Services\CreateVault;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,8 @@ new class extends Component {
 
   public function mount(): void
   {
+    $this->authorize('viewAny', Vault::class);
+
     $this->vaults = Auth::user()->account->vaults;
   }
 
