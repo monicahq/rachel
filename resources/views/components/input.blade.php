@@ -48,5 +48,11 @@
         <x-phosphor-eye class="hidden h-5 w-5 [[data-viewable]>&]:block" />
       </div>
     @endif
+
+    @error($id)
+      <flux:text color="red">
+        {{ $message }}
+      </flux:text>
+    @enderror
   </div>
 </div>
