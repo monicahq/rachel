@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\Settings;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -23,6 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->missing(fn () => Redirect::route('vaults.index'));
 
     Route::redirect('settings', 'settings/profile');
+  
+    Route::get('/settings', [Settings\SettingsController::class, 'index'])->name('settings.index');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('password.edit');
