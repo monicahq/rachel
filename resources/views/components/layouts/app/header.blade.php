@@ -1,6 +1,6 @@
 <header {{ $attributes->class(['flex w-full max-w-[1920px] items-center px-2 sm:pr-4 sm:pl-9 dark:bg-[#151B23]']) }}>
   <!-- normal desktop header -->
-  <nav class="hidden flex-1 items-center gap-3 pt-3 pb-3 sm:flex">
+  <nav class="hidden flex-1 items-center gap-3 pt-3 pb-3 sm:flex" aria-label="Main navigation">
     <!-- vault selector -->
     <div class="flex items-center gap-4">
       <a href="{{ route('dashboard') }}" class="group h-7 w-7 gap-x-2 transition-transform ease-in-out">
