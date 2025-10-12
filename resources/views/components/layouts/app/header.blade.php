@@ -1,16 +1,28 @@
 <header {{ $attributes->class(['flex w-full max-w-[1920px] items-center px-2 sm:pr-4 sm:pl-9 dark:bg-[#151B23]']) }}>
   <!-- normal desktop header -->
   <nav class="hidden flex-1 items-center gap-3 pt-3 pb-3 sm:flex">
-    <a href="" class="flex h-7 w-7 items-center">
-      <x-app-logo-icon />
-    </a>
+    <!-- vault selector -->
+    <div class="flex items-center gap-4">
+      <a href="{{ route('dashboard') }}" class="group h-7 w-7 gap-x-2 transition-transform ease-in-out">
+        <div class="flex h-7 w-7 items-center justify-center transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
+          <x-app-logo-icon />
+        </div>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <span class="font-medium dark:border-gray-700 dark:text-white">Nom du vault</span>
+        <div class="flex items-center gap-2 rounded-md border border-transparent px-0 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:text-white hover:dark:border-gray-500 hover:dark:bg-[#202830]">
+          <x-phosphor-caret-up-down class="size-4 text-gray-600 transition-transform duration-150" />
+        </div>
+      </div>
+    </div>
 
     <!-- menu -->
     <div class="-ml-4 flex-1">
       <div class="flex items-center justify-center">
         <div class="flex space-x-1 rounded-lg border border-gray-200 p-0.5 dark:border-0 dark:ring-1 dark:ring-gray-700">
           <!-- dashboard -->
-          <x-header-link icon="house-line-fill" href="/" selected>{{ __('Dashboard') }}</x-header-link>
+          <x-header-link icon="house-line-fill" href="{{ route('dashboard') }}" selected>{{ __('Dashboard') }}</x-header-link>
 
           <!-- search -->
           <x-header-link icon="magnifying-glass-fill" href="/">{{ __('Search') }}</x-header-link>
@@ -38,9 +50,9 @@
         </button>
 
         <div x-cloak x-show="menuOpen" x-transition:enter="transition duration-50 ease-linear" x-transition:enter-start="-translate-y-1 opacity-90" x-transition:enter-end="translate-y-0 opacity-100" class="absolute top-0 right-0 z-50 mt-10 w-48 min-w-[8rem] rounded-md border border-gray-200/70 bg-white p-1 text-sm text-gray-800 shadow-md dark:border-gray-700 dark:bg-[#202830] dark:text-white" x-cloak>
-          <a @click="menuOpen = false" href="" class="relative flex w-full cursor-default items-center rounded px-2 py-1.5 outline-none select-none hover:bg-gray-100 hover:text-gray-900 hover:dark:bg-gray-600">
+          <a @click="menuOpen = false" href="{{ route('settings.index') }}" class="relative flex w-full cursor-default items-center rounded px-2 py-1.5 outline-none select-none hover:bg-gray-100 hover:text-gray-900 hover:dark:bg-gray-600" wire:navigate.hover>
             <x-phosphor-user class="mr-2 size-4 text-gray-600" />
-            {{ __('Profile') }}
+            {{ __('Settings') }}
           </a>
 
           <div class="-mx-1 my-1 h-px bg-gray-200"></div>
