@@ -35,9 +35,9 @@
               <span class="block truncate text-ellipsis"><x-link href="{{ route('instances.accounts.show') }}">John Doe ({{ 'john@doe.com' }})</x-link></span>
             </x-table.cell>
 
-            <x-table.cell class="hidden sm:block">12/12/2025 12:32pm</x-table.cell>
+            <x-table.cell class="hidden sm:inline-block">12/12/2025 12:32pm</x-table.cell>
 
-            <x-table.cell class="hidden sm:block">
+            <x-table.cell class="hidden sm:inline-block">
               <x-badge color="green">Paid</x-badge>
             </x-table.cell>
           </x-table.row>
@@ -50,9 +50,9 @@
               <span class="block truncate text-ellipsis"><x-link href="{{ route('instances.accounts.show') }}">John Doe ({{ 'john@doe.com' }})</x-link></span>
             </x-table.cell>
 
-            <x-table.cell class="hidden sm:block">12/12/2025 12:32pm</x-table.cell>
+            <x-table.cell class="hidden sm:inline-block">12/12/2025 12:32pm</x-table.cell>
 
-            <x-table.cell class="hidden sm:block">
+            <x-table.cell class="hidden sm:inline-block">
               <x-badge color="green">Paid</x-badge>
             </x-table.cell>
           </x-table.row>

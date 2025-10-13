@@ -1,8 +1,8 @@
 <x-box>
   <div class="flex items-center justify-between">
-    <div>
-      <h1 class="mb-1 text-xl font-normal">John Doe</h1>
-      <div class="flex items-center gap-x-6">
+    <div class="space-y-1 sm:space-y-1">
+      <h1 class="text-xl font-normal">John Doe</h1>
+      <div class="flex flex-col space-y-1 space-x-6 sm:flex-row sm:items-center sm:space-y-0">
         <div class="flex items-center gap-x-2">
           <x-phosphor-mailbox class="size-4 text-gray-500" />
           <p class="text-gray-500">john@doe.com</p>
