@@ -1,0 +1,26 @@
+<x-box>
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="mb-1 text-xl font-normal">John Doe</h1>
+      <div class="flex items-center gap-x-6">
+        <div class="flex items-center gap-x-2">
+          <x-phosphor-mailbox class="size-4 text-gray-500" />
+          <p class="text-gray-500">john@doe.com</p>
+        </div>
+        <div class="flex items-center gap-x-2">
+          <x-phosphor-clock-clockwise class="size-4 text-gray-500" />
+          <x-tooltip text="12/12/2025 12:32pm" class="text-gray-500">Created 12 years ago</x-tooltip>
+        </div>
+      </div>
+    </div>
+
+    <!-- account status -->
+    <div>
+      <!-- case: paid account -->
+      <div class="flex flex-col items-center gap-y-1 rounded-md border border-gray-200 px-3 py-2 text-sm dark:border-neutral-700">
+        <x-phosphor-shooting-star class="size-4 text-green-500" />
+        <p class="text-sm text-green-800">Paid</p>
+      </div>
+    </div>
+  </div>
+</x-box>
