@@ -18,7 +18,7 @@ final class CreateVault
     public function __construct(
         private Account $account,
         private string $name,
-        private string $description
+        private ?string $description = null,
     ) {}
 
     public function execute(): Vault
