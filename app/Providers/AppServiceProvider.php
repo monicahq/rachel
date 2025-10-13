@@ -28,6 +28,6 @@ final class AppServiceProvider extends ServiceProvider
         // Enable strict mode for Eloquent models in non-production environments
         Model::shouldBeStrict(! app()->isProduction());
 
-        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip()));
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by($request->user()?->id ?: $request->ip()));
     }
 }

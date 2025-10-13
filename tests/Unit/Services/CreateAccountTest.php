@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\UniqueConstraintViolationException;
 
 it('creates an account', function (): void {
-    Carbon::setTestNow(Carbon::create(2018, 1, 1));
+    \Illuminate\Support\Facades\Date::setTestNow(\Illuminate\Support\Facades\Date::create(2018, 1, 1));
 
     $user = (new CreateAccount(
         email: 'monica.geller@friends.com',
@@ -30,7 +30,7 @@ it('cant create an account with the same email', function (): void {
         'email' => 'monica.geller@friends.com',
     ]);
 
-    expect(fn (): \App\Models\User => (new CreateAccount(
+    expect(fn (): User => (new CreateAccount(
         email: 'monica.geller@friends.com',
         password: 'password',
         name: 'Monica Geller',
