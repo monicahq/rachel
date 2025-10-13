@@ -11,6 +11,10 @@
           <x-phosphor-clock-clockwise class="size-4 text-gray-500" />
           <x-tooltip text="12/12/2025 12:32pm" class="text-gray-500">Created 12 years ago</x-tooltip>
         </div>
+        <div class="flex items-center gap-x-2">
+          <x-phosphor-user class="size-4 text-gray-500" />
+          <p class="text-gray-500">213 contacts</p>
+        </div>
       </div>
     </div>
 
