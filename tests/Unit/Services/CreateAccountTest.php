@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Services\CreateAccount;
-use Carbon\Carbon;
 use Illuminate\Database\UniqueConstraintViolationException;
 
 it('creates an account', function (): void {
-    \Illuminate\Support\Facades\Date::setTestNow(\Illuminate\Support\Facades\Date::create(2018, 1, 1));
+    Illuminate\Support\Facades\Date::setTestNow(Illuminate\Support\Facades\Date::create(2018, 1, 1));
 
     $user = (new CreateAccount(
         email: 'monica.geller@friends.com',
