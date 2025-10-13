@@ -14,4 +14,4 @@ parameters:
     level: 5
     ignoreErrors:
         # Global ignore of the "Access to an undefined property"
-        - '#Access to an undefined property .*\.#'
+        # - '#Access to an undefined property .*\.#'

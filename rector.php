@@ -15,7 +15,6 @@ return RectorConfig::configure()
         LaravelSetList::LARAVEL_CODE_QUALITY,
         LaravelSetList::LARAVEL_COLLECTION,
         LaravelSetList::LARAVEL_CONTAINER_STRING_TO_FULLY_QUALIFIED_NAME,
-        LaravelSetList::LARAVEL_ELOQUENT_MAGIC_METHOD_TO_QUERY_BUILDER,
         LaravelSetList::LARAVEL_FACADE_ALIASES_TO_FULL_NAMES,
         LaravelSetList::LARAVEL_FACTORIES,
         LaravelSetList::LARAVEL_IF_HELPERS,
@@ -42,4 +41,6 @@ return RectorConfig::configure()
         earlyReturn: true,
         strictBooleans: true,
     )
-    ->withPhpSets();
+    ->withPHPStanConfigs([__DIR__.'/phpstan.neon'])
+    ->withPhpSets()
+    ->withParallel();
