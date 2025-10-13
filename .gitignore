@@ -27,3 +27,10 @@ modules_statuses.json
 /Modules
 npm-debug.log
 yarn-error.log
+.cursor/mcp.json
+.cursor/rules/laravel-boost.mdc
+.github/copilot-instructions.md
+.mcp.json
+AGENTS.md
+boost.json
+CLAUDE.md
