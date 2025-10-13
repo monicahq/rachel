@@ -2,7 +2,7 @@
   'items',
 ])
 
-<div class="flex w-full rounded-t-lg border-b border-[#E6E7E9] bg-white px-4 py-2 dark:border-gray-700 dark:bg-[#202830]">
+<div class="flex w-full rounded-t-lg border-b border-[#e6e7e9] bg-white px-4 py-2 dark:border-gray-700 dark:bg-[#202830]">
   <div class="flex gap-x-2">
     <p class="text-gray-500 dark:text-gray-200">{{ __('You are here:') }}</p>
     @foreach ($items as $item)

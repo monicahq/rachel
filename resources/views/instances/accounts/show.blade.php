@@ -5,7 +5,7 @@
     ['label' => __('Account')]
   ]" />
 
-  <div class="mx-auto w-5xl space-y-6 py-10">
+  <div class="mx-auto max-w-5xl space-y-6 px-2 py-2 sm:px-0 sm:py-10">
     @include('instances.accounts.partials.account-header')
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[250px_1fr]">
