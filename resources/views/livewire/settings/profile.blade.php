@@ -6,105 +6,102 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
 
-new class extends Component {
-  public string $name = '';
+new class extends Component
+{
+    public string $name = '';
 
-  public string $email = '';
+    public string $email = '';
 
-  /**
-   * Mount the component.
-   */
-  public function mount(): void
-  {
-    $this->name = Auth::user()->name;
-    $this->email = Auth::user()->email;
-  }
-
-  /**
-   * Update the profile information for the currently authenticated user.
-   */
-  public function updateProfileInformation(): void
-  {
-    $user = Auth::user();
-
-    $validated = $this->validate([
-      'name' => ['required', 'string', 'max:255'],
-
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-    ]);
-
-    $user->fill($validated);
-
-    if ($user->isDirty('email')) {
-      $user->email_verified_at = null;
+    /**
+     * Mount the component.
+     */
+    public function mount(): void
+    {
+        $this->name = Auth::user()->name;
+        $this->email = Auth::user()->email;
     }
 
-    $user->save();
+    /**
+     * Update the profile information for the currently authenticated user.
+     */
+    public function updateProfileInformation(): void
+    {
+        $user = Auth::user();
 
-    $this->dispatch('profile-updated', name: $user->name);
-  }
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
 
-  /**
-   * Send an email verification notification to the current user.
-   */
-  public function resendVerificationNotification(): void
-  {
-    $user = Auth::user();
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+        ]);
 
-    if ($user->hasVerifiedEmail()) {
-      $this->redirectIntended(default: route('dashboard', absolute: false));
+        $user->fill($validated);
 
-      return;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        $this->dispatch('profile-updated', name: $user->name);
     }
 
-    $user->sendEmailVerificationNotification();
+    /**
+     * Send an email verification notification to the current user.
+     */
+    public function resendVerificationNotification(): void
+    {
+        $user = Auth::user();
 
-    Session::flash('status', 'verification-link-sent');
-  }
+        if ($user->hasVerifiedEmail()) {
+            $this->redirectIntended(default: route('dashboard', absolute: false));
+
+            return;
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        Session::flash('status', 'verification-link-sent');
+    }
 }; ?>
 
 <section class="w-full">
-  @include('partials.settings-heading')
+  <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+    <x-input wire:model="name" id="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
-  <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
-    <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-      <x-input wire:model="name" id="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+    <div>
+      <x-input wire:model="email" id="email" :label="__('Email')" type="email" required autocomplete="email" />
 
-      <div>
-        <x-input wire:model="email" id="email" :label="__('Email')" type="email" required autocomplete="email" />
+      @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
+        <div>
+          <flux:text class="mt-4">
+            {{ __('Your email address is unverified.') }}
 
-        @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
-          <div>
-            <flux:text class="mt-4">
-              {{ __('Your email address is unverified.') }}
+            <flux:link class="cursor-pointer text-sm" wire:click.prevent="resendVerificationNotification">
+              {{ __('Click here to re-send the verification email.') }}
+            </flux:link>
+          </flux:text>
 
-              <flux:link class="cursor-pointer text-sm" wire:click.prevent="resendVerificationNotification">
-                {{ __('Click here to re-send the verification email.') }}
-              </flux:link>
+          @if (session('status') === 'verification-link-sent')
+            <flux:text class="!dark:text-green-400 mt-2 font-medium !text-green-600">
+              {{ __('A new verification link has been sent to your email address.') }}
             </flux:text>
-
-            @if (session('status') === 'verification-link-sent')
-              <flux:text class="!dark:text-green-400 mt-2 font-medium !text-green-600">
-                {{ __('A new verification link has been sent to your email address.') }}
-              </flux:text>
-            @endif
-          </div>
-        @endif
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div class="flex items-center justify-end">
-          <flux:button variant="primary" type="submit" class="w-full" data-test="update-profile-button">
-            {{ __('Save') }}
-          </flux:button>
+          @endif
         </div>
+      @endif
+    </div>
 
-        <x-action-message class="me-3" on="profile-updated">
-          {{ __('Saved.') }}
-        </x-action-message>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center justify-end">
+        <flux:button variant="primary" type="submit" class="w-full" data-test="update-profile-button">
+          {{ __('Save') }}
+        </flux:button>
       </div>
-    </form>
 
-    <livewire:settings.delete-user-form />
-  </x-settings.layout>
+      <x-action-message class="me-3" on="profile-updated">
+        {{ __('Saved.') }}
+      </x-action-message>
+    </div>
+  </form>
+
+  <livewire:settings.delete-user-form />
 </section>

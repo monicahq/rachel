@@ -1,44 +1,49 @@
 <?php
 
 use App\Models\User;
+use App\Services\CreateAccount;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.guest')] class extends Component {
-  public string $name = '';
+new #[Layout('components.layouts.guest')] class extends Component
+{
+    public string $name = '';
 
-  public string $email = '';
+    public string $email = '';
 
-  public string $password = '';
+    public string $password = '';
 
-  public string $password_confirmation = '';
+    public string $password_confirmation = '';
 
-  /**
-   * Handle an incoming registration request.
-   */
-  public function register(): void
-  {
-    $validated = $this->validate([
-      'name' => ['required', 'string', 'max:255'],
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class, 'disposable_email'],
-      'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-    ]);
+    /**
+     * Handle an incoming registration request.
+     */
+    public function register(): void
+    {
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class, 'disposable_email'],
+            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-    $validated['password'] = Hash::make($validated['password']);
+        $user = new CreateAccount(
+            email: $validated['email'],
+            password: $validated['password'],
+            name: $validated['name'],
+        )->execute();
 
-    event(new Registered(($user = User::create($validated))));
+        event(new Registered($user));
 
-    Auth::login($user);
+        Auth::login($user);
 
-    Session::regenerate();
+        Session::regenerate();
 
-    $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
-  }
+        $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+    }
 }; ?>
 
 <div class="grid min-h-screen w-screen grid-cols-1 lg:grid-cols-2">
@@ -56,7 +61,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
     <div class="flex items-center gap-x-2">
       <a href="" class="group flex items-center gap-x-2 transition-transform ease-in-out">
         <div class="flex h-7 w-7 items-center justify-center transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-          <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
+          <x-app-logo-icon />
         </div>
       </a>
       <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-200">
