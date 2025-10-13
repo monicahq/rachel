@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Settings;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', fn (): View => view('welcome'))->name('home');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Volt::route('vaults', 'vaults.index')->name('vaults.index');
     Volt::route('vaults/{vault}', 'vaults.show')
@@ -24,7 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->missing(fn () => Redirect::route('vaults.index'));
 
     Route::redirect('settings', 'settings/profile');
-  
+
     Route::get('/settings', [Settings\SettingsController::class, 'index'])->name('settings.index');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');

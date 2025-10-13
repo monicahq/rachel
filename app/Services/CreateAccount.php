@@ -26,7 +26,7 @@ final class CreateAccount
 
     public function execute(): User
     {
-        DB::transaction(function () {
+        DB::transaction(function (): void {
             $this->create();
             $this->addFirstUser();
         });

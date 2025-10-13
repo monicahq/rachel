@@ -94,12 +94,12 @@ final class MonicaLocalize extends Command
             $this->info('Loading locale: '.$locale);
 
             $content = Storage::disk('lang')->get($locale.'.json');
-            $strings = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
+            $strings = json_decode((string) $content, true, flags: JSON_THROW_ON_ERROR);
             $this->translateStrings($locale, $strings);
         }
     }
 
-    private function translateStrings(string $locale, array $strings)
+    private function translateStrings(string $locale, array $strings): void
     {
         try {
             if ($locale !== 'en') {
@@ -130,7 +130,7 @@ final class MonicaLocalize extends Command
         }
     }
 
-    private function getTarget($locale)
+    private function getTarget(string $locale): string
     {
         // Google Translate knows Norwegian locale as 'no' instead of 'nn'
         return $locale === 'nn' ? 'no' : $locale;
@@ -154,16 +154,16 @@ final class MonicaLocalize extends Command
 
         // replace the placeholders with a generic string
         if ($match->count() > 0) {
-            $replacements = $match->map(fn ($item, $index) => "{{#$index}}");
-            $str = $str->replace($match->toArray(), $replacements->toArray());
+            $replacements = $match->map(fn ($item, $index): string => "{{#$index}}");
+            $str = $str->replace($match->toArray(), $replacements->all());
         }
 
         $translated = Str::of($this->googleTranslate->translate((string) $str));
 
         // replace the generic string with the placeholders
         if ($match->count() > 0) {
-            $translated = Str::of($translated)->replace('{{# ', '{{#')
-                ->replace($replacements->toArray(), $match->toArray());
+            $translated = $translated->replace('{{# ', '{{#')
+                ->replace($replacements->all(), $match->toArray());
         }
 
         $translated = $translated->replace(['\''], ['’']);
