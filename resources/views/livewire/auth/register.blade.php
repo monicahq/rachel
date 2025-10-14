@@ -7,18 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.guest')] class extends Component
 {
-    #[Validate(['required', 'string', 'max:255'])]
     public string $name = '';
 
-    #[Validate(['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class, 'disposable_email'])]
     public string $email = '';
 
-    #[Validate(['required', 'string', 'confirmed'])]
     public string $password = '';
 
     public string $password_confirmation = '';
@@ -28,10 +24,11 @@ new #[Layout('components.layouts.guest')] class extends Component
      */
     public function register(): void
     {
-        $this->addRulesFromOutside([
-            'password' => [Rules\Password::default()],
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class, 'disposable_email'],
+            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
-        $validated = $this->validate();
 
         $user = new CreateAccount(
             email: $validated['email'],
