@@ -4,6 +4,7 @@
   'type' => 'text',
   'label' => null,
   'optional' => false,
+  'handleErrors' => true,
 ])
 
 <div class="group/input relative block w-full space-y-2" data-input>
@@ -49,10 +50,12 @@
       </div>
     @endif
 
-    @error($id)
-      <flux:text color="red">
-        {{ $message }}
-      </flux:text>
-    @enderror
+    @if ($handleErrors)
+      @error($id)
+        <flux:text color="red">
+          {{ $message }}
+        </flux:text>
+      @enderror
+    @endif
   </div>
 </div>
