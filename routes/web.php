@@ -19,12 +19,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Volt::route('vaults', 'vaults.index')->name('vaults.index');
     Volt::route('vaults/{vault}', 'vaults.show')
         ->name('vaults.show')
-        ->missing(fn () => Redirect::route('vaults.index'));
+        ->missing(fn () => to_route('vaults.index'));
 
-    Route::redirect('settings', 'settings/profile');
-
-    Route::get('/settings', [Settings\SettingsController::class, 'index'])->name('settings.index');
-
+    Route::get('settings', [Settings\SettingsController::class, 'index'])->name('settings.index');
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('password.edit');
     Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
