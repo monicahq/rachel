@@ -19,7 +19,7 @@ trait ResolvesModelInAccount
     #[Override]
     public function resolveRouteBinding($value, $field = null)
     {
-        $field = $field ?? $this->getRouteKeyName();
+        $field ??= $this->getRouteKeyName();
 
         return $this->where([
             $field => $value,
