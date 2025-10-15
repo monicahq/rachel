@@ -4,6 +4,7 @@
   'type' => 'text',
   'label' => null,
   'optional' => false,
+  'handleErrors' => true,
 ])
 
 <div class="group/input relative block w-full space-y-2" data-input>
@@ -47,6 +48,14 @@
         <x-phosphor-eye-slash class="block h-5 w-5 [[data-viewable]>&]:hidden" />
         <x-phosphor-eye class="hidden h-5 w-5 [[data-viewable]>&]:block" />
       </div>
+    @endif
+
+    @if ($handleErrors)
+      @error($id)
+        <flux:text color="red">
+          {{ $message }}
+        </flux:text>
+      @enderror
     @endif
   </div>
 </div>

@@ -114,6 +114,19 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'testing' => [
+            'driver' => env('DB_TEST_DRIVER', 'sqlite'),
+            'host' => env('DB_TEST_HOST', 'localhost'),
+            'port' => env('DB_TEST_PORT', '3306'),
+            'database' => env('DB_TEST_DATABASE', ':memory:'),
+            'username' => env('DB_TEST_USERNAME'),
+            'password' => env('DB_TEST_PASSWORD'),
+            'charset' => env('DB_TEST_DRIVER') === 'pgsql' ? 'utf8' : 'utf8mb4',
+            'collation' => env('DB_TEST_DRIVER') === 'pgsql' ? '' : 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+        ],
+
     ],
 
     /*
