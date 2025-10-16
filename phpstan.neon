@@ -1,0 +1,17 @@
+parameters:
+    paths:
+        - app
+        - database/factories
+        - database/seeders
+        - routes
+
+    inferPrivatePropertyTypeFromConstructor: true
+    treatPhpDocTypesAsCertain: false
+
+    excludePaths:
+        - app/Providers/FortifyServiceProvider.php
+
+    level: 5
+    ignoreErrors:
+        # Global ignore of the "Access to an undefined property"
+        # - '#Access to an undefined property .*\.#'

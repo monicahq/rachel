@@ -34,7 +34,8 @@
       "prettier --write --ignore-unknown"
     ],
     "**/*.php": [
-      "vendor/bin/pint"
+      "vendor/bin/pint",
+      "vendor/bin/rector process"
     ]
   }
 }

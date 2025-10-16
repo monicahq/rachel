@@ -36,8 +36,8 @@ return [
      */
 
     'aliases' => [
-        Locale::French->value => 'fr-FR',
-        Locale::German->value => 'de-DE',
+        // Locale::French->value => 'fr-FR',
+        // Locale::German->value => 'de-DE',
     ],
 
     /*
