@@ -12,7 +12,7 @@
       {{ $label }}
 
       @if ($optional)
-        <span class="ml-1 inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">{{ __('optional') }}</span>
+        <span class="ml-1 inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset dark:bg-gray-950">{{ __('optional') }}</span>
       @endif
     </label>
   @endif
@@ -44,8 +44,8 @@
 
         observer.observe(input, { attributes: true, attributeFilter: ['type'] })
       ">
-        <x-phosphor-eye-slash class="block h-5 w-5 [[data-viewable]>&]:hidden" />
-        <x-phosphor-eye class="hidden h-5 w-5 [[data-viewable]>&]:block" />
+        <x-phosphor-eye-slash class="block h-5 w-5 dark:text-gray-300 [[data-viewable]>&]:hidden" />
+        <x-phosphor-eye class="hidden h-5 w-5 dark:text-gray-300 [[data-viewable]>&]:block" />
       </div>
     @endif
   </div>
