@@ -55,7 +55,7 @@
             {{ __('Settings') }}
           </a>
 
-          <div class="-mx-1 my-1 h-px bg-gray-200"></div>
+          <div class="-mx-1 my-1 h-px bg-gray-200 dark:bg-gray-800"></div>
 
           <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
