@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Settings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -20,7 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->name('vaults.show')
         ->missing(fn () => to_route('vaults.index'));
 
-    Route::get('settings', [Settings\SettingsController::class, 'index'])->name('settings.index');
+    Route::redirect('settings', 'settings/profile')->name('settings.index');
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('password.edit');
     Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');

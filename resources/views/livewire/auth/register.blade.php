@@ -104,7 +104,7 @@ new #[Layout('components.layouts.guest')] class extends Component
   </div>
 
   <!-- Right side - Image -->
-  <div class="relative hidden bg-gray-400 lg:block">
+  <div class="relative hidden bg-gray-400 lg:block dark:bg-gray-600">
     <!-- Quote Box -->
     <div class="absolute inset-0 flex items-center justify-center">bla</div>
   </div>

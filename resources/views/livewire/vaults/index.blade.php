@@ -8,36 +8,35 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
-    #[Locked]
-    public Collection $vaults;
+new class extends Component {
+  #[Locked]
+  public Collection $vaults;
 
-    #[Validate(['required', 'string', 'max:255'])]
-    public string $name = '';
+  #[Validate(['required', 'string', 'max:255'])]
+  public string $name = '';
 
-    #[Validate(['nullable', 'string', 'max:255'])]
-    public string $description = '';
+  #[Validate(['nullable', 'string', 'max:255'])]
+  public string $description = '';
 
-    public function mount(): void
-    {
-        $this->authorize('viewAny', Vault::class);
+  public function mount(): void
+  {
+    $this->authorize('viewAny', Vault::class);
 
-        $this->vaults = Auth::user()->account->vaults;
-    }
+    $this->vaults = Auth::user()->account->vaults;
+  }
 
-    public function create(): void
-    {
-        $validated = $this->validate();
+  public function create(): void
+  {
+    $validated = $this->validate();
 
-        $vault = (new CreateVault(account: Auth::user()->account, name: $validated['name'], description: $validated['description'] ?? null))->execute();
+    $vault = (new CreateVault(account: Auth::user()->account, name: $validated['name'], description: $validated['description'] ?? null))->execute();
 
-        $this->reset('name', 'description');
+    $this->reset('name', 'description');
 
-        $this->dispatch('vault-created');
+    $this->dispatch('vault-created');
 
-        $this->redirect(route('vaults.show', $vault));
-    }
+    $this->redirect(route('vaults.show', $vault));
+  }
 }; ?>
 
 <section class="w-full">

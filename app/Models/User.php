@@ -70,6 +70,21 @@ final class User extends Authenticatable
     }
 
     /**
+     * Bootstrap the model and its traits.
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        self::deleting(function (self $model): void {
+            // delete the account if it has no other users
+            if ($model->account->users()->count() === 1) {
+                $model->account->delete();
+            }
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
