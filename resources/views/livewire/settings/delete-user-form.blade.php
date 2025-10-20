@@ -16,7 +16,7 @@ new class extends Component {
       'password' => ['required', 'string', 'current_password'],
     ]);
 
-    tap(Auth::user(), $logout(...))->account->delete();
+    tap(Auth::user(), $logout(...))->delete();
 
     $this->redirect('/', navigate: true);
   }
