@@ -21,7 +21,7 @@ final class UserController extends Controller
      *
      * Get the authenticated user.
      */
-    public function user(Request $request)
+    public function user(Request $request): JsonResource
     {
         return new JsonResource($request->user());
     }
@@ -31,7 +31,7 @@ final class UserController extends Controller
      *
      * Get a specific user object.
      */
-    public function show(Request $request, User $user)
+    public function show(Request $request, User $user): JsonResource
     {
         return new JsonResource($user);
     }

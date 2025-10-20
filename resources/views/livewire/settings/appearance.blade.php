@@ -2,8 +2,9 @@
 
 use Livewire\Volt\Component;
 
-new class extends Component {
-  //
+new class extends Component
+{
+    //
 }; ?>
 
 <section class="w-full">
