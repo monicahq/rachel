@@ -41,6 +41,16 @@ final class Account extends Model
     }
 
     /**
+     * Get the vaults associated with the account.
+     *
+     * @return HasMany<Vault, $this>
+     */
+    public function vaults(): HasMany
+    {
+        return $this->hasMany(Vault::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
