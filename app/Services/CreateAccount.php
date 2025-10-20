@@ -43,8 +43,7 @@ final class CreateAccount
 
     private function addFirstUser(): void
     {
-        $this->user = User::create([
-            'account_id' => $this->account->id,
+        $this->user = $this->account->users()->create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
