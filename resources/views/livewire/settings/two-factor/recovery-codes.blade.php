@@ -4,45 +4,46 @@ use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
 
-new class extends Component {
-  #[Locked]
-  public array $recoveryCodes = [];
+new class extends Component
+{
+    #[Locked]
+    public array $recoveryCodes = [];
 
-  /**
-   * Mount the component.
-   */
-  public function mount(): void
-  {
-    $this->loadRecoveryCodes();
-  }
-
-  /**
-   * Generate new recovery codes for the user.
-   */
-  public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
-  {
-    $generateNewRecoveryCodes(auth()->user());
-
-    $this->loadRecoveryCodes();
-  }
-
-  /**
-   * Load the recovery codes for the user.
-   */
-  private function loadRecoveryCodes(): void
-  {
-    $user = auth()->user();
-
-    if ($user->hasEnabledTwoFactorAuthentication() && $user->two_factor_recovery_codes) {
-      try {
-        $this->recoveryCodes = json_decode(decrypt($user->two_factor_recovery_codes), true);
-      } catch (Exception) {
-        $this->addError('recoveryCodes', 'Failed to load recovery codes');
-
-        $this->recoveryCodes = [];
-      }
+    /**
+     * Mount the component.
+     */
+    public function mount(): void
+    {
+        $this->loadRecoveryCodes();
     }
-  }
+
+    /**
+     * Generate new recovery codes for the user.
+     */
+    public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
+    {
+        $generateNewRecoveryCodes(auth()->user());
+
+        $this->loadRecoveryCodes();
+    }
+
+    /**
+     * Load the recovery codes for the user.
+     */
+    private function loadRecoveryCodes(): void
+    {
+        $user = auth()->user();
+
+        if ($user->hasEnabledTwoFactorAuthentication() && $user->two_factor_recovery_codes) {
+            try {
+                $this->recoveryCodes = json_decode((string) decrypt($user->two_factor_recovery_codes), true);
+            } catch (Exception) {
+                $this->addError('recoveryCodes', 'Failed to load recovery codes');
+
+                $this->recoveryCodes = [];
+            }
+        }
+    }
 }; ?>
 
 <div class="space-y-6 rounded-xl border border-zinc-200 py-6 shadow-sm dark:border-white/10" wire:cloak x-data="{ showRecoveryCodes: false }">
@@ -80,13 +81,35 @@ new class extends Component {
         @enderror
 
         @if (filled($recoveryCodes))
-          <div class="grid gap-1 rounded-lg bg-zinc-100 p-4 font-mono text-sm dark:bg-white/5" role="list" aria-label="Recovery codes">
+          <div class="grid gap-1 rounded-lg bg-zinc-100 p-4 font-mono text-sm dark:bg-white/5 dark:text-gray-300" role="list" aria-label="{{ __('Recovery codes') }}">
             @foreach ($recoveryCodes as $code)
               <div role="listitem" class="select-text" wire:loading.class="opacity-50 animate-pulse">
                 {{ $code }}
               </div>
             @endforeach
           </div>
+          <div class="transition-colors" x-data="{
+            copied: false,
+            async copy() {
+              try {
+                await navigator.clipboard.writeText(
+                  '{{ Arr::join($recoveryCodes, ' ') }}',
+                )
+                this.copied = true
+                setTimeout(() => (this.copied = false), 1500)
+              } catch (e) {
+                console.warn('Could not copy to clipboard')
+              }
+            },
+          }">
+            <flux:button x-show="!copied" variant="filled" icon="document-duplicate" @click="copy">
+              {{ __('Copy recovery codes to clipboard') }}
+            </flux:button>
+            <flux:button x-show="copied" variant="primary" icon="check" color="green">
+              {{ __('Copied') }}
+            </flux:button>
+          </div>
+
           <flux:text variant="subtle" class="text-xs">
             {{ __('Each recovery code can be used once to access your account and will be removed after use. If you need more, click Regenerate Codes above.') }}
           </flux:text>
