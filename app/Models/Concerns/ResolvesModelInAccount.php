@@ -21,9 +21,11 @@ trait ResolvesModelInAccount
     {
         $field ??= $this->getRouteKeyName();
 
-        return $this->where([
-            $field => $value,
-            'account_id' => Auth::user()->account->id,
-        ])->firstOrFail();
+        return $this->where('account_id', Auth::user()->account->id)
+            ->where(fn ($query) => $query
+                ->where($field, $value)
+                ->orWhere('id', $value)
+            )
+            ->firstOrFail();
     }
 }
