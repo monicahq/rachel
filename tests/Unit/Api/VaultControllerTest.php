@@ -8,7 +8,7 @@ use Laravel\Sanctum\Sanctum;
 
 covers(App\Http\Controllers\Api\VaultController::class);
 
-describe('/api/vaults', function (): void {
+describe('api-vaults', function (): void {
     test('api get empty vaults', function (): void {
         Sanctum::actingAs(
             $user = User::factory()->create(),
@@ -152,7 +152,7 @@ describe('/api/vaults', function (): void {
             ->assertOk();
 
         $this->assertDatabaseMissing('vaults', [
-            'id' => $response->json('data.id'),
+            'id' => $vault->id,
         ]);
     });
 });
