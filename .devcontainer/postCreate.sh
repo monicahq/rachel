@@ -52,8 +52,10 @@ php_install() {
 
 js_install() {
     pushd $ROOT
-    npm install --immutable
-    npm run build
+    curl -fsSL https://bun.sh/install | bash
+    source $HOME/.bashrc
+    bun install
+    bun run build
     popd
 }
 
