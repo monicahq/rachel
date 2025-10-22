@@ -21,12 +21,12 @@ permissions:
 jobs:
   tests:
     name: Run tests
-    uses: monicahq/workflows/.github/workflows/laravel.yml@fix-coverage
+    uses: monicahq/workflows/.github/workflows/laravel.yml@v4
     with:
       php-versions: "['8.4']"
       connections: "['sqlite', 'mysql', 'pgsql']"
       default-php-version: '8.4'
-      default-connection: mysql
+      default-connection: sqlite
       project: monicahq_rachel
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

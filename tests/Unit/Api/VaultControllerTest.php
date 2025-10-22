@@ -6,12 +6,10 @@ use App\Models\User;
 use App\Models\Vault;
 use Laravel\Sanctum\Sanctum;
 
-covers(App\Http\Controllers\Api\VaultController::class);
-
 describe('api-vaults', function (): void {
     test('api get empty vaults', function (): void {
         Sanctum::actingAs(
-            $user = User::factory()->create(),
+            User::factory()->create(),
             ['read']
         );
 
@@ -72,7 +70,7 @@ describe('api-vaults', function (): void {
 
     test('can\'t read other account vault', function (): void {
         Sanctum::actingAs(
-            $user = User::factory()->create(),
+            User::factory()->create(),
             ['read']
         );
         $vault = Vault::factory()->create();
@@ -83,7 +81,7 @@ describe('api-vaults', function (): void {
 
     test('api create a vault', function (): void {
         Sanctum::actingAs(
-            $user = User::factory()->create(),
+            User::factory()->create(),
             ['write']
         );
 
@@ -103,11 +101,11 @@ describe('api-vaults', function (): void {
 
     test('api can\'t create a vault', function (): void {
         Sanctum::actingAs(
-            $user = User::factory()->create(),
+            User::factory()->create(),
             ['read']
         );
 
-        $response = $this->post('/api/vaults', [
+        $this->post('/api/vaults', [
             'name' => 'my vault',
             'description' => null,
         ])
@@ -148,7 +146,7 @@ describe('api-vaults', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->delete('/api/vaults/'.$vault->slug)
+        $this->delete('/api/vaults/'.$vault->slug)
             ->assertOk();
 
         $this->assertDatabaseMissing('vaults', [
