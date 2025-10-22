@@ -23,8 +23,6 @@ final class VaultController extends Controller
 
     /**
      * List all vaults.
-     *
-     * Get all the vaults in the account.
      */
     public function index(Request $request): JsonResource
     {
@@ -35,8 +33,6 @@ final class VaultController extends Controller
 
     /**
      * Retrieve a vault.
-     *
-     * Get a specific user object.
      */
     public function show(Request $request, Vault $vault): JsonResource
     {
