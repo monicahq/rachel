@@ -11,6 +11,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Knuckles\Scribe\Attributes\Response;
 use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 
+/**
+ * @group Account management
+ *
+ * @subgroup Users
+ */
 final class UserController extends Controller
 {
     public function __construct()

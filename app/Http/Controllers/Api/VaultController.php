@@ -16,6 +16,11 @@ use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Response;
 use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 
+/**
+ * @group Vault management
+ *
+ * @subgroup Vaults
+ */
 final class VaultController extends Controller
 {
     public function __construct()
