@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Override;
 
 final class User extends Authenticatable
 {
@@ -89,6 +90,7 @@ final class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    #[Override]
     protected function casts(): array
     {
         return [
