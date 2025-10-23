@@ -9,8 +9,12 @@ use App\Models\Vault;
 use App\Services\CreateVault;
 use App\Services\DestroyVault;
 use App\Services\UpdateVault;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Knuckles\Scribe\Attributes\BodyParam;
+use Knuckles\Scribe\Attributes\Response;
+use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 
 final class VaultController extends Controller
 {
@@ -24,6 +28,7 @@ final class VaultController extends Controller
     /**
      * List all vaults.
      */
+    #[ResponseFromApiResource(JsonResource::class, Vault::class, collection: true)]
     public function index(Request $request): JsonResource
     {
         $vaults = $request->user()->account->vaults;
@@ -34,6 +39,7 @@ final class VaultController extends Controller
     /**
      * Retrieve a vault.
      */
+    #[ResponseFromApiResource(JsonResource::class, Vault::class)]
     public function show(Request $request, Vault $vault): JsonResource
     {
         return new JsonResource($vault);
@@ -42,6 +48,9 @@ final class VaultController extends Controller
     /**
      * Create a vault.
      */
+    #[ResponseFromApiResource(JsonResource::class, Vault::class, status: 201)]
+    #[BodyParam('name', description: 'The name of the vault. Max 255 characters.')]
+    #[BodyParam('description', description: 'The description of the vault. Max 65535 characters.', required: false)]
     public function store(Request $request): JsonResource
     {
         $validated = $this->validate($request, [
@@ -61,6 +70,9 @@ final class VaultController extends Controller
     /**
      * Update a vault.
      */
+    #[ResponseFromApiResource(JsonResource::class, Vault::class)]
+    #[BodyParam('name', description: 'The name of the vault. Max 255 characters.')]
+    #[BodyParam('description', description: 'The description of the vault. Max 65535 characters.', required: false)]
     public function update(Request $request, Vault $vault): JsonResource
     {
         $validated = $this->validate($request, [
@@ -80,12 +92,13 @@ final class VaultController extends Controller
     /**
      * Destroy a vault.
      */
-    public function destroy(Request $request, Vault $vault): JsonResource
+    #[Response(status: 204)]
+    public function destroy(Request $request, Vault $vault): JsonResponse
     {
         (new DestroyVault(
             $vault
         ))->execute();
 
-        return new JsonResource([]);
+        return JsonResponse::fromJsonString(status: 204);
     }
 }

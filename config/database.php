@@ -44,6 +44,12 @@ return [
             'synchronous' => null,
         ],
 
+        'docs' => [
+            'driver' => 'sqlite',
+            'database' => env('DB_DOC_DATABASE', database_path('database-doc.sqlite')),
+            'foreign_key_constraints' => true,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
