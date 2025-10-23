@@ -99,6 +99,6 @@ final class VaultController extends Controller
             $vault
         ))->execute();
 
-        return JsonResponse::fromJsonString(status: 204);
+        return new JsonResponse(status: 204);
     }
 }
