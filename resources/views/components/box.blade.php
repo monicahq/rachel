@@ -1,11 +1,12 @@
 @props([
   'title' => null,
   'padding' => 'p-4',
+  'description' => null,
 ])
 
 <div class="flex flex-col gap-2">
   @if ($title)
-    <h2 class="font-semi-bold mb-1 text-lg">{{ $title }}</h2>
+    <h2 class="font-semi-bold mb-1 text-lg dark:text-white">{{ $title }}</h2>
   @endif
 
   @isset($description)

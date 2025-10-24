@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Instances;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -27,6 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Volt::route('settings/two-factor', 'settings.two-factor')
         ->middleware(['password.confirm'])
         ->name('two-factor.show');
+
+    Route::get('/instance', [Instances\InstancesController::class, 'index'])->name('instances.index');
+    Route::get('/instance/accounts/1', [Instances\InstancesAccountsController::class, 'show'])->name('instances.accounts.show');
 });
 
 require __DIR__.'/auth.php';

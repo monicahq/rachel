@@ -1,7 +1,6 @@
 <header {{ $attributes->class(['flex w-full max-w-[1920px] items-center px-2 sm:pr-4 sm:pl-9 dark:bg-[#151B23]']) }}>
   <!-- normal desktop header -->
   <nav class="hidden flex-1 items-center gap-3 pt-3 pb-3 sm:flex" aria-label="Main navigation">
-    <!-- vault selector -->
     <div class="flex items-center gap-4">
       <a href="{{ route('dashboard') }}" class="group h-7 w-7 gap-x-2 transition-transform ease-in-out">
         <div class="flex h-7 w-7 items-center justify-center transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
@@ -10,31 +9,12 @@
       </a>
 
       <div class="flex items-center gap-2">
-        <span class="font-medium dark:border-gray-700 dark:text-white">Nom du vault</span>
-        <div class="flex items-center gap-2 rounded-md border border-transparent px-0 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:text-white hover:dark:border-gray-500 hover:dark:bg-[#202830]">
-          <x-phosphor-caret-up-down class="size-4 text-gray-600 transition-transform duration-150" />
-        </div>
+        <span class="font-medium dark:border-gray-700 dark:text-white">Administration of the instance</span>
       </div>
     </div>
 
-    <!-- menu -->
-    <div class="-ml-4 flex-1">
-      <div class="flex items-center justify-center">
-        <div class="flex space-x-1 rounded-lg border border-gray-200 p-0.5 dark:border-0 dark:ring-1 dark:ring-gray-700">
-          <!-- dashboard -->
-          <x-header-link icon="house-line-fill" href="{{ route('dashboard') }}" selected>{{ __('Dashboard') }}</x-header-link>
-
-          <!-- search -->
-          <x-header-link icon="magnifying-glass-fill" href="/">{{ __('Search') }}</x-header-link>
-
-          <!-- contacts -->
-          <x-header-link icon="users-three-fill" href="/">{{ __('Contacts') }}</x-header-link>
-
-          <!-- me -->
-          <x-header-link icon="binoculars-fill" href="/">{{ __('Me') }}</x-header-link>
-        </div>
-      </div>
-    </div>
+    <!-- separator -->
+    <div class="-ml-4 flex-1"></div>
 
     <!-- user menu -->
     @include('components.layouts.user-menu')
