@@ -39,13 +39,7 @@ new class extends Component {
   }
 }; ?>
 
-<section class="w-full">
-  @foreach ($vaults as $vault)
-    <div wire:key="vault-{{ $vault->id }}">
-      <x-link :href="route('vaults.show', $vault)" wire:navigate>{{ $vault->name }}</x-link>
-    </div>
-  @endforeach
-
+<div>
   <form method="POST" wire:submit="create" class="mt-6 space-y-6">
     <x-input wire:model="name" id="name" :label="__('Vault Name')" type="text" required />
     <x-input wire:model="description" id="description" :label="__('Vault Description')" type="text" :optional="true" />
@@ -62,4 +56,22 @@ new class extends Component {
       </x-action-message>
     </div>
   </form>
-</section>
+
+  <div class="mx-auto max-w-lg px-2 py-2 sm:px-6 sm:py-6 lg:px-8">
+    <section class="w-full">
+      @foreach ($vaults as $vault)
+        <div wire:key="vault-{{ $vault->id }}">
+          <x-link :href="route('vaults.show', $vault)" wire:navigate>{{ $vault->name }}</x-link>
+        </div>
+      @endforeach
+
+      <div class="grid grid-cols-1">
+        @foreach ($vaults as $vault)
+          <x-box class="h-40">
+            <div class="flex h-full items-center justify-center text-center">{{ $vault->name }}</div>
+          </x-box>
+        @endforeach
+      </div>
+    </section>
+  </div>
+</div>
