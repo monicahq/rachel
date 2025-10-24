@@ -63,3 +63,9 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+@layer utilities {
+  [x-cloak] {
+    display: none !important;
+  }
+}
