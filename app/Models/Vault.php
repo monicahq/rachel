@@ -12,7 +12,9 @@ use Override;
 
 final class Vault extends Model
 {
+    /** @use HasFactory<\Database\Factories\VaultFactory> */
     use HasFactory;
+
     use HasUuids;
     use ResolvesModelInAccount;
 
