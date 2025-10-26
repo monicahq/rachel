@@ -3,29 +3,15 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-test('two factor challenge redirects to login when not authenticated', function () {
-    if (! Features::canManageTwoFactorAuthentication()) {
-        $this->markTestSkipped('Two-factor authentication is not enabled.');
-    }
-
+test('two factor challenge redirects to login when not authenticated', function (): void {
     $response = $this->get(route('two-factor.login'));
 
     $response->assertRedirect(route('login'));
 });
 
-test('two factor challenge can be rendered', function () {
-    if (! Features::canManageTwoFactorAuthentication()) {
-        $this->markTestSkipped('Two-factor authentication is not enabled.');
-    }
-
-    Features::twoFactorAuthentication([
-        'confirm' => true,
-        'confirmPassword' => true,
-    ]);
-
+test('two factor challenge can be rendered', function (): void {
     $user = User::factory()->create();
 
     $user->forceFill([
