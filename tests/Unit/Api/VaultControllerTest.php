@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Models\Vault;
-use Laravel\Sanctum\Sanctum;
+use Laravel\Passport\Passport;
 
 describe('api-vaults', function (): void {
     test('api get empty vaults', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             User::factory()->create(),
             ['read']
         );
@@ -21,7 +21,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api get all vaults', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             $user = User::factory()->create(),
             ['read']
         );
@@ -37,7 +37,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api get a vault', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             $user = User::factory()->create(),
             ['read']
         );
@@ -53,7 +53,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api get a vault by id', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             $user = User::factory()->create(),
             ['read']
         );
@@ -69,7 +69,7 @@ describe('api-vaults', function (): void {
     });
 
     test('can\'t read other account vault', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             User::factory()->create(),
             ['read']
         );
@@ -80,7 +80,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api create a vault', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             User::factory()->create(),
             ['write']
         );
@@ -100,7 +100,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api can\'t create a vault', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             User::factory()->create(),
             ['read']
         );
@@ -113,7 +113,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api update a vault', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             $user = User::factory()->create(),
             ['write']
         );
@@ -138,7 +138,7 @@ describe('api-vaults', function (): void {
     });
 
     test('api delete a vault', function (): void {
-        Sanctum::actingAs(
+        Passport::actingAs(
             $user = User::factory()->create(),
             ['write']
         );

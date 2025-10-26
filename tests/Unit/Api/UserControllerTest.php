@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
+use Laravel\Passport\Passport;
 
-test('api current user get', function () {
-    Sanctum::actingAs(
+test('api current user get', function (): void {
+    Passport::actingAs(
         $user = User::factory()->create(),
         ['read']
     );
@@ -18,8 +18,8 @@ test('api current user get', function () {
         ->toBe($user->id);
 });
 
-test('api user get', function () {
-    Sanctum::actingAs(
+test('api user get', function (): void {
+    Passport::actingAs(
         $user = User::factory()->create(),
         ['read']
     );

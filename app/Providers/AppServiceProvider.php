@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +30,14 @@ final class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict(! app()->isProduction());
 
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by($request->user()?->id ?: $request->ip()));
+
+        Passport::tokensCan([
+            'read' => 'Read data',
+            'write' => 'Write data',
+        ]);
+
+        Passport::defaultScopes([
+            'read',
+        ]);
     }
 }
