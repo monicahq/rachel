@@ -25,4 +25,9 @@ test('sanctum token is created', function (): void {
         ->assertCreated();
 
     expect($response->json())->toBeString();
+
+    $this->assertDatabaseHas('personal_access_tokens', [
+        'name' => 'test-device',
+        'tokenable_id' => $user->id,
+    ]);
 });

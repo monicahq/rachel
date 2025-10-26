@@ -29,8 +29,11 @@ Route::middleware('auth')->group(function (): void {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    Route::post('sanctum/token', TokenController::class)
+    Volt::route('token', 'auth.token')
         ->middleware(['password.confirm']);
+    Route::post('token', TokenController::class)
+        ->middleware(['password.confirm'])
+        ->name('user.token');
 });
 
 Route::post('logout', App\Livewire\Actions\Logout::class)
