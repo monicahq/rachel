@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function (): void {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    Volt::route('token', 'auth.token')
+    Volt::route('token/authorize', 'auth.token-authorize')
         ->middleware(['password.confirm']);
     Route::post('token', TokenController::class)
         ->middleware(['password.confirm'])
