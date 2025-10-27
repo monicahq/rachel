@@ -39,5 +39,9 @@ final class AppServiceProvider extends ServiceProvider
         Passport::defaultScopes([
             'read',
         ]);
+
+        Passport::authorizationView(
+            view: 'auth.authorization',
+        );
     }
 }
