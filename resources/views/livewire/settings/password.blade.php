@@ -41,21 +41,30 @@ new #[Layout('components.layouts.app.settings')] class extends Component {
 }; ?>
 
 <section class="w-full">
-  <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-    <x-input wire:model="current_password" id="current_password" :label="__('Current password')" type="password" required autocomplete="current-password" />
-    <x-input wire:model="password" id="password" :label="__('New password')" type="password" required autocomplete="new-password" />
-    <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm Password')" type="password" required autocomplete="new-password" />
+  <x-box>
+    <x-slot:title>
+      {{ __('Password management') }}
+    </x-slot>
 
-    <div class="flex items-center gap-4">
-      <div class="flex items-center justify-end">
-        <flux:button variant="primary" type="submit" class="w-full" data-test="update-password-button">
-          {{ __('Save') }}
-        </flux:button>
+    <x-slot:description>
+      {{ __('Update your password to secure your account.') }}
+    </x-slot>
+    <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
+      <x-input wire:model="current_password" id="current_password" :label="__('Current password')" type="password" required autocomplete="current-password" />
+      <x-input wire:model="password" id="password" :label="__('New password')" type="password" required autocomplete="new-password" />
+      <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm Password')" type="password" required autocomplete="new-password" />
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center justify-end">
+          <flux:button variant="primary" type="submit" class="w-full" data-test="update-password-button">
+            {{ __('Save') }}
+          </flux:button>
+        </div>
+
+        <x-action-message class="me-3" on="password-updated">
+          {{ __('Saved.') }}
+        </x-action-message>
       </div>
-
-      <x-action-message class="me-3" on="password-updated">
-        {{ __('Saved.') }}
-      </x-action-message>
-    </div>
-  </form>
+    </form>
+  </x-box>
 </section>
