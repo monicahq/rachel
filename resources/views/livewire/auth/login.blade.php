@@ -48,6 +48,8 @@ new #[Layout('components.layouts.guest')] class extends Component
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
+        session()->passwordConfirmed();
+
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
