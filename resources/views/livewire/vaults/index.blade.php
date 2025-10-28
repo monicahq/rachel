@@ -45,7 +45,7 @@ new class extends Component {
       <!-- vaults list -->
       <div class="grid grid-cols-1 gap-10">
         @foreach ($vaults as $vault)
-          <a href="{{ route('vaults.show', $vault) }}">
+          <x-link :href="route('vaults.show', $vault)">
             <x-box class="group h-40 hover:bg-[#E4EEF3] hover:ring-1 hover:ring-gray-200 hover:dark:bg-[#202830] hover:dark:ring-gray-700" padding="p-0">
               <div class="relative h-full w-full overflow-hidden">
                 <!-- Vault name -->
@@ -103,7 +103,7 @@ new class extends Component {
                 </div>
               </div>
             </x-box>
-          </a>
+          </x-link>
         @endforeach
       </div>
 
