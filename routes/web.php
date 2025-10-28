@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->missing(fn () => to_route('vaults.index'));
 
     Route::redirect('settings', 'settings/profile')->name('settings.index');
+    Volt::route('settings/api-token-manager', 'settings.api-token-manager')->name('settings.api-token-manager');
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('password.edit');
     Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
