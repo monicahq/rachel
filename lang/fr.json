@@ -22,6 +22,7 @@
   "Already have an account?": "Vous avez déjà un compte ?",
   "Already Reported": "Déjà rapporté",
   "API Token": "Jeton API",
+  "API token manager": "Gestion des jetons API",
   "API Token Permissions": "Autorisations des jetons API",
   "API Tokens": "Jetons API",
   "API tokens allow third-party services to authenticate with our application on your behalf.": "Les jetons API permettent aux services tiers de s’authentifier auprès de notre application en votre nom.",

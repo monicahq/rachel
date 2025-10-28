@@ -8,8 +8,8 @@
     <x-slot name="description">{{ $description }}</x-slot>
   </x-section-title>
 
-  <div class="mt-5 md:col-span-2 md:mt-0">
-    <form wire:submit="{{ $submit }}" class="my-6 w-full space-y-6">
+  <div class="md:col-span-2 md:mt-0">
+    <form wire:submit="{{ $submit }}" class="w-full space-y-6">
       {{ $form }}
 
       @if (isset($actions))
