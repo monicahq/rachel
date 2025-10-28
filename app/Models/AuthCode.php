@@ -27,6 +27,15 @@ final class AuthCode extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
+
+    /**
      * Get the user record associated with the auth code.
      *
      * @return BelongsTo<User, $this>
@@ -34,17 +43,5 @@ final class AuthCode extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'expires_at' => 'datetime',
-        ];
     }
 }
