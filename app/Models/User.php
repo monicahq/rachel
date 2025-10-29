@@ -84,7 +84,7 @@ final class User extends Authenticatable implements HasLocalePreference
     /**
      * Get the preferred locale of the entity.
      *
-     * @return string|null
+     * @return string
      */
     public function preferredLocale()
     {
