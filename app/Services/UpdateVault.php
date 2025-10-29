@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\Vault;
 use Illuminate\Support\Str;
 
@@ -13,9 +14,10 @@ use Illuminate\Support\Str;
 final readonly class UpdateVault
 {
     public function __construct(
-        private Vault $vault,
-        private string $name,
-        private ?string $description = null,
+        public Vault $vault,
+        public User $user,
+        public string $name,
+        public ?string $description = null,
     ) {}
 
     public function execute(): Vault
@@ -29,7 +31,7 @@ final readonly class UpdateVault
     {
         $this->vault->update([
             'name' => $this->name,
-            'slug' => Str::slug($this->name /* , language: Auth::user()->locale */),
+            'slug' => Str::slug($this->name, language: $this->user->locale),
             'description' => $this->description,
         ]);
     }

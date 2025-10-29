@@ -50,9 +50,9 @@ final class VaultController extends Controller
         ]);
 
         $vault = (new CreateVault(
-            $request->user()->account,
-            $validated['name'],
-            $validated['description'],
+            user: $request->user(),
+            name: $validated['name'],
+            description: $validated['description'],
         ))->execute();
 
         return new JsonResource($vault);
@@ -69,9 +69,10 @@ final class VaultController extends Controller
         ]);
 
         $vault = (new UpdateVault(
-            $vault,
-            $validated['name'],
-            $validated['description'],
+            vault: $vault,
+            user: $request->user(),
+            name: $validated['name'],
+            description: $validated['description'],
         ))->execute();
 
         return new JsonResource($vault);
@@ -83,7 +84,7 @@ final class VaultController extends Controller
     public function destroy(Request $request, Vault $vault): JsonResource
     {
         (new DestroyVault(
-            $vault
+            vault: $vault
         ))->execute();
 
         return new JsonResource([]);

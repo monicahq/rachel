@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Translation\MessageSelector;
+use LaravelLang\NativeLocaleNames\LocaleNames;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -49,6 +50,7 @@ final class MonicaLocalize extends Command
         $locales = $langs = config('localizer.supported_locales');
 
         $this->updateLocales($locales);
+        $this->createLocalNames($locales);
 
         array_shift($langs);
         $this->call('localize', [
@@ -217,6 +219,22 @@ final class MonicaLocalize extends Command
             $pagination = Str::replace(['&laquo; ', ' &raquo;'], ['❮ ', ' ❯'], $pagination);
 
             Storage::disk('lang')->put($locale.DIRECTORY_SEPARATOR.'pagination.php', $pagination);
+        }
+    }
+
+    private function createLocalNames(array $locales): void
+    {
+        foreach ($locales as $locale) {
+            $name = LocaleNames::get($locale)[$locale];
+            Storage::disk('lang')
+                ->put($locale.DIRECTORY_SEPARATOR.'locale.php', "<?php
+
+declare(strict_types=1);
+
+return [
+    'name' => '$name',
+];
+");
         }
     }
 }

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Models\Account;
+use App\Models\User;
 use App\Models\Vault;
 use App\Services\CreateVault;
 
 it('can create a vault', function (): void {
-    $account = Account::factory()->create();
+    $user = User::factory()->create();
 
     $vault = (new CreateVault(
-        account: $account,
+        user: $user,
         name: 'New Vault',
     ))->execute();
 
@@ -19,15 +19,15 @@ it('can create a vault', function (): void {
     $this->assertDatabaseHas('vaults', [
         'id' => $vault->id,
         'name' => 'New Vault',
-        'account_id' => $account->id,
+        'account_id' => $user->account->id,
     ]);
 });
 
 it('can create a vault with description', function (): void {
-    $account = Account::factory()->create();
+    $user = User::factory()->create();
 
     $vault = (new CreateVault(
-        account: $account,
+        user: $user,
         name: 'New Vault',
         description: 'Default one',
     ))->execute();
@@ -38,7 +38,7 @@ it('can create a vault with description', function (): void {
         'id' => $vault->id,
         'name' => 'New Vault',
         'slug' => 'new-vault',
-        'account_id' => $account->id,
+        'account_id' => $user->account->id,
         'description' => 'Default one',
     ]);
 });

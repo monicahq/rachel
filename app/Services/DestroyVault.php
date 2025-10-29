@@ -12,7 +12,7 @@ use App\Models\Vault;
 final readonly class DestroyVault
 {
     public function __construct(
-        private Vault $vault,
+        public Vault $vault,
     ) {}
 
     public function execute(): void
