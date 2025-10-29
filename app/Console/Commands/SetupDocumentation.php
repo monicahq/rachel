@@ -64,8 +64,8 @@ final class SetupDocumentation extends Command
         $verbosity = $this->getVerbosity();
         $artisan = base_path('artisan');
 
-        passthru(PHP_BINARY." $artisan migrate:fresh --force -q");
-        passthru(PHP_BINARY." $artisan scribe:generate --force$verbosity");
+        passthru("$artisan migrate:fresh --force -q");
+        passthru("$artisan scribe:generate --force$verbosity");
 
         if ($this->option('clean') && File::exists($database)) {
             File::delete($database);
