@@ -13,6 +13,8 @@ new #[Layout('components.layouts.app.settings')] class extends Component
 
     public string $email = '';
 
+    public string $locale = '';
+
     /**
      * Mount the component.
      */
@@ -20,6 +22,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->locale = Auth::user()->locale;
     }
 
     /**
@@ -31,8 +34,8 @@ new #[Layout('components.layouts.app.settings')] class extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'locale' => ['required', 'string', Rule::in(config('localizer.supported_locales'))],
         ]);
 
         $user->fill($validated);
@@ -99,6 +102,12 @@ new #[Layout('components.layouts.app.settings')] class extends Component
           </div>
         @endif
       </div>
+
+      <flux:select wire:model="locale" id="locale" :label="__('Language')" required>
+        @foreach (config('localizer.supported_locales') as $local)
+          <flux:select.option :value="$local">{{ __('locale.name', locale: $local) }}</flux:select.option>
+        @endforeach
+      </flux:select>
 
       <div class="flex items-center gap-4">
         <div class="flex items-center justify-end">
