@@ -7,38 +7,37 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component
-{
-    public string $current_password = '';
+new #[Layout('components.layouts.app.settings')] class extends Component {
+  public string $current_password = '';
 
-    public string $password = '';
+  public string $password = '';
 
-    public string $password_confirmation = '';
+  public string $password_confirmation = '';
 
-    /**
-     * Update the password for the currently authenticated user.
-     */
-    public function updatePassword(): void
-    {
-        try {
-            $validated = $this->validate([
-                'current_password' => ['required', 'string', 'current_password'],
-                'password' => ['required', 'string', Password::defaults(), 'confirmed'],
-            ]);
-        } catch (ValidationException $e) {
-            $this->reset('current_password', 'password', 'password_confirmation');
+  /**
+   * Update the password for the currently authenticated user.
+   */
+  public function updatePassword(): void
+  {
+    try {
+      $validated = $this->validate([
+        'current_password' => ['required', 'string', 'current_password'],
+        'password' => ['required', 'string', Password::defaults(), 'confirmed'],
+      ]);
+    } catch (ValidationException $e) {
+      $this->reset('current_password', 'password', 'password_confirmation');
 
-            throw $e;
-        }
-
-        Auth::user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $this->reset('current_password', 'password', 'password_confirmation');
-
-        $this->dispatch('password-updated');
+      throw $e;
     }
+
+    Auth::user()->update([
+      'password' => Hash::make($validated['password']),
+    ]);
+
+    $this->reset('current_password', 'password', 'password_confirmation');
+
+    $this->dispatch('password-updated');
+  }
 }; ?>
 
 <section class="w-full">
@@ -50,7 +49,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
     <x-slot:description>
       {{ __('Update your password to secure your account.') }}
     </x-slot>
-    <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
+    <form method="POST" wire:submit="updatePassword" class="space-y-6">
       <x-input wire:model="current_password" id="current_password" :label="__('Current password')" type="password" required autocomplete="current-password" />
       <x-input wire:model="password" id="password" :label="__('New password')" type="password" required autocomplete="new-password" />
       <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm Password')" type="password" required autocomplete="new-password" />
