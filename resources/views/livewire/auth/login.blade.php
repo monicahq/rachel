@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Features;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
@@ -33,7 +32,7 @@ new #[Layout('components.layouts.guest')] class extends Component
 
         $user = $this->validateCredentials();
 
-        if (Features::canManageTwoFactorAuthentication() && $user->hasEnabledTwoFactorAuthentication()) {
+        if ($user->hasEnabledTwoFactorAuthentication()) {
             Session::put([
                 'login.id' => $user->getKey(),
                 'login.remember' => $this->remember,
@@ -48,6 +47,8 @@ new #[Layout('components.layouts.guest')] class extends Component
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
+
+        session()->passwordConfirmed();
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
