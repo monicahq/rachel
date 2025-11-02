@@ -20,7 +20,7 @@ final class CreateAccount
 
     public function __construct(
         public string $email,
-        public string $password,
+        public ?string $password,
         public string $name,
     ) {}
 
@@ -46,7 +46,7 @@ final class CreateAccount
         $this->user = $this->account->users()->create([
             'name' => $this->name,
             'email' => $this->email,
-            'password' => Hash::make($this->password),
+            'password' => $this->password !== null ? Hash::make($this->password) : null,
         ]);
     }
 }

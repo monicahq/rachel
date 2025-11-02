@@ -18,6 +18,6 @@ return [
     |
     */
 
-    'proxies' => env('APP_TRUSTED_PROXIES', null),
+    'proxies' => env('APP_TRUSTED_PROXIES'),
 
 ];

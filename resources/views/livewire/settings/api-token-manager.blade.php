@@ -8,180 +8,181 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component {
-  /**
-   * The available permissions.
-   */
-  public array $permissions;
+new #[Layout('components.layouts.app.settings')] class extends Component
+{
+    /**
+     * The available permissions.
+     */
+    public array $permissions;
 
-  /**
-   * The current user.
-   */
-  #[Locked]
-  public User $user;
+    /**
+     * The current user.
+     */
+    #[Locked]
+    public User $user;
 
-  /**
-   * The create API token form state.
-   */
-  public array $createApiTokenForm = [
-    'name' => '',
-    'permissions' => [],
-  ];
-
-  /**
-   * Indicates if the plain text token is being displayed to the user.
-   */
-  public bool $displayingToken = false;
-
-  /**
-   * The plain text token value.
-   */
-  public string $plainTextToken = '';
-
-  /**
-   * Indicates if the user is currently managing an API token's permissions.
-   */
-  public bool $managingApiTokenPermissions = false;
-
-  /**
-   * The token that is currently having its permissions managed.
-   */
-  public ?PersonalAccessToken $managingPermissionsFor = null;
-
-  /**
-   * The update API token form state.
-   */
-  public array $updateApiTokenForm = [
-    'permissions' => [],
-  ];
-
-  /**
-   * Indicates if the application is confirming if an API token should be deleted.
-   */
-  public bool $confirmingApiTokenDeletion = false;
-
-  /**
-   * The ID of the API token being deleted.
-   */
-  public ?int $apiTokenIdBeingDeleted = null;
-
-  /**
-   * The default permissions.
-   */
-  private static array $DEFAULT_PERMISSION = ['read'];
-
-  /**
-   * Mount the component.
-   */
-  public function mount(): void
-  {
-    $this->user = Auth::user();
-    $this->permissions = [
-      'read' => __('Read'),
-      'write' => __('Write'),
+    /**
+     * The create API token form state.
+     */
+    public array $createApiTokenForm = [
+        'name' => '',
+        'permissions' => [],
     ];
-    $this->resetForm();
-  }
 
-  /**
-   * Create a new API token.
-   */
-  public function createApiToken(): void
-  {
-    $this->resetErrorBag();
+    /**
+     * Indicates if the plain text token is being displayed to the user.
+     */
+    public bool $displayingToken = false;
 
-    $this->validate([
-      'createApiTokenForm.name' => ['required', 'string', 'max:255'],
-    ]);
+    /**
+     * The plain text token value.
+     */
+    public string $plainTextToken = '';
 
-    $this->displayTokenValue($this->user->createToken($this->createApiTokenForm['name'], $this->validPermissions($this->createApiTokenForm['permissions'])));
+    /**
+     * Indicates if the user is currently managing an API token's permissions.
+     */
+    public bool $managingApiTokenPermissions = false;
 
-    $this->resetForm();
+    /**
+     * The token that is currently having its permissions managed.
+     */
+    public ?PersonalAccessToken $managingPermissionsFor = null;
 
-    $this->dispatch('created');
-  }
+    /**
+     * The update API token form state.
+     */
+    public array $updateApiTokenForm = [
+        'permissions' => [],
+    ];
 
-  /**
-   * Allow the given token's permissions to be managed.
-   */
-  public function manageApiTokenPermissions(int $tokenId): void
-  {
-    $this->managingApiTokenPermissions = true;
+    /**
+     * Indicates if the application is confirming if an API token should be deleted.
+     */
+    public bool $confirmingApiTokenDeletion = false;
 
-    $this->managingPermissionsFor = $this->user
-      ->tokens()
-      ->where('id', $tokenId)
-      ->firstOrFail();
+    /**
+     * The ID of the API token being deleted.
+     */
+    public ?int $apiTokenIdBeingDeleted = null;
 
-    $this->updateApiTokenForm['permissions'] = $this->managingPermissionsFor->abilities;
-  }
+    /**
+     * The default permissions.
+     */
+    private static array $DEFAULT_PERMISSION = ['read'];
 
-  /**
-   * Update the API token's permissions.
-   */
-  public function updateApiToken(): void
-  {
-    $this->managingPermissionsFor
-      ->forceFill([
-        'abilities' => $this->validPermissions($this->updateApiTokenForm['permissions']),
-      ])
-      ->save();
+    /**
+     * Mount the component.
+     */
+    public function mount(): void
+    {
+        $this->user = Auth::user();
+        $this->permissions = [
+            'read' => __('Read'),
+            'write' => __('Write'),
+        ];
+        $this->resetForm();
+    }
 
-    $this->resetForm();
+    /**
+     * Create a new API token.
+     */
+    public function createApiToken(): void
+    {
+        $this->resetErrorBag();
 
-    $this->managingApiTokenPermissions = false;
-  }
+        $this->validate([
+            'createApiTokenForm.name' => ['required', 'string', 'max:255'],
+        ]);
 
-  /**
-   * Confirm that the given API token should be deleted.
-   */
-  public function confirmApiTokenDeletion(int $tokenId): void
-  {
-    $this->confirmingApiTokenDeletion = true;
+        $this->displayTokenValue($this->user->createToken($this->createApiTokenForm['name'], $this->validPermissions($this->createApiTokenForm['permissions'])));
 
-    $this->apiTokenIdBeingDeleted = $tokenId;
-  }
+        $this->resetForm();
 
-  /**
-   * Delete the API token.
-   */
-  public function deleteApiToken(): void
-  {
-    $this->user
-      ->tokens()
-      ->where('id', $this->apiTokenIdBeingDeleted)
-      ->first()
-      ->delete();
+        $this->dispatch('created');
+    }
 
-    $this->user->load('tokens');
+    /**
+     * Allow the given token's permissions to be managed.
+     */
+    public function manageApiTokenPermissions(int $tokenId): void
+    {
+        $this->managingApiTokenPermissions = true;
 
-    $this->confirmingApiTokenDeletion = false;
+        $this->managingPermissionsFor = $this->user
+            ->tokens()
+            ->where('id', $tokenId)
+            ->firstOrFail();
 
-    $this->managingPermissionsFor = null;
-  }
+        $this->updateApiTokenForm['permissions'] = $this->managingPermissionsFor->abilities;
+    }
 
-  protected function resetForm(): void
-  {
-    $this->createApiTokenForm['name'] = '';
-    $this->createApiTokenForm['permissions'] = self::$DEFAULT_PERMISSION;
-  }
+    /**
+     * Update the API token's permissions.
+     */
+    public function updateApiToken(): void
+    {
+        $this->managingPermissionsFor
+            ->forceFill([
+                'abilities' => $this->validPermissions($this->updateApiTokenForm['permissions']),
+            ])
+            ->save();
 
-  /**
-   * Display the token value to the user.
-   */
-  protected function displayTokenValue(NewAccessToken $token): void
-  {
-    $this->displayingToken = true;
+        $this->resetForm();
 
-    $this->plainTextToken = explode('|', $token->plainTextToken, 2)[1];
+        $this->managingApiTokenPermissions = false;
+    }
 
-    $this->dispatch('showing-token-modal');
-  }
+    /**
+     * Confirm that the given API token should be deleted.
+     */
+    public function confirmApiTokenDeletion(int $tokenId): void
+    {
+        $this->confirmingApiTokenDeletion = true;
 
-  private function validPermissions($permissions)
-  {
-    return array_values(array_intersect($permissions, array_keys($this->permissions)));
-  }
+        $this->apiTokenIdBeingDeleted = $tokenId;
+    }
+
+    /**
+     * Delete the API token.
+     */
+    public function deleteApiToken(): void
+    {
+        $this->user
+            ->tokens()
+            ->where('id', $this->apiTokenIdBeingDeleted)
+            ->first()
+            ->delete();
+
+        $this->user->load('tokens');
+
+        $this->confirmingApiTokenDeletion = false;
+
+        $this->apiTokenIdBeingDeleted = null;
+    }
+
+    protected function resetForm(): void
+    {
+        $this->createApiTokenForm['name'] = '';
+        $this->createApiTokenForm['permissions'] = self::$DEFAULT_PERMISSION;
+    }
+
+    /**
+     * Display the token value to the user.
+     */
+    protected function displayTokenValue(NewAccessToken $token): void
+    {
+        $this->displayingToken = true;
+
+        $this->plainTextToken = explode('|', $token->plainTextToken, 2)[1];
+
+        $this->dispatch('showing-token-modal');
+    }
+
+    private function validPermissions($permissions): array
+    {
+        return array_values(array_intersect($permissions, array_keys($this->permissions)));
+    }
 }; ?>
 
 <section class="w-full space-y-10">
@@ -225,7 +226,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component {
           </flux:button>
 
           <x-action-message class="me-3" on="created">
-            {{ __('Created') }}
+            {{ __('Created.') }}
           </x-action-message>
         </div>
       </x-slot>
@@ -337,16 +338,16 @@ new #[Layout('components.layouts.app.settings')] class extends Component {
                   {{ $token->name }}
                 </div>
 
-                <div class="ms-2 flex items-center">
-                  @if ($token->last_used_at)
-                    <div class="text-sm text-gray-400">{{ __('Last used') }} {{ $token->last_used_at->diffForHumans() }}</div>
-                  @endif
+                @if ($token->last_used_at)
+                  <div class="text-sm text-gray-400">{{ __('Last used') }} {{ $token->last_used_at->diffForHumans() }}</div>
+                @endif
 
-                  <flux:button size="sm" variant="ghost" class="me-2" wire:click="manageApiTokenPermissions({{ $token->id }})">
+                <div class="ms-2 flex items-center">
+                  <flux:button size="xs" variant="ghost" class="me-2" wire:click="manageApiTokenPermissions({{ $token->id }})">
                     {{ __('Permissions') }}
                   </flux:button>
 
-                  <flux:button size="sm" variant="danger" wire:click="confirmApiTokenDeletion({{ $token->id }})">
+                  <flux:button size="xs" variant="danger" wire:click="confirmApiTokenDeletion({{ $token->id }})">
                     {{ __('Delete') }}
                   </flux:button>
                 </div>

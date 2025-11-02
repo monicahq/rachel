@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use LaravelWebauthn\WebauthnAuthenticatable;
 
 final class User extends Authenticatable
 {
@@ -22,6 +23,7 @@ final class User extends Authenticatable
 
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use WebauthnAuthenticatable;
 
     /**
      * The attributes that are mass assignable.

@@ -21,6 +21,10 @@ new #[Layout('components.layouts.guest')] class extends Component
 
     public bool $remember = false;
 
+    public bool $webauthn = false;
+
+    public bool $useSecurityKey = false;
+
     /**
      * Handle an incoming authentication request.
      */
@@ -131,7 +135,7 @@ new #[Layout('components.layouts.guest')] class extends Component
         <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
 
         <!-- Password -->
-        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="current-password" :placeholder="__('Password')" />
+        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="current-password webauthn" :placeholder="__('Password')" />
 
         <!-- Remember Me -->
         <flux:checkbox wire:model="remember" :label="__('Remember me')" />
@@ -146,6 +150,8 @@ new #[Layout('components.layouts.guest')] class extends Component
           </flux:button>
         </div>
       </form>
+
+      <livewire:auth.webauthn.authenticate :action="__('Connect with a passkey')" :remember="true" :autofill="true" />
     </x-box>
 
     <!-- Register link -->

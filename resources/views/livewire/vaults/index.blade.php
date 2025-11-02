@@ -126,7 +126,7 @@ new class extends Component
             </flux:button>
 
             <x-action-message class="me-3" on="vault-created">
-              {{ __('Created') }}
+              {{ __('Created.') }}
             </x-action-message>
           </div>
         </form>
