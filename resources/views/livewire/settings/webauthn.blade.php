@@ -6,110 +6,135 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
-    /**
-     * Indicates if the user is currently managing a WebauthnKey.
-     */
-    public bool $managingWebauthnKey = false;
+new class extends Component {
+  /**
+   * Indicates if the user is currently managing a WebauthnKey.
+   */
+  public bool $managingWebauthnKey = false;
 
-    /**
-     * The key that is currently having its permissions managed.
-     */
-    public ?WebauthnKey $managingWebauthnKeyFor = null;
+  /**
+   * The key that is currently having its permissions managed.
+   */
+  public ?WebauthnKey $managingWebauthnKeyFor = null;
 
-    public ?string $updateKeyName = null;
+  public ?string $updateKeyName = null;
 
-    /**
-     * Indicates if the application is confirming if a WebauthnKey should be deleted.
-     */
-    public bool $confirmingWebauthnKeyDeletion = false;
+  /**
+   * Indicates if the application is confirming if a WebauthnKey should be deleted.
+   */
+  public bool $confirmingWebauthnKeyDeletion = false;
 
-    /**
-     * The ID of the WebauthnKey being deleted.
-     */
-    public ?int $webauthnKeyIdBeingDeleted = null;
+  /**
+   * The ID of the WebauthnKey being deleted.
+   */
+  public ?int $webauthnKeyIdBeingDeleted = null;
 
-    public string $keyKind;
+  public bool $upgradingWebauthnKey = false;
 
-    public function mount(string $keyKind = 'passkey'): void
-    {
-        $this->keyKind = $keyKind;
-    }
+  public ?WebauthnKey $upgradingWebauthnKeyFor = null;
 
-    #[Computed]
-    public function webauthnKeys()
-    {
-        return Auth::user()->webauthnKeys->where('kind', $this->keyKind);
-    }
+  public string $keyKind;
 
-    #[On('key-created')]
-    public function updateKeys(): void
-    {
-        unset($this->webauthnKeys);
-    }
+  public function mount(string $keyKind = 'passkey'): void
+  {
+    $this->keyKind = $keyKind;
+  }
 
-    /**
-     * Allow the given token's permissions to be managed.
-     */
-    public function manageWebauthnKey(int $id): void
-    {
-        $this->managingWebauthnKey = true;
+  #[Computed]
+  public function webauthnKeys()
+  {
+    return Auth::user()->webauthnKeys->where('kind', $this->keyKind);
+  }
 
-        $this->managingWebauthnKeyFor = Auth::user()
-            ->webauthnKeys()
-            ->findOrFail($id);
+  #[On('key-created')]
+  public function updateKeys(): void
+  {
+    unset($this->webauthnKeys);
+  }
 
-        $this->updateKeyName = $this->managingWebauthnKeyFor->name;
-    }
+  /**
+   * Allow the given token's permissions to be managed.
+   */
+  public function manageWebauthnKey(int $id): void
+  {
+    $this->managingWebauthnKey = true;
 
-    /**
-     * Update the API token's permissions.
-     */
-    public function updateWebauthnKey(): void
-    {
-        $validated = $this->validate([
-            'updateKeyName' => ['required', 'string', 'max:255'],
-        ]);
+    $this->managingWebauthnKeyFor = Auth::user()
+      ->webauthnKeys()
+      ->where('id', $id)
+      ->firstOrFail();
 
-        $this->managingWebauthnKeyFor
-            ->forceFill([
-                'name' => $validated['updateKeyName'],
-            ])
-            ->save();
+    $this->updateKeyName = $this->managingWebauthnKeyFor->name;
+  }
 
-        $this->updateKeyName = null;
+  /**
+   * Update the API token's permissions.
+   */
+  public function updateWebauthnKey(): void
+  {
+    $validated = $this->validate([
+      'updateKeyName' => ['required', 'string', 'max:255'],
+    ]);
 
-        $this->managingWebauthnKey = false;
-    }
+    $this->managingWebauthnKeyFor
+      ->forceFill([
+        'name' => $validated['updateKeyName'],
+      ])
+      ->save();
 
-    /**
-     * Confirm that the given API token should be deleted.
-     */
-    public function confirmWebauthnKeyDeletion(int $id): void
-    {
-        $this->confirmingWebauthnKeyDeletion = true;
+    $this->updateKeyName = null;
 
-        $this->webauthnKeyIdBeingDeleted = $id;
-    }
+    $this->managingWebauthnKey = false;
+  }
 
-    /**
-     * Delete the API token.
-     */
-    public function deleteWebauthnKey(): void
-    {
-        Auth::user()
-            ->webauthnKeys()
-            ->where('id', $this->webauthnKeyIdBeingDeleted)
-            ->first()
-            ->delete();
+  /**
+   * Confirm that the given API token should be deleted.
+   */
+  public function confirmWebauthnKeyDeletion(int $id): void
+  {
+    $this->confirmingWebauthnKeyDeletion = true;
 
-        $this->updateKeys();
+    $this->webauthnKeyIdBeingDeleted = $id;
+  }
 
-        $this->confirmingWebauthnKeyDeletion = false;
+  /**
+   * Delete the API token.
+   */
+  public function deleteWebauthnKey(): void
+  {
+    Auth::user()
+      ->webauthnKeys()
+      ->where('id', $this->webauthnKeyIdBeingDeleted)
+      ->first()
+      ->delete();
 
-        $this->webauthnKeyIdBeingDeleted = null;
-    }
+    $this->updateKeys();
+
+    $this->confirmingWebauthnKeyDeletion = false;
+
+    $this->webauthnKeyIdBeingDeleted = null;
+  }
+
+  public function confirmUpgradeWebauthnKey(int $id): void
+  {
+    $this->upgradingWebauthnKey = true;
+
+    $this->upgradingWebauthnKeyFor = Auth::user()
+      ->webauthnKeys()
+      ->where('id', $id)
+      ->firstOrFail();
+  }
+
+  public function upgradeWebauthnKey(): void
+  {
+    $this->managingWebauthnKeyFor
+      ->forceFill([
+        'kind' => 'passkey',
+      ])
+      ->save();
+
+    $this->upgradingWebauthnKey = false;
+  }
 }; ?>
 
 <div>
@@ -169,6 +194,27 @@ new class extends Component
         </x-slot>
       </x-confirmation-modal>
 
+      <!-- Delete Token Confirmation Modal -->
+      <x-confirmation-modal wire:model.live="upgradingWebauthnKey">
+        <x-slot name="title">
+          {{ __('Upgrade key') }}
+        </x-slot>
+
+        <x-slot name="content">
+          {{ __('Are you sure you would like to upgrade this key for a passkey?') }}
+        </x-slot>
+
+        <x-slot name="footer">
+          <flux:button variant="filled" wire:click="$toggle('upgradingWebauthnKey')" wire:loading.attr="disabled">
+            {{ __('Cancel') }}
+          </flux:button>
+
+          <flux:button variant="primary" class="ms-3" wire:click="upgradeWebauthnKey" wire:loading.attr="disabled">
+            {{ __('Confirm') }}
+          </flux:button>
+        </x-slot>
+      </x-confirmation-modal>
+
       <div class="md:grid md:grid-cols-2 md:gap-6">
         <div class="mt-5 md:col-span-2 md:mt-0">
           <!-- Webauthn key list -->
@@ -183,12 +229,20 @@ new class extends Component
               @endif
 
               <div class="ms-2 flex items-center">
+                @if ($keyKind == 'security' && in_array('internal', $webauthnKey->transports) && in_array('hybrid', $webauthnKey->transports))
+                  <flux:button size="xs" variant="ghost" class="me-2" wire:click="confirmUpgradeWebauthnKey({{ $webauthnKey->id }})">
+                    {{ __('Upgrade') }}
+                  </flux:button>
+                @endif
+
                 <flux:button size="xs" variant="ghost" class="me-2" wire:click="manageWebauthnKey({{ $webauthnKey->id }})">
                   {{ __('Edit') }}
                 </flux:button>
 
-                <flux:button size="xs" variant="ghost" class="text-red-900" wire:click="confirmWebauthnKeyDeletion({{ $webauthnKey->id }})">
-                  {{ __('Delete') }}
+                <flux:button size="xs" variant="ghost" wire:click="confirmWebauthnKeyDeletion({{ $webauthnKey->id }})">
+                  <span class="text-red-900 dark:text-red-300">
+                    {{ __('Delete') }}
+                  </span>
                 </flux:button>
               </div>
             </div>
