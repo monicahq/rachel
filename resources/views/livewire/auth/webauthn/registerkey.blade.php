@@ -1,5 +1,13 @@
 <?php
 
+use App\Providers\Webauthn\PasskeyCredentialRepository;
+use App\Providers\Webauthn\SecurityKeyCredentialRepository;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use LaravelWebauthn\Actions\ValidateKeyCreation;
+use LaravelWebauthn\Facades\Webauthn;
+use LaravelWebauthn\Services\Webauthn\CredentialRepository;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
@@ -15,14 +23,12 @@ new class extends Component
 
     public string $action = '';
 
-    public bool $autoload = false;
+    public string $keyKind;
 
-    public function mount(string $publicKey, string $action, bool $autoload = false, string $name = ''): void
+    public function mount(string $action, string $keyKind = 'passkey'): void
     {
-        $this->publicKey = $publicKey;
         $this->action = $action;
-        $this->autoload = $autoload;
-        $this->name = $name;
+        $this->keyKind = $keyKind;
     }
 
     #[On('start-registration')]
@@ -33,21 +39,36 @@ new class extends Component
             'name' => ['required', 'string', 'max:255'],
         ]);
 
+        $this->bind();
+        $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
+
         $this->js('start');
     }
 
-    #[On('force-registration')]
-    public function registerName(string $name): void
+    public function callback(array $data): void
     {
-        $validated = Illuminate\Support\Facades\Validator::validate(
-            ['name' => $name],
-            [
-                'name' => ['required', 'string', 'max:255'],
-            ],
-        );
-        $this->name = $validated['name'];
+        try {
+            $this->bind();
 
-        $this->js('start');
+            $webauthnKey = app(ValidateKeyCreation::class)(Auth::user(), Arr::only($data, ['id', 'rawId', 'response', 'type']), $this->name);
+            $webauthnKey->kind = $this->keyKind;
+            $webauthnKey->save();
+
+            $this->name = '';
+
+            $this->dispatch('key-created', $webauthnKey);
+        } catch (Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
+    }
+
+    public function bind(): void
+    {
+        if ($this->keyKind === 'security') {
+            App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
+        } elseif ($this->keyKind === 'passkey') {
+            App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
+        }
     }
 }; ?>
 
@@ -78,7 +99,13 @@ new class extends Component
 
     <div wire:show="errorMessage">
       <div class="relative mt-4 mb-4 rounded-sm border border-red-400/30 bg-red-100/10 px-4 py-3 dark:border-red-600/30 dark:bg-red-900/10">
-        <span class="flex font-bold text-red-700/80 dark:text-red-300/80" wire:text="errorMessage"></span>
+        @if (App::environment('local'))
+          <span class="flex font-bold text-red-700/80 dark:text-red-300/80" wire:text="errorMessage"></span>
+        @else
+          <span class="flex font-bold text-red-700/80 dark:text-red-300/80">
+            {{ __('Something went wrong, please try again') }}
+          </span>
+        @endif
       </div>
       <flux:button icon="arrow-path" wire:show="!processing" @click="$dispatch('start-registration');" variant="primary" color="sky">
         {{ __('Retry') }}
@@ -110,36 +137,20 @@ new class extends Component
 
     $js('start', () => {
       if (!Webauthn.browserSupportsWebAuthn()) {
-        $wire.$set('errorMessage', formatErrorMessage('not_supported'));
+        $wire.errorMessage = formatErrorMessage('not_supported');
         return;
       }
 
       $wire.processing = true;
       Webauthn.startRegistration({ optionsJSON: JSON.parse($wire.publicKey) })
         .then((data) => {
-          webauthnRegisterCallback(data);
+          $wire.processing = false;
+          $wire.callback(data);
         })
         .catch((error) => {
           $wire.processing = false;
-          $wire.$set('errorMessage', formatErrorMessage(error.name, error.message));
+          $wire.errorMessage = formatErrorMessage(error.name, error.message);
         });
     });
-
-    const webauthnRegisterCallback = (data) => {
-      axios
-        .post('{{ route('webauthn.store') }}', {
-          name: $wire.name,
-          ...data,
-        })
-        .then((response) => {
-          $wire.processing = false;
-          $wire.name = '';
-          Livewire.dispatch('key-created', response.result);
-        })
-        .catch((error) => {
-          $wire.processing = false;
-          $wire.$set('errorMessage', error.message);
-        });
-    };
   </script>
 @endscript

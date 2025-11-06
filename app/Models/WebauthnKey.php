@@ -17,8 +17,8 @@ final class WebauthnKey extends BaseWebauthnKey
     public function __construct()
     {
         parent::__construct();
-        $this->mergeFillable(['used_at']);
-        $this->setVisible(array_merge($this->getVisible(), ['used_at']));
+        $this->mergeFillable(['kind', 'used_at']);
+        $this->setVisible(array_merge($this->getVisible(), ['kind', 'used_at']));
         $this->mergeCasts(['used_at' => 'datetime']);
     }
 

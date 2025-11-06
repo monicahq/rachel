@@ -21,6 +21,7 @@ return new class extends Migration
 
             $table->string('name')->default('key');
             $table->mediumText('credentialId');
+            $table->string('kind', 8)->nullable();
             $table->string('type', 255);
             $table->text('transports');
             $table->string('attestationType', 255);

@@ -132,10 +132,10 @@ new #[Layout('components.layouts.guest')] class extends Component
         </div>
 
         <x-link class="cursor-pointer" wire:click="$toggle('passwordless')">
-          <span wire:show="passwordless">
+          <span wire:show="!passwordless">
             {{ __('Signin with a passkey') }}
           </span>
-          <span wire:show="!passwordless">
+          <span wire:show="passwordless">
             {{ __('Signin with a password') }}
           </span>
         </x-link>

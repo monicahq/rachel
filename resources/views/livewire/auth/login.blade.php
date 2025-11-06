@@ -8,27 +8,28 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.guest')] class extends Component
 {
-    #[Validate('required|string|email')]
+    #[Validate('string|email')]
     public string $email = '';
 
-    #[Validate('required|string')]
+    #[Validate('string')]
     public string $password = '';
 
     public bool $remember = false;
 
-    public bool $webauthn = false;
+    public bool $passwordless = false;
 
-    public bool $useSecurityKey = false;
+    public array $passwordlessData = [];
 
     /**
      * Handle an incoming authentication request.
      */
-    public function login(): void
+    public function login(bool $passwordless = false): void
     {
         $this->validate();
 
@@ -36,7 +37,7 @@ new #[Layout('components.layouts.guest')] class extends Component
 
         $user = $this->validateCredentials();
 
-        if ($user->hasEnabledTwoFactorAuthentication()) {
+        if ($user->hasEnabledTwoFactorAuthentication() && ! $passwordless) {
             Session::put([
                 'login.id' => $user->getKey(),
                 'login.remember' => $this->remember,
@@ -57,14 +58,34 @@ new #[Layout('components.layouts.guest')] class extends Component
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
+    #[On('webauthn-authenticate')]
+    public function passwordlessLogin(?array $data = null): void
+    {
+        $this->passwordless = true;
+        $this->passwordlessData = $data;
+
+        Illuminate\Support\Facades\App::bind(LaravelWebauthn\Services\Webauthn\CredentialRepository::class, App\Providers\Webauthn\PasskeyCredentialRepository::class);
+
+        try {
+            $this->login(true);
+        } catch (ValidationException $e) {
+            $this->dispatch('webauthn-stop', $e->getMessage());
+        }
+    }
+
     /**
      * Validate the user's credentials.
      */
     protected function validateCredentials(): User
     {
-        $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email, 'password' => $this->password]);
+        $user = Auth::getProvider()->retrieveByCredentials(
+            [
+                'email' => $this->email,
+                'password' => $this->password,
+            ] + $this->passwordlessData,
+        );
 
-        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {
+        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password] + $this->passwordlessData)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -130,28 +151,38 @@ new #[Layout('components.layouts.guest')] class extends Component
 
     <!-- login form -->
     <x-box>
-      <form method="POST" wire:submit="login" class="flex flex-col gap-4">
-        <!-- Email address -->
-        <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
+      <div>
+        <form method="POST" wire:submit="login" class="flex flex-col gap-4">
+          <!-- Email address -->
+          <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
 
-        <!-- Password -->
-        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="current-password webauthn" :placeholder="__('Password')" />
+          <!-- Password -->
+          <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="current-password webauthn" :placeholder="__('Password')" />
 
-        <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+          <!-- Remember Me -->
+          <flux:checkbox wire:model="remember" :label="__('Remember me')" />
 
-        <div class="flex items-center justify-between">
-          <x-link :href="route('password.request')" class="text-sm">
-            {{ __('Forgot your password?') }}
-          </x-link>
+          <div class="flex items-center justify-between">
+            <x-link :href="route('password.request')" class="text-sm">
+              {{ __('Forgot your password?') }}
+            </x-link>
 
-          <flux:button variant="primary" type="submit" data-test="login-button">
-            {{ __('Log in') }}
-          </flux:button>
-        </div>
-      </form>
+            <flux:button variant="primary" type="submit" data-test="login-button">
+              {{ __('Log in') }}
+            </flux:button>
+          </div>
+        </form>
+      </div>
 
-      <livewire:auth.webauthn.authenticate :action="__('Connect with a passkey')" :remember="true" :autofill="true" />
+      <fieldset class="mt-6 border-t border-gray-300 dark:border-gray-700">
+        <legend class="mx-auto px-4 text-sm">
+          {{ __('Or') }}
+        </legend>
+      </fieldset>
+
+      <div class="mt-4 flex items-center justify-between">
+        <livewire:auth.webauthn.authenticate :autofill="true" :action="__('Connect with a passkey')" />
+      </div>
     </x-box>
 
     <!-- Register link -->

@@ -2,15 +2,12 @@
 
 use App\Models\WebauthnKey;
 use Illuminate\Support\Facades\Auth;
-use LaravelWebauthn\Facades\Webauthn;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
 new class extends Component
 {
-    public string $publicKey;
-
     /**
      * Indicates if the user is currently managing a WebauthnKey.
      */
@@ -33,15 +30,17 @@ new class extends Component
      */
     public ?int $webauthnKeyIdBeingDeleted = null;
 
-    public function mount(): void
+    public string $keyKind;
+
+    public function mount(string $keyKind = 'passkey'): void
     {
-        $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
+        $this->keyKind = $keyKind;
     }
 
     #[Computed]
     public function webauthnKeys()
     {
-        return Auth::user()->webauthnKeys;
+        return Auth::user()->webauthnKeys->where('kind', $this->keyKind);
     }
 
     #[On('key-created')]
@@ -59,8 +58,7 @@ new class extends Component
 
         $this->managingWebauthnKeyFor = Auth::user()
             ->webauthnKeys()
-            ->where('id', $id)
-            ->firstOrFail();
+            ->findOrFail($id);
 
         $this->updateKeyName = $this->managingWebauthnKeyFor->name;
     }
@@ -119,7 +117,7 @@ new class extends Component
     {{ __('Register a new key') }}
   </h3>
 
-  <livewire:auth.webauthn.registerkey :$publicKey :action="__('Register a new key')" :autoload="false" />
+  <livewire:auth.webauthn.registerkey :action="__('Register a new key')" :$keyKind />
 
   @if ($this->webauthnKeys->count() > 0)
     <div class="mt-4 dark:text-white">
