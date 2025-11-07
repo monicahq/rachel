@@ -31,6 +31,16 @@ final class Account extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'has_lifetime_access' => 'boolean',
+        'trial_ends_at' => 'datetime',
+    ];
+
+    /**
      * Get the users associated with the account.
      *
      * @return HasMany<User, $this>
@@ -48,18 +58,5 @@ final class Account extends Model
     public function vaults(): HasMany
     {
         return $this->hasMany(Vault::class);
-    }
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'has_lifetime_access' => 'boolean',
-            'trial_ends_at' => 'datetime',
-        ];
     }
 }

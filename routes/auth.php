@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -19,6 +20,7 @@ Route::middleware('guest')->group(function (): void {
     Volt::route('reset-password/{token}', 'auth.reset-password')
         ->name('password.reset');
 
+    Route::post('auth/token', TokenController::class);
 });
 
 Route::middleware('auth')->group(function (): void {
@@ -28,6 +30,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
+
+    Volt::route('auth/authorize', 'auth.authorize')
+        ->middleware(['password.confirm']);
 });
 
 Route::post('logout', App\Livewire\Actions\Logout::class)
