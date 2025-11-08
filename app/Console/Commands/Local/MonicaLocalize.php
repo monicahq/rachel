@@ -50,7 +50,7 @@ final class MonicaLocalize extends Command
         $locales = $langs = config('localizer.supported_locales');
 
         $this->updateLocales($locales);
-        $this->createLocalNames($locales);
+        $this->createLocaleFilenames($locales);
 
         array_shift($langs);
         $this->call('localize', [
@@ -222,7 +222,7 @@ final class MonicaLocalize extends Command
         }
     }
 
-    private function createLocalNames(array $locales): void
+    private function createLocaleFilenames(array $locales): void
     {
         foreach ($locales as $locale) {
             $name = LocaleNames::get($locale)[$locale];
