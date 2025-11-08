@@ -30,7 +30,7 @@ new class extends Component
     {
         $validated = $this->validate();
 
-        $vault = (new CreateVault(account: Auth::user()->account, name: $validated['name'], description: $validated['description'] ?? null))->execute();
+        $vault = (new CreateVault(user: Auth::user(), name: $validated['name'], description: $validated['description'] ?? null))->execute();
 
         $this->reset('name', 'description');
 

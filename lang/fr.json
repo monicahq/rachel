@@ -166,6 +166,7 @@
   "Invalid JSON was returned from the route.": "Un JSON non valide a été renvoyé par la route.",
   "Invalid SSL Certificate": "Certificat SSL invalide",
   "Key name": "Nom de la clé",
+  "Language": "Langue",
   "Last used": "Dernière utilisation",
   "Length Required": "Longueur requise",
   "Light": "Clair",

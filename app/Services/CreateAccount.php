@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Account;
 use App\Models\User;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,9 +20,9 @@ final class CreateAccount
     private User $user;
 
     public function __construct(
-        public string $email,
-        public ?string $password,
-        public string $name,
+        public readonly string $email,
+        public readonly ?string $password,
+        public readonly string $name,
     ) {}
 
     public function execute(): User
@@ -47,6 +48,7 @@ final class CreateAccount
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->password !== null ? Hash::make($this->password) : null,
+            'locale' => App::getLocale(),
         ]);
     }
 }

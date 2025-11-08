@@ -7,60 +7,65 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component {
-  public string $name = '';
+new #[Layout('components.layouts.app.settings')] class extends Component
+{
+    public string $name = '';
 
-  public string $email = '';
+    public string $email = '';
 
-  /**
-   * Mount the component.
-   */
-  public function mount(): void
-  {
-    $this->name = Auth::user()->name;
-    $this->email = Auth::user()->email;
-  }
+    public string $locale = '';
 
-  /**
-   * Update the profile information for the currently authenticated user.
-   */
-  public function updateProfileInformation(): void
-  {
-    $user = Auth::user();
-
-    $validated = $this->validate([
-      'name' => ['required', 'string', 'max:255'],
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-    ]);
-
-    $user->fill($validated);
-
-    if ($user->isDirty('email')) {
-      $user->email_verified_at = null;
+    /**
+     * Mount the component.
+     */
+    public function mount(): void
+    {
+        $this->name = Auth::user()->name;
+        $this->email = Auth::user()->email;
+        $this->locale = Auth::user()->locale;
     }
 
-    $user->save();
+    /**
+     * Update the profile information for the currently authenticated user.
+     */
+    public function updateProfileInformation(): void
+    {
+        $user = Auth::user();
 
-    $this->dispatch('profile-updated', name: $user->name);
-  }
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'locale' => ['required', 'string', Rule::in(config('localizer.supported_locales'))],
+        ]);
 
-  /**
-   * Send an email verification notification to the current user.
-   */
-  public function resendVerificationNotification(): void
-  {
-    $user = Auth::user();
+        $user->fill($validated);
 
-    if ($user->hasVerifiedEmail()) {
-      $this->redirectIntended(default: route('dashboard', absolute: false));
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
 
-      return;
+        $user->save();
+
+        $this->dispatch('profile-updated', name: $user->name);
     }
 
-    $user->sendEmailVerificationNotification();
+    /**
+     * Send an email verification notification to the current user.
+     */
+    public function resendVerificationNotification(): void
+    {
+        $user = Auth::user();
 
-    Session::flash('status', 'verification-link-sent');
-  }
+        if ($user->hasVerifiedEmail()) {
+            $this->redirectIntended(default: route('dashboard', absolute: false));
+
+            return;
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        Session::flash('status', 'verification-link-sent');
+    }
 }; ?>
 
 <section class="w-full">
@@ -97,6 +102,12 @@ new #[Layout('components.layouts.app.settings')] class extends Component {
           </div>
         @endif
       </div>
+
+      <flux:select wire:model="locale" id="locale" :label="__('Language')" required>
+        @foreach (config('localizer.supported_locales') as $local)
+          <flux:select.option :value="$local">{{ __('locale.name', locale: $local) }}</flux:select.option>
+        @endforeach
+      </flux:select>
 
       <div class="flex items-center gap-4">
         <div class="flex items-center justify-end">
