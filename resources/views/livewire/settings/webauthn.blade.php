@@ -201,7 +201,12 @@ new class extends Component {
         </x-slot>
 
         <x-slot name="content">
-          {{ __('Are you sure you would like to upgrade this key for a passkey?') }}
+          <p class="text-xl">
+            {{ __('Are you sure you would like to upgrade this key for a passkey?') }}
+          </p>
+          <p class="mt-2">
+            {{ __('A passkey allows you to sign in without a password.') }}
+          </p>
         </x-slot>
 
         <x-slot name="footer">

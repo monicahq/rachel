@@ -12,118 +12,117 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.guest')] class extends Component
-{
-    #[Validate('string|email')]
-    public string $email = '';
+new #[Layout('components.layouts.guest')] class extends Component {
+  #[Validate('string|email')]
+  public string $email = '';
 
-    #[Validate('string')]
-    public string $password = '';
+  #[Validate('string')]
+  public string $password = '';
 
-    public bool $remember = false;
+  public bool $remember = false;
 
-    public bool $passwordless = false;
+  public bool $passwordless = false;
 
-    public array $passwordlessData = [];
+  public array $passwordlessData = [];
 
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function login(bool $passwordless = false): void
-    {
-        $this->validate();
+  /**
+   * Handle an incoming authentication request.
+   */
+  public function login(bool $passwordless = false): void
+  {
+    $this->validate();
 
-        $this->ensureIsNotRateLimited();
+    $this->ensureIsNotRateLimited();
 
-        $user = $this->validateCredentials();
+    $user = $this->validateCredentials();
 
-        if ($user->hasEnabledTwoFactorAuthentication() && ! $passwordless) {
-            Session::put([
-                'login.id' => $user->getKey(),
-                'login.remember' => $this->remember,
-            ]);
+    if ($user->hasEnabledTwoFactorAuthentication() && ! $passwordless) {
+      Session::put([
+        'login.id' => $user->getKey(),
+        'login.remember' => $this->remember,
+      ]);
 
-            $this->redirect(route('two-factor.login'), navigate: true);
+      $this->redirect(route('two-factor.login'), navigate: true);
 
-            return;
-        }
-
-        Auth::login($user, $this->remember);
-
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-        session()->passwordConfirmed();
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+      return;
     }
 
-    #[On('webauthn-authenticate')]
-    public function passwordlessLogin(?array $data = null): void
-    {
-        $this->passwordless = true;
-        $this->passwordlessData = $data;
+    Auth::login($user, $this->remember);
 
-        Illuminate\Support\Facades\App::bind(LaravelWebauthn\Services\Webauthn\CredentialRepository::class, App\Providers\Webauthn\PasskeyCredentialRepository::class);
+    RateLimiter::clear($this->throttleKey());
+    Session::regenerate();
 
-        try {
-            $this->login(true);
-        } catch (ValidationException $e) {
-            $this->dispatch('webauthn-stop', $e->getMessage());
-        }
+    session()->passwordConfirmed();
+
+    $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+  }
+
+  #[On('webauthn-authenticate')]
+  public function passwordlessLogin(?array $data = null): void
+  {
+    $this->passwordless = true;
+    $this->passwordlessData = $data;
+
+    Illuminate\Support\Facades\App::bind(LaravelWebauthn\Services\Webauthn\CredentialRepository::class, App\Providers\Webauthn\PasskeyCredentialRepository::class);
+
+    try {
+      $this->login(true);
+    } catch (ValidationException $e) {
+      $this->dispatch('webauthn-stop', $e->getMessage());
+    }
+  }
+
+  /**
+   * Validate the user's credentials.
+   */
+  protected function validateCredentials(): User
+  {
+    $user = Auth::getProvider()->retrieveByCredentials(
+      [
+        'email' => $this->email,
+        'password' => $this->password,
+      ] + $this->passwordlessData,
+    );
+
+    if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password] + $this->passwordlessData)) {
+      RateLimiter::hit($this->throttleKey());
+
+      throw ValidationException::withMessages([
+        'email' => __('auth.failed'),
+      ]);
     }
 
-    /**
-     * Validate the user's credentials.
-     */
-    protected function validateCredentials(): User
-    {
-        $user = Auth::getProvider()->retrieveByCredentials(
-            [
-                'email' => $this->email,
-                'password' => $this->password,
-            ] + $this->passwordlessData,
-        );
+    return $user;
+  }
 
-        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password] + $this->passwordlessData)) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
-
-        return $user;
+  /**
+   * Ensure the authentication request is not rate limited.
+   */
+  protected function ensureIsNotRateLimited(): void
+  {
+    if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+      return;
     }
 
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
-    protected function ensureIsNotRateLimited(): void
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
+    event(new Lockout(request()));
 
-        event(new Lockout(request()));
+    $seconds = RateLimiter::availableIn($this->throttleKey());
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+    throw ValidationException::withMessages([
+      'email' => __('auth.throttle', [
+        'seconds' => $seconds,
+        'minutes' => ceil($seconds / 60),
+      ]),
+    ]);
+  }
 
-        throw ValidationException::withMessages([
-            'email' => __('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
-    }
-
-    /**
-     * Get the authentication rate limiting throttle key.
-     */
-    protected function throttleKey(): string
-    {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
-    }
+  /**
+   * Get the authentication rate limiting throttle key.
+   */
+  protected function throttleKey(): string
+  {
+    return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
+  }
 }; ?>
 
 <div class="grid min-h-screen w-screen grid-cols-1 lg:grid-cols-2">
@@ -175,13 +174,13 @@ new #[Layout('components.layouts.guest')] class extends Component
       </div>
 
       <fieldset class="mt-6 border-t border-gray-300 dark:border-gray-700">
-        <legend class="mx-auto px-4 text-sm">
+        <legend class="mx-auto px-4 text-sm dark:text-white">
           {{ __('Or') }}
         </legend>
       </fieldset>
 
       <div class="mt-4 flex items-center justify-between">
-        <livewire:auth.webauthn.authenticate :autofill="true" :action="__('Connect with a passkey')" />
+        <livewire:auth.webauthn.authenticate :autofill="true" :action="__('Connect with a passkey')" :keyKind="'passkey" />
       </div>
     </x-box>
 

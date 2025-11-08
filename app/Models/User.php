@@ -85,7 +85,7 @@ final class User extends Authenticatable
     {
         return (! is_null($this->two_factor_secret) &&
                 ! is_null($this->two_factor_confirmed_at)) || (
-                    $this->webauthnKeys->where('kind', 'security')->count() > 0
+                    $this->webauthnKeys->count() > 0
                 );
     }
 
