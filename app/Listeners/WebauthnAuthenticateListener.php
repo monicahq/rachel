@@ -20,7 +20,7 @@ final class WebauthnAuthenticateListener
             ->first();
 
         if ($webauthnKey !== null) {
-            $webauthnKey->used_at = now();
+            $webauthnKey->used_at = now(); // @phpstan-ignore assign.propertyType
             $webauthnKey->save();
         }
     }
