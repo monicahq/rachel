@@ -40,7 +40,6 @@ return RectorConfig::configure()
         typeDeclarations: true,
         privatization: true,
         earlyReturn: true,
-        strictBooleans: true,
     )
     ->withPHPStanConfigs([__DIR__.'/phpstan.neon'])
     ->withPhpSets()
