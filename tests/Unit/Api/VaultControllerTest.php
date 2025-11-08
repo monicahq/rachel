@@ -147,7 +147,7 @@ describe('api-vaults', function (): void {
         ]);
 
         $this->delete('/api/vaults/'.$vault->slug)
-            ->assertOk();
+            ->assertNoContent();
 
         $this->assertDatabaseMissing('vaults', [
             'id' => $vault->id,

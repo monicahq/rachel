@@ -27,6 +27,7 @@
         "codeat3/blade-phosphor-icons": "^2.3",
         "erag/laravel-disposable-email": "^3.7",
         "joshbrw/laravel-module-installer": "^2.0",
+        "knuckleswtf/scribe": "^5.3",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.2",
@@ -74,6 +75,7 @@
           "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
           "@php artisan key:generate",
           "@php artisan migrate --force",
+          "@php artisan scribe:setup --clean --force",
           "bun install",
           "bun run build"
         ],

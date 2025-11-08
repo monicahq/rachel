@@ -34,3 +34,6 @@ yarn-error.log
 AGENTS.md
 boost.json
 CLAUDE.md
+/public/vendor/scribe
+/resources/views/scribe
+/.scribe
