@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
-final class User extends Authenticatable
+final class User extends Authenticatable implements HasLocalePreference
 {
     use HasApiTokens;
 
@@ -33,6 +34,7 @@ final class User extends Authenticatable
         'name',
         'email',
         'password',
+        'locale',
     ];
 
     /**
@@ -77,6 +79,16 @@ final class User extends Authenticatable
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get the preferred locale of the entity.
+     *
+     * @return string
+     */
+    public function preferredLocale()
+    {
+        return $this->locale;
     }
 
     /**
