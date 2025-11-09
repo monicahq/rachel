@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\MySqlConnection;
@@ -17,7 +18,7 @@ return new class extends Migration
     {
         Schema::create('webauthn_keys', function (Blueprint $table): void {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
 
             $table->string('name')->default('key');
             $table->mediumText('credentialId');
@@ -31,8 +32,6 @@ return new class extends Migration
             $table->bigInteger('counter')->unsigned();
             $table->timestamp('used_at')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             if (app(Resolver::class)->connection($this->getConnection()) instanceof MySqlConnection) {
                 $table->index([app(Resolver::class)->raw('credentialId(255)')], 'credential_index');
