@@ -118,7 +118,7 @@ new #[Layout('components.layouts.guest')] class extends Component
         <!-- Email Address -->
         <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
 
-        <div class="mt-4 flex items-center justify-between">
+        <div class="flex items-center justify-between">
           <flux:button icon="key" type="submit" x-on:click="$wire.passwordless=true" variant="primary" class="w-full">
             {{ __('Create account with a passkey') }}
           </flux:button>

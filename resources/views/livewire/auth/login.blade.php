@@ -150,7 +150,7 @@ new #[Layout('components.layouts.guest')] class extends Component
     </div>
 
     <!-- login form -->
-    <x-box>
+    <x-box class="space-y-4">
       <div>
         <form method="POST" wire:submit="login" class="flex flex-col gap-4">
           <!-- Email address -->
@@ -174,13 +174,13 @@ new #[Layout('components.layouts.guest')] class extends Component
         </form>
       </div>
 
-      <fieldset class="mt-6 border-t border-gray-300 dark:border-gray-700">
+      <fieldset class="border-t border-gray-300 dark:border-gray-700">
         <legend class="mx-auto px-4 text-sm dark:text-white">
           {{ __('Or') }}
         </legend>
       </fieldset>
 
-      <div class="mt-4 flex items-center justify-between">
+      <div class="flex items-center justify-center">
         <livewire:auth.webauthn.authenticate :autofill="true" :action="__('Connect with a passkey')" :keyKind="'passkey'" />
       </div>
     </x-box>
