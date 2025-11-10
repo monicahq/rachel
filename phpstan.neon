@@ -10,8 +10,6 @@ parameters:
 
     excludePaths:
         - app/Providers/FortifyServiceProvider.php
-        - app/Http/Controllers/Instances/InstancesAccountsController.php
-        - app/Http/Controllers/Instances/InstancesController.php
 
     level: 5
     ignoreErrors:
