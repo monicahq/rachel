@@ -310,6 +310,7 @@
   "The provided two factor recovery code was invalid.": "Le code de récupération fourni pour l’authentification à deux facteurs est incorrect.",
   "The response is not a streamed response.": "La réponse n’est pas une réponse diffusée.",
   "The response is not a view.": "La réponse n’est pas une vue.",
+  "The two-factor authentication QR code": "Le code QR d’authentification à deux facteurs",
   "This action is unauthorized.": "Cette action n’est pas autorisée.",
   "This is a secure area of the application. Please confirm your password before continuing.": "Il s’agit d’une zone sécurisée de l’application. Veuillez confirmer votre mot de passe avant de continuer.",
   "This password reset link will expire in :count minutes.": "Ce lien de réinitialisation du mot de passe expirera dans :count minutes.",

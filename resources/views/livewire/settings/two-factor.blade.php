@@ -13,178 +13,179 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component {
-  #[Locked]
-  public bool $twoFactorEnabled;
+new #[Layout('components.layouts.app.settings')] class extends Component
+{
+    #[Locked]
+    public bool $twoFactorEnabled;
 
-  #[Locked]
-  public bool $requiresConfirmation;
+    #[Locked]
+    public bool $requiresConfirmation;
 
-  #[Locked]
-  public string $qrCodePng = '';
+    #[Locked]
+    public string $qrCodePng = '';
 
-  #[Locked]
-  public string $manualSetupKey = '';
+    #[Locked]
+    public string $manualSetupKey = '';
 
-  public bool $showModal = false;
+    public bool $showModal = false;
 
-  public bool $showVerificationStep = false;
+    public bool $showVerificationStep = false;
 
-  #[Validate('required|string|size:6', onUpdate: false)]
-  public string $code = '';
+    #[Validate('required|string|size:6', onUpdate: false)]
+    public string $code = '';
 
-  /**
-   * Mount the component.
-   */
-  public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
-  {
-    if (is_null(Illuminate\Support\Facades\Auth::user()->two_factor_confirmed_at)) {
-      $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
+    /**
+     * Mount the component.
+     */
+    public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
+    {
+        if (is_null(Illuminate\Support\Facades\Auth::user()->two_factor_confirmed_at)) {
+            $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
+        }
+
+        $this->twoFactorEnabled = auth()
+            ->user()
+            ->hasEnabledTwoFactorAuthentication();
+        $this->requiresConfirmation = true;
     }
 
-    $this->twoFactorEnabled = auth()
-      ->user()
-      ->hasEnabledTwoFactorAuthentication();
-    $this->requiresConfirmation = true;
-  }
+    /**
+     * Enable two-factor authentication for the user.
+     */
+    public function enable(EnableTwoFactorAuthentication $enableTwoFactorAuthentication): void
+    {
+        $enableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
 
-  /**
-   * Enable two-factor authentication for the user.
-   */
-  public function enable(EnableTwoFactorAuthentication $enableTwoFactorAuthentication): void
-  {
-    $enableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
+        if (! $this->requiresConfirmation) {
+            $this->twoFactorEnabled = auth()
+                ->user()
+                ->hasEnabledTwoFactorAuthentication();
+        }
 
-    if (! $this->requiresConfirmation) {
-      $this->twoFactorEnabled = auth()
-        ->user()
-        ->hasEnabledTwoFactorAuthentication();
+        $this->loadSetupData();
+
+        $this->showModal = true;
     }
 
-    $this->loadSetupData();
+    /**
+     * Show the two-factor verification step if necessary.
+     */
+    public function showVerificationIfNecessary(): void
+    {
+        if ($this->requiresConfirmation) {
+            $this->showVerificationStep = true;
 
-    $this->showModal = true;
-  }
+            $this->resetErrorBag();
 
-  /**
-   * Show the two-factor verification step if necessary.
-   */
-  public function showVerificationIfNecessary(): void
-  {
-    if ($this->requiresConfirmation) {
-      $this->showVerificationStep = true;
+            return;
+        }
 
-      $this->resetErrorBag();
-
-      return;
+        $this->closeModal();
     }
 
-    $this->closeModal();
-  }
+    /**
+     * Confirm two-factor authentication for the user.
+     */
+    public function confirmTwoFactor(ConfirmTwoFactorAuthentication $confirmTwoFactorAuthentication): void
+    {
+        $this->validate();
 
-  /**
-   * Confirm two-factor authentication for the user.
-   */
-  public function confirmTwoFactor(ConfirmTwoFactorAuthentication $confirmTwoFactorAuthentication): void
-  {
-    $this->validate();
+        $confirmTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user(), $this->code);
 
-    $confirmTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user(), $this->code);
+        $this->closeModal();
 
-    $this->closeModal();
-
-    $this->twoFactorEnabled = true;
-  }
-
-  /**
-   * Reset two-factor verification state.
-   */
-  public function resetVerification(): void
-  {
-    $this->reset('code', 'showVerificationStep');
-
-    $this->resetErrorBag();
-  }
-
-  /**
-   * Disable two-factor authentication for the user.
-   */
-  public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
-  {
-    $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
-
-    $this->twoFactorEnabled = false;
-  }
-
-  /**
-   * Close the two-factor authentication modal.
-   */
-  public function closeModal(): void
-  {
-    $this->reset('code', 'manualSetupKey', 'qrCodePng', 'showModal', 'showVerificationStep');
-
-    $this->resetErrorBag();
-
-    if (! $this->requiresConfirmation) {
-      $this->twoFactorEnabled = auth()
-        ->user()
-        ->hasEnabledTwoFactorAuthentication();
-    }
-  }
-
-  /**
-   * Get the current modal configuration state.
-   */
-  #[Livewire\Attributes\Computed]
-  public function modalConfig(): array
-  {
-    if ($this->twoFactorEnabled) {
-      return [
-        'title' => __('Two-Factor Authentication Enabled'),
-        'description' => __('Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.'),
-        'buttonText' => __('Close'),
-      ];
+        $this->twoFactorEnabled = true;
     }
 
-    if ($this->showVerificationStep) {
-      return [
-        'title' => __('Verify Authentication Code'),
-        'description' => __('Enter the 6-digit code from your authenticator app.'),
-        'buttonText' => __('Continue'),
-      ];
+    /**
+     * Reset two-factor verification state.
+     */
+    public function resetVerification(): void
+    {
+        $this->reset('code', 'showVerificationStep');
+
+        $this->resetErrorBag();
     }
 
-    return [
-      'title' => __('Enable Two-Factor Authentication'),
-      'description' => __('To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app.'),
-      'buttonText' => __('Continue'),
-    ];
-  }
+    /**
+     * Disable two-factor authentication for the user.
+     */
+    public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
+    {
+        $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
 
-  /**
-   * Load the two-factor authentication setup data for the user.
-   */
-  private function loadSetupData(): void
-  {
-    try {
-      $this->qrCodePng = $this->twoFactorQrCodePng(Illuminate\Support\Facades\Auth::user());
-      $this->manualSetupKey = decrypt(Illuminate\Support\Facades\Auth::user()->two_factor_secret);
-    } catch (Exception) {
-      $this->addError('setupData', __('Failed to fetch setup data.'));
-
-      $this->reset('qrCodePng', 'manualSetupKey');
+        $this->twoFactorEnabled = false;
     }
-  }
 
-  /**
-   * Generates two factor image
-   */
-  private function twoFactorQrCodePng(User $user): string
-  {
-    $png = (new Writer(new ImageRenderer(new RendererStyle(220, 2), new ImagickImageBackEnd())))->writeString($user->twoFactorQrCodeUrl());
+    /**
+     * Close the two-factor authentication modal.
+     */
+    public function closeModal(): void
+    {
+        $this->reset('code', 'manualSetupKey', 'qrCodePng', 'showModal', 'showVerificationStep');
 
-    return base64_encode($png);
-  }
+        $this->resetErrorBag();
+
+        if (! $this->requiresConfirmation) {
+            $this->twoFactorEnabled = auth()
+                ->user()
+                ->hasEnabledTwoFactorAuthentication();
+        }
+    }
+
+    /**
+     * Get the current modal configuration state.
+     */
+    #[Livewire\Attributes\Computed]
+    public function modalConfig(): array
+    {
+        if ($this->twoFactorEnabled) {
+            return [
+                'title' => __('Two-Factor Authentication Enabled'),
+                'description' => __('Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.'),
+                'buttonText' => __('Close'),
+            ];
+        }
+
+        if ($this->showVerificationStep) {
+            return [
+                'title' => __('Verify Authentication Code'),
+                'description' => __('Enter the 6-digit code from your authenticator app.'),
+                'buttonText' => __('Continue'),
+            ];
+        }
+
+        return [
+            'title' => __('Enable Two-Factor Authentication'),
+            'description' => __('To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app.'),
+            'buttonText' => __('Continue'),
+        ];
+    }
+
+    /**
+     * Load the two-factor authentication setup data for the user.
+     */
+    private function loadSetupData(): void
+    {
+        try {
+            $this->qrCodePng = $this->twoFactorQrCodePng(Illuminate\Support\Facades\Auth::user());
+            $this->manualSetupKey = decrypt(Illuminate\Support\Facades\Auth::user()->two_factor_secret);
+        } catch (Exception) {
+            $this->addError('setupData', __('Failed to fetch setup data.'));
+
+            $this->reset('qrCodePng', 'manualSetupKey');
+        }
+    }
+
+    /**
+     * Generates two factor image
+     */
+    private function twoFactorQrCodePng(User $user): string
+    {
+        $png = (new Writer(new ImageRenderer(new RendererStyle(220, 2), new ImagickImageBackEnd())))->writeString($user->twoFactorQrCodeUrl());
+
+        return base64_encode($png);
+    }
 }; ?>
 
 <section class="w-full">
@@ -285,7 +286,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component {
               </div>
             @else
               <div class="flex h-full items-center justify-center p-4">
-                <img src="data:image/png;base64,{!! $qrCodePng !!}" />
+                <img src="data:image/png;base64,{!! $qrCodePng !!}" alt="{{ __('The two-factor authentication QR code') }}" />
               </div>
             @endempty
           </div>
