@@ -92,111 +92,73 @@ $deleteAccount = function (): void {
       <div class="space-y-6">
         <x-box title="Activity Timeline">
           <!-- Event 1: Account upgraded -->
-          <div class="relative flex gap-x-3">
-            <div class="absolute top-8 left-5 h-full w-0.5 bg-gray-200 dark:bg-neutral-700"></div>
-            <div class="relative flex h-10 w-10 items-center justify-center">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                <x-phosphor-arrow-up class="size-4 text-green-600 dark:text-green-400" />
-              </div>
-            </div>
-            <div class="min-w-0 flex-1 pb-8">
-              <div class="flex items-center gap-x-2">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Account upgraded to Pro plan</p>
-                <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-400">Upgrade</span>
-              </div>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Upgraded from Basic to Pro subscription with additional features</p>
-              <div class="mt-2 flex items-center gap-x-2 text-xs text-gray-500 dark:text-gray-500">
-                <span class="font-medium">System</span>
-                <span>•</span>
-                <x-tooltip text="January 15, 2025 at 2:30 PM" class="cursor-help">2 hours ago</x-tooltip>
-              </div>
-            </div>
-          </div>
+          @include(
+            'livewire.instances.accounts.partials.activity',
+            [
+              'action' => 'Account upgraded to Pro plan',
+              'status' => 'Upgrade',
+              'icon' => 'arrow-up',
+              'description' => 'Upgraded from Basic to Pro subscription with additional features',
+              'actor' => 'System',
+              'created_at' => Date::parse('2025-01-15 14:30:00'),
+              'color' => 'green',
+            ]
+          )
 
           <!-- Event 2: Profile updated -->
-          <div class="relative flex gap-x-3">
-            <div class="absolute top-8 left-5 h-full w-0.5 bg-gray-200 dark:bg-neutral-700"></div>
-            <div class="relative flex h-10 w-10 items-center justify-center">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                <x-phosphor-pencil class="size-4 text-blue-600 dark:text-blue-400" />
-              </div>
-            </div>
-            <div class="min-w-0 flex-1 pb-8">
-              <div class="flex items-center gap-x-2">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Profile information updated</p>
-              </div>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Updated email address and phone number</p>
-              <div class="mt-2 flex items-center gap-x-2 text-xs text-gray-500 dark:text-gray-500">
-                <span class="font-medium">John Doe</span>
-                <span>•</span>
-                <x-tooltip text="January 14, 2025 at 4:15 PM" class="cursor-help">1 day ago</x-tooltip>
-              </div>
-            </div>
-          </div>
+          @include(
+            'livewire.instances.accounts.partials.activity',
+            [
+              'action' => 'Profile information updated',
+              'icon' => 'pencil',
+              'description' => 'Updated email address and phone number',
+              'actor' => 'John Doe',
+              'created_at' => Date::parse('2025-01-14 16:15:00'),
+              'color' => 'blue',
+            ]
+          )
 
           <!-- Event 3: 2FA enabled -->
-          <div class="relative flex gap-x-3">
-            <div class="absolute top-8 left-5 h-full w-0.5 bg-gray-200 dark:bg-neutral-700"></div>
-            <div class="relative flex h-10 w-10 items-center justify-center">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
-                <x-phosphor-shield-check class="size-4 text-purple-600 dark:text-purple-400" />
-              </div>
-            </div>
-            <div class="min-w-0 flex-1 pb-8">
-              <div class="flex items-center gap-x-2">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Two-factor authentication enabled</p>
-                <span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">Security</span>
-              </div>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Enhanced account security with 2FA</p>
-              <div class="mt-2 flex items-center gap-x-2 text-xs text-gray-500 dark:text-gray-500">
-                <span class="font-medium">John Doe</span>
-                <span>•</span>
-                <x-tooltip text="January 12, 2025 at 10:45 AM" class="cursor-help">3 days ago</x-tooltip>
-              </div>
-            </div>
-          </div>
+          @include(
+            'livewire.instances.accounts.partials.activity',
+            [
+              'action' => 'Two-factor authentication enabled',
+              'status' => 'Security',
+              'icon' => 'shield-check',
+              'description' => 'Enhanced account security with 2FA',
+              'actor' => 'John Doe',
+              'created_at' => Date::parse('2025-01-12 10:45:00'),
+              'color' => 'purple',
+            ]
+          )
 
           <!-- Event 4: Payment updated -->
-          <div class="relative flex gap-x-3">
-            <div class="absolute top-8 left-5 h-full w-0.5 bg-gray-200 dark:bg-neutral-700"></div>
-            <div class="relative flex h-10 w-10 items-center justify-center">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
-                <x-phosphor-credit-card class="size-4 text-orange-600 dark:text-orange-400" />
-              </div>
-            </div>
-            <div class="min-w-0 flex-1 pb-8">
-              <div class="flex items-center gap-x-2">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Payment method updated</p>
-              </div>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Added new credit card ending in 4242</p>
-              <div class="mt-2 flex items-center gap-x-2 text-xs text-gray-500 dark:text-gray-500">
-                <span class="font-medium">John Doe</span>
-                <span>•</span>
-                <x-tooltip text="January 8, 2025 at 3:20 PM" class="cursor-help">1 week ago</x-tooltip>
-              </div>
-            </div>
-          </div>
+          @include(
+            'livewire.instances.accounts.partials.activity',
+            [
+              'action' => 'Payment method updated',
+              //'icon' => 'credit-card',
+              'description' => 'Added new credit card ending in 4242',
+              'actor' => 'John Doe',
+              'created_at' => Date::parse('2025-01-08 15:20:00'),
+              'color' => 'orange',
+            ]
+          )
 
           <!-- Event 5: Account created -->
-          <div class="relative flex gap-x-3">
-            <div class="relative flex h-10 w-10 items-center justify-center">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-900/30">
-                <x-phosphor-user-plus class="size-4 text-gray-600 dark:text-gray-400" />
-              </div>
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-x-2">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Account created</p>
-                <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">Created</span>
-              </div>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">New account registered with basic plan</p>
-              <div class="mt-2 flex items-center gap-x-2 text-xs text-gray-500 dark:text-gray-500">
-                <span class="font-medium">John Doe</span>
-                <span>•</span>
-                <x-tooltip text="January 1, 2025 at 9:00 AM" class="cursor-help">2 weeks ago</x-tooltip>
-              </div>
-            </div>
-          </div>
+          @include(
+            'livewire.instances.accounts.partials.activity',
+            [
+              'action' => 'Account created',
+              'status' => 'Created',
+              'icon' => 'user-plus',
+              'description' => 'New account registered with basic plan',
+              'actor' => 'John Doe',
+              'created_at' => Date::parse('2025-01-01 09:00:00'),
+              'color' => 'gray',
+              'last' => true,
+            ]
+          )
         </x-box>
       </div>
 
@@ -210,7 +172,7 @@ $deleteAccount = function (): void {
             </flux:subheading>
           </div>
 
-          <x-input wire:model="password" id="password" :label="__('Password')" type="password" />
+          <x-input wire:model="password" :label="__('Password')" type="password" />
 
           <div class="flex justify-end space-x-2 rtl:space-x-reverse">
             <flux:modal.close>
@@ -235,7 +197,7 @@ $deleteAccount = function (): void {
             </flux:subheading>
           </div>
 
-          <x-input wire:model="password" id="password" :label="__('Password')" type="password" />
+          <x-input wire:model="password" :label="__('Password')" type="password" />
 
           <div class="flex justify-end space-x-2 rtl:space-x-reverse">
             <flux:modal.close>
@@ -260,7 +222,7 @@ $deleteAccount = function (): void {
             </flux:subheading>
           </div>
 
-          <x-input wire:model="password" id="password" :label="__('Password')" type="password" />
+          <x-input wire:model="password" :label="__('Password')" type="password" />
 
           <div class="flex justify-end space-x-2 rtl:space-x-reverse">
             <flux:modal.close>
