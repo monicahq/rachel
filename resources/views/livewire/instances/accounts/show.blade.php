@@ -2,6 +2,7 @@
 
 use App\Models\Account;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
+use Illuminate\Support\Carbon;
 
 use function Livewire\Volt\layout;
 use function Livewire\Volt\mount;
@@ -11,11 +12,61 @@ use function Livewire\Volt\title;
 layout('components.layouts.instance');
 title(fn (): string => __('Instance management'));
 
-state(['user', 'account', 'password']);
+state(['user', 'account', 'password', 'activities']);
 
 mount(function (Account $account): void {
   $this->account = $account;
   $this->user = $account->users()->first();
+  $this->activities = collect([
+    [
+      'action' => 'Account upgraded to Pro plan',
+      'status' => 'Upgrade',
+      'icon' => 'arrow-up',
+      'description' => 'Upgraded from Basic to Pro subscription with additional features',
+      'actor' => 'System',
+      'created_at' => \Illuminate\Support\Facades\Date::parse('2025-01-15 14:30:00'),
+      'color' => 'green',
+    ],
+
+    [
+      'action' => 'Profile information updated',
+      'icon' => 'pencil',
+      'description' => 'Updated email address and phone number',
+      'actor' => 'John Doe',
+      'created_at' => \Illuminate\Support\Facades\Date::parse('2025-01-14 16:15:00'),
+      'color' => 'blue',
+    ],
+
+    [
+      'action' => 'Two-factor authentication enabled',
+      'status' => 'Security',
+      'icon' => 'shield-check',
+      'description' => 'Enhanced account security with 2FA',
+      'actor' => 'John Doe',
+      'created_at' => \Illuminate\Support\Facades\Date::parse('2025-01-12 10:45:00'),
+      'color' => 'purple',
+    ],
+
+    [
+      'action' => 'Payment method updated',
+      //'icon' => 'credit-card',
+      'description' => 'Added new credit card ending in 4242',
+      'actor' => 'John Doe',
+      'created_at' => \Illuminate\Support\Facades\Date::parse('2025-01-08 15:20:00'),
+      'color' => 'orange',
+    ],
+
+    [
+      'action' => 'Account created',
+      'status' => 'Created',
+      'icon' => 'user-plus',
+      'description' => 'New account registered with basic plan',
+      'actor' => 'John Doe',
+      'created_at' => \Illuminate\Support\Facades\Date::parse('2025-01-01 09:00:00'),
+      'color' => 'gray',
+      'last' => true,
+    ],
+  ]);
 });
 
 $freeAccount = function (): void {
@@ -91,74 +142,9 @@ $deleteAccount = function (): void {
       <!-- main content -->
       <div class="space-y-6">
         <x-box title="Activity Timeline">
-          <!-- Event 1: Account upgraded -->
-          @include(
-            'livewire.instances.accounts.partials.activity',
-            [
-              'action' => 'Account upgraded to Pro plan',
-              'status' => 'Upgrade',
-              'icon' => 'arrow-up',
-              'description' => 'Upgraded from Basic to Pro subscription with additional features',
-              'actor' => 'System',
-              'created_at' => Date::parse('2025-01-15 14:30:00'),
-              'color' => 'green',
-            ]
-          )
-
-          <!-- Event 2: Profile updated -->
-          @include(
-            'livewire.instances.accounts.partials.activity',
-            [
-              'action' => 'Profile information updated',
-              'icon' => 'pencil',
-              'description' => 'Updated email address and phone number',
-              'actor' => 'John Doe',
-              'created_at' => Date::parse('2025-01-14 16:15:00'),
-              'color' => 'blue',
-            ]
-          )
-
-          <!-- Event 3: 2FA enabled -->
-          @include(
-            'livewire.instances.accounts.partials.activity',
-            [
-              'action' => 'Two-factor authentication enabled',
-              'status' => 'Security',
-              'icon' => 'shield-check',
-              'description' => 'Enhanced account security with 2FA',
-              'actor' => 'John Doe',
-              'created_at' => Date::parse('2025-01-12 10:45:00'),
-              'color' => 'purple',
-            ]
-          )
-
-          <!-- Event 4: Payment updated -->
-          @include(
-            'livewire.instances.accounts.partials.activity',
-            [
-              'action' => 'Payment method updated',
-              //'icon' => 'credit-card',
-              'description' => 'Added new credit card ending in 4242',
-              'actor' => 'John Doe',
-              'created_at' => Date::parse('2025-01-08 15:20:00'),
-              'color' => 'orange',
-            ]
-          )
-
-          <!-- Event 5: Account created -->
-          @include(
-            'livewire.instances.accounts.partials.activity',
-            [
-              'action' => 'Account created',
-              'status' => 'Created',
-              'icon' => 'user-plus',
-              'description' => 'New account registered with basic plan',
-              'actor' => 'John Doe',
-              'created_at' => Date::parse('2025-01-01 09:00:00'),
-              'color' => 'gray',
-              'last' => true,
-            ]
-          )
+          @foreach ($activities as $activity)
+            @include('livewire.instances.accounts.partials.activity', $activity)
+          @endforeach
         </x-box>
       </div>
 
