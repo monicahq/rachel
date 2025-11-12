@@ -1,21 +1,19 @@
 <?php
 
 use App\Models\Vault;
-use Livewire\Attributes\Locked;
-use Livewire\Volt\Component;
 
-new class extends Component
-{
-    #[Locked]
-    public Vault $vault;
+use function Livewire\Volt\mount;
+use function Livewire\Volt\state;
 
-    public function mount(Vault $vault): void
-    {
-        $this->authorize('view', $vault);
+state(['vault'])->locked();
 
-        $this->vault = $vault;
-    }
-}; ?>
+mount(function (Vault $vault): void {
+  $this->authorize('view', $vault);
+
+  $this->vault = $vault;
+});
+
+?>
 
 <div>
   {{ $vault->name }}

@@ -8,40 +8,35 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
-    #[Locked]
-    public Collection $vaults;
+new class extends Component {
+  #[Locked]
+  public Collection $vaults;
 
-    #[Validate(['required', 'string', 'max:255'])]
-    public string $name = '';
+  #[Validate(['required', 'string', 'max:255'])]
+  public string $name = '';
 
-    #[Validate(['nullable', 'string', 'max:255'])]
-    public string $description = '';
+  #[Validate(['nullable', 'string', 'max:255'])]
+  public string $description = '';
 
-    public function mount(): void
-    {
-        $this->authorize('viewAny', Vault::class);
+  public function mount(): void
+  {
+    $this->authorize('viewAny', Vault::class);
 
-        $this->vaults = Auth::user()->account->vaults;
-    }
+    $this->vaults = Auth::user()->account->vaults;
+  }
 
-    public function create(): void
-    {
-        $validated = $this->validate();
+  public function create(): void
+  {
+    $validated = $this->validate();
 
-        $vault = (new CreateVault(
-            user: Auth::user(),
-            name: $validated['name'],
-            description: $validated['description'] ?? null)
-        )->execute();
+    $vault = (new CreateVault(user: Auth::user(), name: $validated['name'], description: $validated['description'] ?? null))->execute();
 
-        $this->reset('name', 'description');
+    $this->reset('name', 'description');
 
-        $this->dispatch('vault-created');
+    $this->dispatch('vault-created');
 
-        $this->redirect(route('vaults.show', $vault));
-    }
+    $this->redirect(route('vaults.show', $vault));
+  }
 }; ?>
 
 <div x-data="{ showForm: false }">
@@ -113,25 +108,31 @@ new class extends Component
       </div>
 
       <x-box>
-        <div class="flex justify-center" x-show="!showForm">
-          <flux:button icon="plus-circle" @click="showForm = !showForm">{{ __('Add a vault') }}</flux:button>
+        <div class="flex justify-center" x-show="!showForm" x-transition:enter.duration.200ms>
+          <flux:button icon="plus-circle" x-on:click="$toggle(showForm)">{{ __('Add a vault') }}</flux:button>
         </div>
 
         <!-- create vault form -->
-        <form method="POST" wire:submit="create" class="space-y-6" wire:cloak x-show="showForm" x-transition>
+        <form method="POST" wire:submit="create" class="space-y-6" wire:cloak x-show="showForm" x-transition:enter.duration.200ms>
           <x-input wire:model="name" id="name" :label="__('Vault name')" type="text" required />
           <x-input wire:model="description" id="description" :label="__('Vault description')" type="text" :optional="true" />
 
           <div class="flex items-center justify-between">
-            <flux:button @click="showForm = !showForm">{{ __('Cancel') }}</flux:button>
-
-            <flux:button variant="primary" type="submit">
-              {{ __('Create') }}
+            <flux:button variant="filled" x-on:click="$toggle(showForm)">
+              {{ __('Cancel') }}
             </flux:button>
 
-            <x-action-message class="me-3" on="vault-created">
-              {{ __('Created') }}
-            </x-action-message>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center justify-end">
+                <flux:button variant="primary" type="submit" class="w-full">
+                  {{ __('Create') }}
+                </flux:button>
+              </div>
+
+              <x-action-message class="me-3" on="vault-created">
+                {{ __('Created.') }}
+              </x-action-message>
+            </div>
           </div>
         </form>
       </x-box>
