@@ -39,7 +39,7 @@ new class extends Component {
   }
 }; ?>
 
-<div x-data="{ showForm: false }">
+<div>
   <div class="mx-auto max-w-lg px-2 py-2 sm:px-6 sm:py-6 lg:px-8">
     <section class="flex w-full flex-col gap-10">
       <!-- vaults list -->
@@ -107,9 +107,13 @@ new class extends Component {
         @endforeach
       </div>
 
-      <x-box>
+      <x-box
+        x-data="{
+        showForm: false,
+        toggle: function() { this.showForm = !this.showForm }
+      }">
         <div class="flex justify-center" x-show="!showForm" x-transition:enter.duration.200ms>
-          <flux:button icon="plus-circle" x-on:click="$toggle(showForm)">{{ __('Add a vault') }}</flux:button>
+          <flux:button icon="plus-circle" @click.prevent="toggle()">{{ __('Add a vault') }}</flux:button>
         </div>
 
         <!-- create vault form -->
@@ -118,7 +122,7 @@ new class extends Component {
           <x-input wire:model="description" id="description" :label="__('Vault description')" type="text" :optional="true" />
 
           <div class="flex items-center justify-between">
-            <flux:button variant="filled" x-on:click="$toggle(showForm)">
+            <flux:button variant="filled" @click.prevent="toggle()">
               {{ __('Cancel') }}
             </flux:button>
 
