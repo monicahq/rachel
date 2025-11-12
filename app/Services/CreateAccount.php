@@ -50,5 +50,9 @@ final class CreateAccount
             'password' => Hash::make($this->password),
             'locale' => App::getLocale(),
         ]);
+
+        if (App::environment('local')) {
+            $this->user->markEmailAsVerified();
+        }
     }
 }
