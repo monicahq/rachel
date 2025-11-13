@@ -7,65 +7,70 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component
-{
-    public string $name = '';
+new #[Layout('components.layouts.app.settings')] class extends Component {
+  public string $name = '';
 
-    public string $email = '';
+  public string $email = '';
 
-    public string $locale = '';
+  public string $locale = '';
 
-    /**
-     * Mount the component.
-     */
-    public function mount(): void
-    {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
-        $this->locale = Auth::user()->locale;
+  /**
+   * Mount the component.
+   */
+  public function mount(): void
+  {
+    $this->name = Auth::user()->name;
+    $this->email = Auth::user()->email;
+    $this->locale = Auth::user()->locale;
+  }
+
+  /**
+   * Update the profile information for the currently authenticated user.
+   */
+  public function updateProfileInformation(): void
+  {
+    $user = Auth::user();
+
+    $validated = $this->validate([
+      'name' => ['required', 'string', 'max:255'],
+      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+      'locale' => ['required', 'string', Rule::in(config('localizer.supported_locales'))],
+    ]);
+
+    $user->fill($validated);
+
+    if ($user->isDirty('email')) {
+      $user->email_verified_at = null;
     }
 
-    /**
-     * Update the profile information for the currently authenticated user.
-     */
-    public function updateProfileInformation(): void
-    {
-        $user = Auth::user();
+    $newLocale = $user->isDirty('locale');
 
-        $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-            'locale' => ['required', 'string', Rule::in(config('localizer.supported_locales'))],
-        ]);
+    $user->save();
 
-        $user->fill($validated);
+    if ($newLocale) {
+      $this->redirect(route('profile.edit'));
+    } else {
+      $this->dispatch('profile-updated', name: $user->name);
+    }
+  }
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
+  /**
+   * Send an email verification notification to the current user.
+   */
+  public function resendVerificationNotification(): void
+  {
+    $user = Auth::user();
 
-        $user->save();
+    if ($user->hasVerifiedEmail()) {
+      $this->redirectIntended(default: route('dashboard', absolute: false));
 
-        $this->dispatch('profile-updated', name: $user->name);
+      return;
     }
 
-    /**
-     * Send an email verification notification to the current user.
-     */
-    public function resendVerificationNotification(): void
-    {
-        $user = Auth::user();
+    $user->sendEmailVerificationNotification();
 
-        if ($user->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route('dashboard', absolute: false));
-
-            return;
-        }
-
-        $user->sendEmailVerificationNotification();
-
-        Session::flash('status', 'verification-link-sent');
-    }
+    Session::flash('status', 'verification-link-sent');
+  }
 }; ?>
 
 <section class="w-full">

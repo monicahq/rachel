@@ -30,11 +30,7 @@ new class extends Component
     {
         $validated = $this->validate();
 
-        $vault = (new CreateVault(
-            user: Auth::user(),
-            name: $validated['name'],
-            description: $validated['description'] ?? null)
-        )->execute();
+        $vault = (new CreateVault(user: Auth::user(), name: $validated['name'], description: $validated['description'] ?? null))->execute();
 
         $this->reset('name', 'description');
 
@@ -130,7 +126,7 @@ new class extends Component
             </flux:button>
 
             <x-action-message class="me-3" on="vault-created">
-              {{ __('Created') }}
+              {{ __('Created.') }}
             </x-action-message>
           </div>
         </form>

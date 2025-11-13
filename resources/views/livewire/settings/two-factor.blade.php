@@ -212,6 +212,20 @@ new #[Layout('components.layouts.app.settings')] class extends Component
     @endif
   </div>
 
+  <div class="mt-8 mb-8">
+    <x-box>
+      <x-slot:title>
+        {{ __('Security keys') }}
+      </x-slot>
+
+      <x-slot:description>
+        {{ __('A security key is a physical form of authentication that provides you with access to your accounts.') }}
+      </x-slot>
+
+      <livewire:settings.webauthn :keyKind="'security'" />
+    </x-box>
+  </div>
+
   <flux:modal name="two-factor-setup-modal" class="max-w-md md:min-w-md" @close="closeModal" wire:model="showModal">
     <div class="space-y-6">
       <div class="flex flex-col items-center space-y-4">
