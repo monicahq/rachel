@@ -3,6 +3,9 @@
   "configVersion": 0,
   "workspaces": {
     "": {
+      "dependencies": {
+        "@simplewebauthn/browser": "^13.2.2",
+      },
       "devDependencies": {
         "@tailwindcss/vite": "^4.1.14",
         "alpinejs": "^3.15.0",
@@ -132,6 +135,8 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.52.4", "", { "os": "win32", "cpu": "x64" }, "sha512-UF9KfsH9yEam0UjTwAgdK0anlQ7c8/pWPU2yVjyWcF1I1thABt6WXE47cI71pGiZ8wGvxohBoLnxM04L/wj8mQ=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.52.4", "", { "os": "win32", "cpu": "x64" }, "sha512-bf9PtUa0u8IXDVxzRToFQKsNCRz9qLYfR/MpECxl4mRoWYjAeFjgxj1XdZr2M/GNVpT05p+LgQOHopYDlUu6/w=="],
+
+    "@simplewebauthn/browser": ["@simplewebauthn/browser@13.2.2", "", {}, "sha512-FNW1oLQpTJyqG5kkDg5ZsotvWgmBaC6jCHR7Ej0qUNep36Wl9tj2eZu7J5rP+uhXgHaLk+QQ3lqcw2vS5MX1IA=="],
 
     "@tailwindcss/node": ["@tailwindcss/node@4.1.14", "", { "dependencies": { "@jridgewell/remapping": "^2.3.4", "enhanced-resolve": "^5.18.3", "jiti": "^2.6.0", "lightningcss": "1.30.1", "magic-string": "^0.30.19", "source-map-js": "^1.2.1", "tailwindcss": "4.1.14" } }, "sha512-hpz+8vFk3Ic2xssIA3e01R6jkmsAhvkQdXlEbRTk6S10xDAtiQiM3FyvZVGsucefq764euO/b8WUW9ysLdThHw=="],
 

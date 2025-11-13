@@ -21,7 +21,7 @@ final class CreateAccount
 
     public function __construct(
         public readonly string $email,
-        public readonly string $password,
+        public readonly ?string $password,
         public readonly string $name,
     ) {}
 
@@ -47,7 +47,7 @@ final class CreateAccount
         $this->user = $this->account->users()->create([
             'name' => $this->name,
             'email' => $this->email,
-            'password' => Hash::make($this->password),
+            'password' => $this->password !== null ? Hash::make($this->password) : null,
             'locale' => App::getLocale(),
         ]);
 

@@ -6,7 +6,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
+use LaravelWebauthn\Facades\Webauthn;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.guest')] class extends Component
@@ -19,15 +21,33 @@ new #[Layout('components.layouts.guest')] class extends Component
 
     public string $password_confirmation = '';
 
+    public bool $passwordless = true;
+
+    public string $publicKey = '';
+
+    public string $errorMessage = '';
+
+    public bool $processing = false;
+
     /**
      * Handle an incoming registration request.
      */
     public function register(): void
     {
+        if ($this->passwordless) {
+            $this->js('check');
+        } else {
+            $this->continue();
+        }
+    }
+
+    #[On('continue-register')]
+    public function continue(): void
+    {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class, 'disposable_email'],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'password' => [new Rules\RequiredIf(! $this->passwordless), 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = new CreateAccount(
@@ -40,8 +60,28 @@ new #[Layout('components.layouts.guest')] class extends Component
 
         Auth::login($user);
 
-        Session::regenerate();
+        if ($this->passwordless) {
+            $this->publicKey = (string) Webauthn::prepareAttestation($user);
 
+            $this->js('start');
+        } else {
+            Session::regenerate();
+
+            $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+        }
+    }
+
+    public function restart(): void
+    {
+        $this->errorMessage = '';
+        $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
+
+        $this->js('start');
+    }
+
+    #[On('key-created')]
+    public function endRegister(): void
+    {
         $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
     }
 }; ?>
@@ -73,20 +113,45 @@ new #[Layout('components.layouts.guest')] class extends Component
     <x-box>
       <form method="POST" wire:submit="register" class="flex flex-col gap-4">
         <!-- Name -->
-        <x-input wire:model="name" id="name" :label="__('Name')" type="text" required autofocus autocomplete="name" :placeholder="__('Full name')" />
+        <x-input wire:model="name" id="name" :label="__('Name')" type="text" required autofocus autocomplete="username webauthn" :placeholder="__('Full name')" />
 
         <!-- Email Address -->
         <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
 
+        <div class="flex items-center justify-between">
+          <flux:button icon="key" type="submit" x-on:click="$wire.passwordless=true" variant="primary" class="w-full">
+            {{ __('Create account with a passkey') }}
+          </flux:button>
+        </div>
+        <div wire:show="errorMessage" x-transition.duration.100ms>
+          <div class="relative mt-4 mb-4 rounded-sm border border-red-400/30 bg-red-100/10 px-4 py-3 dark:border-red-600/30 dark:bg-red-900/10">
+            <span class="flex font-bold text-red-700/80 dark:text-red-300/80" wire:text="errorMessage"></span>
+          </div>
+          <flux:button icon="arrow-path" wire:show="passwordless" variant="primary" x-on:click.prevent="$wire.restart()" color="sky">
+            {{ __('Retry') }}
+          </flux:button>
+        </div>
+
+        <div class="text-sm">
+          {{ __('A passkey is a faster and safer way to sign in than a password.') }}
+          {{ __('Your account is created with a passkey unless you choose to create a password.') }}
+        </div>
+
+        <fieldset class="mt-4 border-t border-gray-300 dark:border-gray-700">
+          <legend class="mx-auto px-4 text-sm dark:text-white">
+            {{ __('Or') }}
+          </legend>
+        </fieldset>
+
         <!-- Password -->
-        <x-input wire:model="password" id="password" :label="__('Password')" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
+        <x-input wire:model="password" id="password" :label="__('Password')" type="password" autocomplete="new-password" :placeholder="__('Password')" />
 
         <!-- Confirm Password -->
-        <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm password')" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" />
+        <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm password')" type="password" autocomplete="new-password" :placeholder="__('Confirm password')" />
 
         <div class="flex items-center justify-between">
           <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
-            {{ __('Create account') }}
+            {{ __('Create account with a password') }}
           </flux:button>
         </div>
       </form>
@@ -109,3 +174,68 @@ new #[Layout('components.layouts.guest')] class extends Component
     <div class="absolute inset-0 flex items-center justify-center">bla</div>
   </div>
 </div>
+
+@assets
+  @vite(['resources/js/webauthn.js'])
+@endassets
+
+@script
+  <script>
+    const formatErrorMessage = (name, message) => {
+      switch (name) {
+        case 'InvalidStateError':
+          return '{{ __('This key is already registered. It’s not necessary to register it again.') }}';
+        case 'NotAllowedError':
+          return '{{ __('The operation either timed out or was not allowed.') }}';
+        case 'SecurityError':
+          return '{{ __('The operation is insecure.') }}';
+        case 'not_supported':
+          return !window.isSecureContext && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' ? '{{ __('WebAuthn only supports secure connections. Please load this page with https scheme.') }}' : '{{ __('Your browser doesn’t currently support WebAuthn.') }}';
+        default:
+          return message;
+      }
+    };
+
+    $js('check', () => {
+      if (!Webauthn.browserSupportsWebAuthn()) {
+        $wire.errorMessage = formatErrorMessage('not_supported');
+        $wire.passwordless = false;
+      } else {
+        Livewire.dispatch('continue-register');
+      }
+    });
+
+    $js('start', () => {
+      if (!Webauthn.browserSupportsWebAuthn()) {
+        $wire.errorMessage = formatErrorMessage('not_supported');
+        return;
+      }
+
+      $wire.processing = true;
+      Webauthn.startRegistration({ optionsJSON: JSON.parse($wire.publicKey) })
+        .then((data) => {
+          webauthnRegisterCallback(data);
+        })
+        .catch((error) => {
+          $wire.processing = false;
+          $wire.errorMessage = formatErrorMessage(error.name, error.message);
+        });
+    });
+
+    const webauthnRegisterCallback = (data) => {
+      axios
+        .post('{{ route('webauthn.store') }}', {
+          name: $wire.name,
+          ...data,
+        })
+        .then((response) => {
+          location.assign('/dashboard');
+          /*Livewire.dispatch('key-created');*/
+        })
+        .catch((error) => {
+          $wire.processing = false;
+          $wire.errorMessage = error.message;
+        });
+    };
+  </script>
+@endscript
