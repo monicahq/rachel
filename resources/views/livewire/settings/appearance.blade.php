@@ -1,12 +1,10 @@
 <?php
 
-use Livewire\Attributes\Layout;
-use Livewire\Volt\Component;
+use function Livewire\Volt\layout;
 
-new #[Layout('components.layouts.app.settings')] class extends Component
-{
-    //
-}; ?>
+layout('components.layouts.app.settings');
+
+?>
 
 <section class="w-full">
   <flux:radio.group x-data variant="segmented" x-model="$flux.appearance">
