@@ -22,16 +22,16 @@
       <div class="flex items-center justify-center">
         <div class="flex space-x-1 rounded-lg border border-gray-200 p-0.5 dark:border-0 dark:ring-1 dark:ring-gray-700">
           <!-- dashboard -->
-          <x-header-link icon="house-line-fill" href="{{ route('dashboard') }}" selected>{{ __('Dashboard') }}</x-header-link>
+          <x-header-link icon="house-line-fill" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</x-header-link>
 
           <!-- search -->
-          <x-header-link icon="magnifying-glass-fill" href="/">{{ __('Search') }}</x-header-link>
+          <x-header-link icon="magnifying-glass-fill" href="/search">{{ __('Search') }}</x-header-link>
 
           <!-- contacts -->
-          <x-header-link icon="users-three-fill" href="/">{{ __('Contacts') }}</x-header-link>
+          <x-header-link icon="users-three-fill" href="/contacts">{{ __('Contacts') }}</x-header-link>
 
           <!-- me -->
-          <x-header-link icon="binoculars-fill" href="/">{{ __('Me') }}</x-header-link>
+          <x-header-link icon="binoculars-fill" href="/me">{{ __('Me') }}</x-header-link>
         </div>
       </div>
     </div>
@@ -42,9 +42,9 @@
 
   <!-- mobile header -->
   <nav class="flex w-full items-center justify-between gap-3 pt-2 pb-2 sm:hidden" x-data="{ mobileMenuOpen: false }" aria-label="Global">
-    <a href="/" class="flex h-7 w-7">
+    <x-link href="/" class="flex h-7 w-7">
       <x-app-logo-icon size="7" />
-    </a>
+    </x-link>
 
     <button @click="mobileMenuOpen = true" class="flex items-center gap-2 rounded-md border border-transparent py-1 font-medium hover:border-gray-200 hover:bg-gray-100">
       <x-phosphor-list class="size-5 text-gray-600 transition-transform duration-150" />

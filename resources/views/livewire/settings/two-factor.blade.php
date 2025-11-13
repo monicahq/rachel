@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\User;
+use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
@@ -17,7 +22,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
     public bool $requiresConfirmation;
 
     #[Locked]
-    public string $qrCodeSvg = '';
+    public string $qrCodePng = '';
 
     #[Locked]
     public string $manualSetupKey = '';
@@ -34,8 +39,8 @@ new #[Layout('components.layouts.app.settings')] class extends Component
      */
     public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
-        if (is_null(auth()->user()->two_factor_confirmed_at)) {
-            $disableTwoFactorAuthentication(auth()->user());
+        if (is_null(Illuminate\Support\Facades\Auth::user()->two_factor_confirmed_at)) {
+            $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
         }
 
         $this->twoFactorEnabled = auth()
@@ -49,7 +54,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
      */
     public function enable(EnableTwoFactorAuthentication $enableTwoFactorAuthentication): void
     {
-        $enableTwoFactorAuthentication(auth()->user());
+        $enableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
 
         if (! $this->requiresConfirmation) {
             $this->twoFactorEnabled = auth()
@@ -85,7 +90,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
     {
         $this->validate();
 
-        $confirmTwoFactorAuthentication(auth()->user(), $this->code);
+        $confirmTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user(), $this->code);
 
         $this->closeModal();
 
@@ -107,7 +112,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
      */
     public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
-        $disableTwoFactorAuthentication(auth()->user());
+        $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
 
         $this->twoFactorEnabled = false;
     }
@@ -117,7 +122,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
      */
     public function closeModal(): void
     {
-        $this->reset('code', 'manualSetupKey', 'qrCodeSvg', 'showModal', 'showVerificationStep');
+        $this->reset('code', 'manualSetupKey', 'qrCodePng', 'showModal', 'showVerificationStep');
 
         $this->resetErrorBag();
 
@@ -162,16 +167,24 @@ new #[Layout('components.layouts.app.settings')] class extends Component
      */
     private function loadSetupData(): void
     {
-        $user = auth()->user();
-
         try {
-            $this->qrCodeSvg = $user?->twoFactorQrCodeSvg();
-            $this->manualSetupKey = decrypt($user->two_factor_secret);
+            $this->qrCodePng = $this->twoFactorQrCodePng(Illuminate\Support\Facades\Auth::user());
+            $this->manualSetupKey = decrypt(Illuminate\Support\Facades\Auth::user()->two_factor_secret);
         } catch (Exception) {
-            $this->addError('setupData', 'Failed to fetch setup data.');
+            $this->addError('setupData', __('Failed to fetch setup data.'));
 
-            $this->reset('qrCodeSvg', 'manualSetupKey');
+            $this->reset('qrCodePng', 'manualSetupKey');
         }
+    }
+
+    /**
+     * Generates two factor image
+     */
+    private function twoFactorQrCodePng(User $user): string
+    {
+        $png = (new Writer(new ImageRenderer(new RendererStyle(220, 2), new ImagickImageBackEnd())))->writeString($user->twoFactorQrCodeUrl());
+
+        return base64_encode($png);
     }
 }; ?>
 
@@ -281,13 +294,13 @@ new #[Layout('components.layouts.app.settings')] class extends Component
 
         <div class="flex justify-center">
           <div class="relative aspect-square w-64 overflow-hidden rounded-lg border border-stone-200 dark:border-stone-700">
-            @empty($qrCodeSvg)
+            @empty($qrCodePng)
               <div class="absolute inset-0 flex animate-pulse items-center justify-center bg-white dark:bg-stone-700">
                 <flux:icon.loading />
               </div>
             @else
               <div class="flex h-full items-center justify-center p-4">
-                {!! $qrCodeSvg !!}
+                <img src="data:image/png;base64,{!! $qrCodePng !!}" alt="{{ __('The two-factor authentication QR code') }}" />
               </div>
             @endempty
           </div>
