@@ -83,7 +83,7 @@ new #[Layout('components.layouts.guest')] class extends Component {
         </flux:button>
       </div>
 
-      <div class="mt-5 space-x-0.5 text-center text-sm leading-5">
+      <div class="mt-5 space-x-0.5 text-center text-sm leading-5 dark:text-white">
         <span class="opacity-50">{{ __('or you can') }}</span>
         <div class="inline cursor-pointer font-medium underline opacity-80">
           <span x-show="!showRecoveryInput" @click="toggleInput()">{{ __('login using a recovery code') }}</span>
