@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use LaravelWebauthn\WebauthnAuthenticatable;
 
 final class User extends Authenticatable implements HasLocalePreference
 {
@@ -23,6 +24,7 @@ final class User extends Authenticatable implements HasLocalePreference
 
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use WebauthnAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -79,6 +81,14 @@ final class User extends Authenticatable implements HasLocalePreference
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function hasEnabledTwoFactorAuthentication(): bool
+    {
+        return (! is_null($this->two_factor_secret) &&
+                ! is_null($this->two_factor_confirmed_at)) || (
+                    $this->webauthnKeys->count() > 0
+                );
     }
 
     /**

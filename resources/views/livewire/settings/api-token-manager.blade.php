@@ -158,7 +158,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
 
         $this->confirmingApiTokenDeletion = false;
 
-        $this->managingPermissionsFor = null;
+        $this->apiTokenIdBeingDeleted = null;
     }
 
     protected function resetForm(): void
@@ -226,7 +226,7 @@ new #[Layout('components.layouts.app.settings')] class extends Component
           </flux:button>
 
           <x-action-message class="me-3" on="created">
-            {{ __('Created') }}
+            {{ __('Created.') }}
           </x-action-message>
         </div>
       </x-slot>
@@ -338,16 +338,16 @@ new #[Layout('components.layouts.app.settings')] class extends Component
                   {{ $token->name }}
                 </div>
 
-                <div class="ms-2 flex items-center">
-                  @if ($token->last_used_at)
-                    <div class="text-sm text-gray-400">{{ __('Last used') }} {{ $token->last_used_at->diffForHumans() }}</div>
-                  @endif
+                @if ($token->last_used_at)
+                  <div class="text-sm text-gray-400">{{ __('Last used') }} {{ $token->last_used_at->diffForHumans() }}</div>
+                @endif
 
-                  <flux:button size="sm" variant="ghost" class="me-2" wire:click="manageApiTokenPermissions({{ $token->id }})">
+                <div class="ms-2 flex items-center">
+                  <flux:button size="xs" variant="ghost" class="me-2" wire:click="manageApiTokenPermissions({{ $token->id }})">
                     {{ __('Permissions') }}
                   </flux:button>
 
-                  <flux:button size="sm" variant="danger" wire:click="confirmApiTokenDeletion({{ $token->id }})">
+                  <flux:button size="xs" variant="danger" wire:click="confirmApiTokenDeletion({{ $token->id }})">
                     {{ __('Delete') }}
                   </flux:button>
                 </div>
