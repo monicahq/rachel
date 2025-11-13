@@ -28,6 +28,7 @@ jobs:
       default-php-version: '8.4'
       default-connection: sqlite
       project: monicahq_rachel
+      assets: app.js app.css webauthn.js
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

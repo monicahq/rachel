@@ -129,7 +129,7 @@ final class MonicaLocalize extends Command
 
             $encoded = json_encode($strings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $encoded = Str::replaceMatches('/    "/', '  "', $encoded);
-            Storage::disk('lang')->put($locale.'.json', $encoded);
+            Storage::disk('lang')->put($locale.'.json', $encoded."\n");
         }
     }
 
