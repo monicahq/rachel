@@ -32,17 +32,14 @@ new #[Layout('components.layouts.guest')] class extends Component
     /**
      * Handle an incoming registration request.
      */
-    public function register(): void
+    public function registerPasswordless(): void
     {
-        if ($this->passwordless) {
-            $this->js('check');
-        } else {
-            $this->continue();
-        }
+        $this->passwordless = true;
+        $this->js('check');
     }
 
     #[On('continue-register')]
-    public function continue(): void
+    public function register(): void
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -118,31 +115,6 @@ new #[Layout('components.layouts.guest')] class extends Component
         <!-- Email Address -->
         <x-input wire:model="email" id="email" :label="__('Email address')" type="email" required autocomplete="email" placeholder="email@example.com" />
 
-        <div class="flex items-center justify-between">
-          <flux:button icon="key" type="submit" x-on:click="$wire.passwordless=true" variant="primary" class="w-full">
-            {{ __('Create account with a passkey') }}
-          </flux:button>
-        </div>
-        <div wire:show="errorMessage" x-transition.duration.100ms>
-          <div class="relative mt-4 mb-4 rounded-sm border border-red-400/30 bg-red-100/10 px-4 py-3 dark:border-red-600/30 dark:bg-red-900/10">
-            <span class="flex font-bold text-red-700/80 dark:text-red-300/80" wire:text="errorMessage"></span>
-          </div>
-          <flux:button icon="arrow-path" wire:show="passwordless" variant="primary" x-on:click.prevent="$wire.restart()" color="sky">
-            {{ __('Retry') }}
-          </flux:button>
-        </div>
-
-        <div class="text-sm">
-          {{ __('A passkey is a faster and safer way to sign in than a password.') }}
-          {{ __('Your account is created with a passkey unless you choose to create a password.') }}
-        </div>
-
-        <fieldset class="mt-4 border-t border-gray-300 dark:border-gray-700">
-          <legend class="mx-auto px-4 text-sm dark:text-white">
-            {{ __('Or') }}
-          </legend>
-        </fieldset>
-
         <!-- Password -->
         <x-input wire:model="password" id="password" :label="__('Password')" type="password" autocomplete="new-password" :placeholder="__('Password')" />
 
@@ -150,9 +122,50 @@ new #[Layout('components.layouts.guest')] class extends Component
         <x-input wire:model="password_confirmation" id="password_confirmation" :label="__('Confirm password')" type="password" autocomplete="new-password" :placeholder="__('Confirm password')" />
 
         <div class="flex items-center justify-between">
-          <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
-            {{ __('Create account with a password') }}
+          <flux:button type="submit" x-on:click="$wire.passwordless=false" variant="primary" class="w-full" data-test="register-user-button">
+            {{ __('Create account') }}
           </flux:button>
+        </div>
+      </form>
+
+      <fieldset class="mt-4 mb-4 border-t border-gray-300 dark:border-gray-700">
+        <legend class="mx-auto px-4 text-sm dark:text-white">
+          {{ __('Or') }}
+        </legend>
+      </fieldset>
+
+      <form method="POST" wire:submit="registerPasswordless" class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <flux:button icon="key" type="submit" variant="primary" class="w-full" color="sky">
+            {{ __('Create account with a passkey') }}
+          </flux:button>
+        </div>
+        <div wire:show="processing" class="mt-4 mb-4 flex rounded-lg border border-gray-300 bg-gray-500/30 px-4 py-4 shadow-md dark:border-gray-700">
+          <div class="me-2 text-teal-800 dark:text-teal-200">
+            <flux:icon.loading />
+          </div>
+          <p class="font-bold text-green-100">
+            {{ __('Waiting for input from browser interaction…') }}
+          </p>
+        </div>
+        <div wire:show="errorMessage" x-transition.duration.100ms>
+          <div class="relative mt-4 mb-4 rounded-sm border border-red-400/30 bg-red-100/10 px-4 py-3 dark:border-red-600/30 dark:bg-red-900/10">
+            @if (App::environment('local'))
+              <span class="flex font-bold text-red-700/80 dark:text-red-300/80" wire:text="errorMessage"></span>
+            @else
+              <span class="flex font-bold text-red-700/80 dark:text-red-300/80">
+                {{ __('Something went wrong, please try again') }}
+              </span>
+            @endif
+          </div>
+          <flux:button icon="arrow-path" wire:show="!processing" x-on:click.prevent="$wire.restart()" variant="primary" color="sky">
+            {{ __('Retry') }}
+          </flux:button>
+        </div>
+
+        <div class="text-sm">
+          {{ __('A passkey is a faster and safer way to sign in than a password.') }}
+          {{ __('Your account is created with a passkey unless you choose to create a password.') }}
         </div>
       </form>
     </x-box>

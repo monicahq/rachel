@@ -11,65 +11,64 @@ use LaravelWebauthn\Services\Webauthn\CredentialRepository;
 use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
-new class extends Component
-{
-    public string $publicKey;
+new class extends Component {
+  public string $publicKey;
 
-    public string $name = '';
+  public string $name = '';
 
-    public bool $processing = false;
+  public bool $processing = false;
 
-    public string $errorMessage = '';
+  public string $errorMessage = '';
 
-    public string $action = '';
+  public string $action = '';
 
-    public string $keyKind;
+  public string $keyKind;
 
-    public function mount(string $action, string $keyKind = 'passkey'): void
-    {
-        $this->action = $action;
-        $this->keyKind = $keyKind;
+  public function mount(string $action, string $keyKind = 'passkey'): void
+  {
+    $this->action = $action;
+    $this->keyKind = $keyKind;
+  }
+
+  #[On('start-registration')]
+  public function registerKey(): void
+  {
+    $this->errorMessage = '';
+    $this->validate([
+      'name' => ['required', 'string', 'max:255'],
+    ]);
+
+    $this->bind();
+    $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
+
+    $this->js('start');
+  }
+
+  public function callback(array $data): void
+  {
+    try {
+      $this->bind();
+
+      $webauthnKey = app(ValidateKeyCreation::class)(Auth::user(), Arr::only($data, ['id', 'rawId', 'response', 'type']), $this->name);
+      $webauthnKey->kind = $this->keyKind;
+      $webauthnKey->save();
+
+      $this->name = '';
+
+      $this->dispatch('key-created', $webauthnKey);
+    } catch (Exception $e) {
+      $this->errorMessage = $e->getMessage();
     }
+  }
 
-    #[On('start-registration')]
-    public function registerKey(): void
-    {
-        $this->errorMessage = '';
-        $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-        ]);
-
-        $this->bind();
-        $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
-
-        $this->js('start');
+  public function bind(): void
+  {
+    if ($this->keyKind === 'security') {
+      App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
+    } elseif ($this->keyKind === 'passkey') {
+      App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
     }
-
-    public function callback(array $data): void
-    {
-        try {
-            $this->bind();
-
-            $webauthnKey = app(ValidateKeyCreation::class)(Auth::user(), Arr::only($data, ['id', 'rawId', 'response', 'type']), $this->name);
-            $webauthnKey->kind = $this->keyKind;
-            $webauthnKey->save();
-
-            $this->name = '';
-
-            $this->dispatch('key-created', $webauthnKey);
-        } catch (Exception $e) {
-            $this->errorMessage = $e->getMessage();
-        }
-    }
-
-    public function bind(): void
-    {
-        if ($this->keyKind === 'security') {
-            App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
-        } elseif ($this->keyKind === 'passkey') {
-            App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
-        }
-    }
+  }
 }; ?>
 
 <div>
@@ -97,7 +96,7 @@ new class extends Component
       </p>
     </div>
 
-    <div wire:show="errorMessage">
+    <div wire:show="errorMessage" x-transition.duration.100ms>
       <div class="relative mt-4 mb-4 rounded-sm border border-red-400/30 bg-red-100/10 px-4 py-3 dark:border-red-600/30 dark:bg-red-900/10">
         @if (App::environment('local'))
           <span class="flex font-bold text-red-700/80 dark:text-red-300/80" wire:text="errorMessage"></span>
@@ -107,7 +106,7 @@ new class extends Component
           </span>
         @endif
       </div>
-      <flux:button icon="arrow-path" wire:show="!processing" @click="$dispatch('start-registration');" variant="primary" color="sky">
+      <flux:button icon="arrow-path" wire:show="!processing" x-on:click.prevent="$wire.registerKey()" variant="primary" color="sky">
         {{ __('Retry') }}
       </flux:button>
     </div>
