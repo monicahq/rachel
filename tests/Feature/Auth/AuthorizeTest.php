@@ -29,6 +29,8 @@ test('authorize page redirects to the correct URI', function (): void {
         ->set('state', 'test-state')
         ->set('code_challenge', 'test-code_challenge')
         ->call('store')
+        ->assertDispatched('redirect')
+        ->dispatch('redirect')
         ->assertRedirectContains('https://example.com/callback')
         ->assertOk();
 
