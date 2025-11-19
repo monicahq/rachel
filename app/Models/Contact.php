@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\ResolvesModelInAccount;
+use App\Models\Concerns\ResolvesModelInVault;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
 
-final class Vault extends Model
+final class Contact extends Model
 {
-    /** @use HasFactory<\Database\Factories\VaultFactory> */
+    /** @use HasFactory<\Database\Factories\ContactFactory> */
     use HasFactory;
 
     use HasUuids;
-    use ResolvesModelInAccount;
+    use ResolvesModelInVault;
 
     /**
      * The attributes that are mass assignable.
@@ -25,10 +25,9 @@ final class Vault extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'account_id',
+        'vault_id',
         'name',
         'slug',
-        'description',
     ];
 
     /**
@@ -41,12 +40,12 @@ final class Vault extends Model
     }
 
     /**
-     * Get all contacts in the vault.
+     * Get the vault record associated with the contact.
      *
-     * @return HasMany<Contact, $this>
+     * @return BelongsTo<Vault, $this>
      */
-    public function contacts(): HasMany
+    public function vault(): BelongsTo
     {
-        return $this->hasMany(Contact::class);
+        return $this->belongsTo(Vault::class);
     }
 }

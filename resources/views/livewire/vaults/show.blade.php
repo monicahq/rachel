@@ -8,13 +8,17 @@ use function Livewire\Volt\state;
 state(['vault'])->locked();
 
 mount(function (Vault $vault): void {
-  $this->authorize('view', $vault);
+    $this->authorize('view', $vault);
 
-  $this->vault = $vault;
+    $this->vault = $vault;
 });
 
 ?>
 
 <div>
-  {{ $vault->name }}
+  <div class="dark:text-white">
+    {{ $vault->name }}
+  </div>
+
+  <x-link :href="route('contacts.index', $vault)" class="dark:text-white">Contacts</x-link>
 </div>
