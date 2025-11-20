@@ -26,7 +26,6 @@ final class ContactController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Contact::class);
         $this->middleware('abilities:read')->only(['index', 'show']);
         $this->middleware('abilities:write')->only(['store', 'update', 'delete']);
     }
@@ -37,6 +36,8 @@ final class ContactController extends Controller
     #[ResponseFromApiResource(JsonResource::class, Contact::class, collection: true)]
     public function index(Request $request, Vault $vault): JsonResource
     {
+        $this->authorize('viewAny', [Contact::class, $vault]);
+
         $contacts = $vault->contacts;
 
         return JsonResource::collection($contacts);
@@ -48,7 +49,7 @@ final class ContactController extends Controller
     #[ResponseFromApiResource(JsonResource::class, Contact::class)]
     public function show(Request $request, Vault $vault, Contact $contact): JsonResource
     {
-        throw_unless($vault->id === $contact->vault_id);
+        $this->authorize('view', [$contact, $vault]);
 
         return new JsonResource($contact);
     }
@@ -60,6 +61,8 @@ final class ContactController extends Controller
     #[BodyParam('name', description: 'The name of the contact. Max 255 characters.')]
     public function store(Request $request, Vault $vault): JsonResource
     {
+        $this->authorize('create', [Contact::class, $vault]);
+
         $validated = $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
         ]);
@@ -79,7 +82,7 @@ final class ContactController extends Controller
     #[BodyParam('name', description: 'The name of the contact. Max 255 characters.')]
     public function update(Request $request, Vault $vault, Contact $contact): JsonResource
     {
-        throw_unless($vault->id === $contact->vault_id);
+        $this->authorize('update', [$contact, $vault]);
 
         $validated = $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
@@ -100,7 +103,7 @@ final class ContactController extends Controller
     #[Response(status: 204)]
     public function destroy(Request $request, Vault $vault, Contact $contact): JsonResponse
     {
-        throw_unless($vault->id === $contact->vault_id);
+        $this->authorize('delete', [$contact, $vault]);
 
         (new DestroyContact(
             contact: $contact

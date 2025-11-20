@@ -3,57 +3,53 @@
 use App\Models\Contact;
 use App\Models\Vault;
 use App\Services\CreateContact;
-use Illuminate\Support\Collection;
-use Livewire\Attributes\Locked;
-use Livewire\Attributes\Validate;
-use Livewire\Volt\Component;
 
-new class extends Component
-{
-    #[Locked]
-    public string $vaultId;
+use function Livewire\Volt\mount;
+use function Livewire\Volt\rules;
+use function Livewire\Volt\state;
+use function Livewire\Volt\title;
 
-    #[Locked]
-    public string $vaultSlug;
+title(fn (): string|array|null => __('Contacts in vault :vault', ['vault' => $this->vault['name']]));
 
-    #[Locked]
-    public Collection $contacts;
+state(['vault', 'contacts'])->locked();
+state(['name']);
 
-    #[Validate(['required', 'string', 'max:255'])]
-    public string $name = '';
+rules(fn (): array => Contact::rules());
 
-    public function mount(Vault $vault): void
-    {
-        $this->authorize('viewAny', Contact::class);
+mount(function (Vault $vault): void {
+    $this->authorize('viewAny', [Contact::class, $vault]);
 
-        $this->vaultId = $vault->id;
-        $this->vaultSlug = $vault->slug;
-        $this->contacts = $vault->contacts
-            ->map(
-                fn (Contact $contact): array => [
-                    'id' => $contact->id,
-                    'name' => $contact->name,
-                    'route' => route('contacts.show', [$vault, $contact]),
-                ],
-            )
-            ->sortByCollator('name');
-    }
+    $this->vault = [
+        'id' => $vault->id,
+        'name' => $vault->name,
+    ];
+    $this->contacts = $vault->contacts
+        ->map(
+            fn (Contact $contact): array => [
+                'id' => $contact->id,
+                'name' => $contact->name,
+                'route' => route('contacts.show', [$vault, $contact]),
+            ],
+        )
+        ->sortByCollator('name');
+});
 
-    public function create(): void
-    {
-        $validated = $this->validate();
+$create = function (): void {
+    $vault = Vault::where('account_id', \Illuminate\Support\Facades\Auth::user()->account_id)->find($this->vault['id']);
 
-        $vault = Vault::find($this->vaultId);
+    $this->authorize('create', [Contact::class, $vault]);
 
-        $contact = (new CreateContact(vault: $vault, name: $validated['name']))->execute();
+    $validated = $this->validate();
 
-        $this->reset('name');
+    $contact = (new CreateContact(vault: $vault, name: $validated['name']))->execute();
 
-        $this->dispatch('contact-created');
+    $this->reset('name');
 
-        $this->redirect(route('contacts.show', [$vault, $contact]));
-    }
-}; ?>
+    $this->dispatch('contact-created');
+
+    $this->redirect(route('contacts.show', [$vault, $contact]));
+};
+?>
 
 <div>
   <div class="mx-auto max-w-lg px-2 py-2 sm:px-6 sm:py-6 lg:px-8">

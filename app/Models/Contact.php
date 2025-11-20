@@ -30,6 +30,13 @@ final class Contact extends Model
         'slug',
     ];
 
+    public static function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+        ];
+    }
+
     /**
      * Get the route key for the model.
      */

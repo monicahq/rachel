@@ -17,11 +17,22 @@ describe('api-contacts', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->get("/api/vaults/{$vault->id}/contacts")
+        $response = $this->getJson("/api/vaults/{$vault->id}/contacts")
             ->assertOk();
 
         expect($response->json('data'))
             ->toBe([]);
+    });
+
+    test('api can\'t get other account contacts', function (): void {
+        Sanctum::actingAs(
+            $user = User::factory()->create(),
+            ['read']
+        );
+        $vault = Vault::factory()->create();
+
+        $response = $this->getJson("/api/vaults/{$vault->id}/contacts")
+            ->assertNotFound();
     });
 
     test('api get all contacts', function (): void {
@@ -36,7 +47,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->get("/api/vaults/{$vault->id}/contacts")
+        $response = $this->getJson("/api/vaults/{$vault->id}/contacts")
             ->assertOk();
 
         expect($response->json('data.*.id'))
@@ -55,7 +66,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->get("/api/vaults/{$vault->id}/contacts/".$contact->slug)
+        $response = $this->getJson("/api/vaults/{$vault->id}/contacts/".$contact->slug)
             ->assertOk();
 
         expect($response->json('data.id'))
@@ -74,14 +85,14 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->get("/api/vaults/{$vault->id}/contacts/".$contact->id)
+        $response = $this->getJson("/api/vaults/{$vault->id}/contacts/".$contact->id)
             ->assertOk();
 
         expect($response->json('data.id'))
             ->toBe($contact->id);
     });
 
-    test('can\'t read other vaults contacts', function (): void {
+    test('api can\'t read other vaults contacts', function (): void {
         Sanctum::actingAs(
             User::factory()->create(),
             ['read']
@@ -102,7 +113,7 @@ describe('api-contacts', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->post("/api/vaults/{$vault->id}/contacts", [
+        $response = $this->postJson("/api/vaults/{$vault->id}/contacts", [
             'name' => 'my vault',
         ])
             ->assertCreated();
@@ -124,7 +135,7 @@ describe('api-contacts', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $this->post("/api/vaults/{$vault->id}/contacts/", [
+        $this->postJson("/api/vaults/{$vault->id}/contacts/", [
             'name' => 'my contact',
         ])
             ->assertForbidden();
@@ -142,7 +153,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->put("/api/vaults/{$vault->id}/contacts/".$contact->slug, [
+        $response = $this->putJson("/api/vaults/{$vault->id}/contacts/".$contact->slug, [
             'name' => 'Jean-Claude Duss',
         ])
             ->assertOk();
@@ -168,7 +179,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $this->delete("/api/vaults/{$vault->id}/contacts/".$contact->slug)
+        $this->deleteJson("/api/vaults/{$vault->id}/contacts/".$contact->slug)
             ->assertNoContent();
 
         $this->assertDatabaseMissing('contacts', [

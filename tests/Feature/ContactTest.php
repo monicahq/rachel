@@ -41,7 +41,7 @@ test('user can create a contact', function (): void {
         'account_id' => $user->account_id,
     ]);
 
-    $response = Volt::test('contacts.index', [$vault])
+    $response = Volt::test('contacts.index', ['vault' => $vault])
         ->set('name', 'Test Contact')
         ->call('create');
 

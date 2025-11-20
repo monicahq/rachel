@@ -31,6 +31,14 @@ final class Vault extends Model
         'description',
     ];
 
+    public static function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
     /**
      * Get the route key for the model.
      */

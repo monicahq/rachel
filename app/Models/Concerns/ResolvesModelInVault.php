@@ -8,6 +8,7 @@ use App\Models\Vault;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Override;
 
@@ -62,7 +63,7 @@ trait ResolvesModelInVault
     {
         $vault = Route::current()->parameter('vault');
 
-        throw_unless($vault !== null, ModelNotFoundException::class);
+        throw_unless($vault !== null && $vault->account_id === Auth::user()->account_id, ModelNotFoundException::class);
 
         return $vault;
     }

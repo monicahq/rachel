@@ -22,7 +22,7 @@ final class VaultPolicy
      */
     public function view(User $user, Vault $vault): bool
     {
-        return $user->account->id === $vault->account_id;
+        return $user->account_id === $vault->account_id;
     }
 
     /**
@@ -38,7 +38,7 @@ final class VaultPolicy
      */
     public function update(User $user, Vault $vault): bool
     {
-        return $user->account->id === $vault->account_id;
+        return $user->account_id === $vault->account_id;
     }
 
     /**
@@ -46,7 +46,7 @@ final class VaultPolicy
      */
     public function delete(User $user, Vault $vault): bool
     {
-        return $user->account->id === $vault->account_id;
+        return $user->account_id === $vault->account_id;
     }
 
     /**
@@ -54,7 +54,7 @@ final class VaultPolicy
      */
     public function restore(User $user, Vault $vault): bool
     {
-        return $user->account->id === $vault->account_id;
+        return $user->account_id === $vault->account_id;
     }
 
     /**
@@ -62,6 +62,6 @@ final class VaultPolicy
      */
     public function forceDelete(User $user, Vault $vault): bool
     {
-        return $user->account->id === $vault->account_id;
+        return $user->account_id === $vault->account_id;
     }
 }
