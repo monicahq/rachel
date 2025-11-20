@@ -30,16 +30,15 @@ trait ResolvesModelInVault
 
         try {
             return $this->resolveRouteBindingByField($value, $field, $vault);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             if ($field !== 'id') {
                 try {
                     return $this->resolveRouteBindingById($value, $vault);
                 } catch (Exception) {
-                    throw $e;
                 }
             }
 
-            throw $e;
+            return null;
         }
     }
 
@@ -61,6 +60,7 @@ trait ResolvesModelInVault
 
     private function getVault(): Vault
     {
+        /** @var ?Vault $vault */
         $vault = Route::current()->parameter('vault');
 
         throw_unless($vault !== null && $vault->account_id === Auth::user()->account_id, ModelNotFoundException::class);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Concerns;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ trait ResolvesModelInAccount
             if ($field !== 'id') {
                 try {
                     return $this->resolveRouteBindingById($value);
-                } catch (ModelNotFoundException) {
+                } catch (Exception) {
                 }
             }
 
