@@ -26,6 +26,7 @@ final class ContactController extends Controller
 {
     public function __construct()
     {
+        $this->authorizeResource(Contact::class);
         $this->middleware('abilities:read')->only(['index', 'show']);
         $this->middleware('abilities:write')->only(['store', 'update', 'delete']);
     }
@@ -34,10 +35,8 @@ final class ContactController extends Controller
      * List all contacts.
      */
     #[ResponseFromApiResource(JsonResource::class, Contact::class, collection: true)]
-    public function index(Request $request, Vault $vault): JsonResource
+    public function index(Vault $vault): JsonResource
     {
-        $this->authorize('viewAny', [Contact::class, $vault]);
-
         $contacts = $vault->contacts;
 
         return JsonResource::collection($contacts);
@@ -47,10 +46,8 @@ final class ContactController extends Controller
      * Retrieve a Contact.
      */
     #[ResponseFromApiResource(JsonResource::class, Contact::class)]
-    public function show(Request $request, Vault $vault, Contact $contact): JsonResource
+    public function show(Vault $vault, Contact $contact): JsonResource
     {
-        $this->authorize('view', [$contact, $vault]);
-
         return new JsonResource($contact);
     }
 
@@ -61,11 +58,7 @@ final class ContactController extends Controller
     #[BodyParam('name', description: 'The name of the contact. Max 255 characters.')]
     public function store(Request $request, Vault $vault): JsonResource
     {
-        $this->authorize('create', [Contact::class, $vault]);
-
-        $validated = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        $validated = $this->validate($request, Contact::rules());
 
         $contact = (new CreateContact(
             vault: $vault,
@@ -82,11 +75,7 @@ final class ContactController extends Controller
     #[BodyParam('name', description: 'The name of the contact. Max 255 characters.')]
     public function update(Request $request, Vault $vault, Contact $contact): JsonResource
     {
-        $this->authorize('update', [$contact, $vault]);
-
-        $validated = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        $validated = $this->validate($request, Contact::rules());
 
         $contact = (new UpdateContact(
             contact: $contact,
@@ -101,10 +90,8 @@ final class ContactController extends Controller
      * Destroy a Contact.
      */
     #[Response(status: 204)]
-    public function destroy(Request $request, Vault $vault, Contact $contact): JsonResponse
+    public function destroy(Vault $vault, Contact $contact): JsonResponse
     {
-        $this->authorize('delete', [$contact, $vault]);
-
         (new DestroyContact(
             contact: $contact
         ))->execute();

@@ -63,7 +63,10 @@ trait ResolvesModelInVault
         /** @var ?Vault $vault */
         $vault = Route::current()->parameter('vault');
 
-        throw_unless($vault !== null && $vault->account_id === Auth::user()->account_id, ModelNotFoundException::class);
+        throw_unless($vault !== null
+            && $vault instanceof Vault
+            && $vault->account_id === Auth::user()->account_id,
+            exception: ModelNotFoundException::class);
 
         return $vault;
     }

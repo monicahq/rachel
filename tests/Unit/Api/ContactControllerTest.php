@@ -54,7 +54,7 @@ describe('api-contacts', function (): void {
             ->toBe([$contact->id]);
     });
 
-    test('api get a contact', function (): void {
+    test('api get a contact by slug', function (): void {
         Sanctum::actingAs(
             $user = User::factory()->create(),
             ['read']
@@ -154,16 +154,16 @@ describe('api-contacts', function (): void {
         ]);
 
         $response = $this->putJson("/api/vaults/{$vault->id}/contacts/".$contact->slug, [
-            'name' => 'Jean-Claude Duss',
+            'name' => 'Jean-Claude Dusse',
         ])
             ->assertOk();
 
         expect($response->json('data.name'))
-            ->toBe('Jean-Claude Duss');
+            ->toBe('Jean-Claude Dusse');
 
         $this->assertDatabaseHas('contacts', [
             'id' => $contact->id,
-            'name' => 'Jean-Claude Duss',
+            'name' => 'Jean-Claude Dusse',
         ]);
     });
 

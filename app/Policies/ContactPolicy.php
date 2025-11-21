@@ -7,67 +7,84 @@ namespace App\Policies;
 use App\Models\Contact;
 use App\Models\User;
 use App\Models\Vault;
+use App\Policies\Concerns\ManagePolicy;
 
 final class ContactPolicy
 {
+    use ManagePolicy;
+
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Vault $vault): bool
+    public function viewAny(User $user, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault);
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Contact $contact, Vault $vault): bool
+    public function view(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id
-            && $vault->id === $contact->vault_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault)
+            && $this->sameVault($contact, $vault);
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Vault $vault): bool
+    public function create(User $user, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Contact $contact, Vault $vault): bool
+    public function update(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id
-            && $vault->id === $contact->vault_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault)
+            && $this->sameVault($contact, $vault);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Contact $contact, Vault $vault): bool
+    public function delete(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id
-            && $vault->id === $contact->vault_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault)
+            && $this->sameVault($contact, $vault);
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Contact $contact, Vault $vault): bool
+    public function restore(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id
-            && $vault->id === $contact->vault_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault)
+            && $this->sameVault($contact, $vault);
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Contact $contact, Vault $vault): bool
+    public function forceDelete(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        return $user->account_id === $vault->account_id
-            && $vault->id === $contact->vault_id;
+        $vault ??= $this->getVault();
+
+        return $this->sameAccount($user, $vault)
+            && $this->sameVault($contact, $vault);
     }
 }

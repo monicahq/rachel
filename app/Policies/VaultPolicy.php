@@ -6,9 +6,12 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Vault;
+use App\Policies\Concerns\ManagePolicy;
 
 final class VaultPolicy
 {
+    use ManagePolicy;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -22,7 +25,7 @@ final class VaultPolicy
      */
     public function view(User $user, Vault $vault): bool
     {
-        return $user->account_id === $vault->account_id;
+        return $this->sameAccount($user, $vault);
     }
 
     /**
@@ -38,7 +41,7 @@ final class VaultPolicy
      */
     public function update(User $user, Vault $vault): bool
     {
-        return $user->account_id === $vault->account_id;
+        return $this->sameAccount($user, $vault);
     }
 
     /**
@@ -46,7 +49,7 @@ final class VaultPolicy
      */
     public function delete(User $user, Vault $vault): bool
     {
-        return $user->account_id === $vault->account_id;
+        return $this->sameAccount($user, $vault);
     }
 
     /**
@@ -54,7 +57,7 @@ final class VaultPolicy
      */
     public function restore(User $user, Vault $vault): bool
     {
-        return $user->account_id === $vault->account_id;
+        return $this->sameAccount($user, $vault);
     }
 
     /**
@@ -62,6 +65,6 @@ final class VaultPolicy
      */
     public function forceDelete(User $user, Vault $vault): bool
     {
-        return $user->account_id === $vault->account_id;
+        return $this->sameAccount($user, $vault);
     }
 }
