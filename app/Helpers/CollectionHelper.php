@@ -80,8 +80,8 @@ final class CollectionHelper
      */
     private static function currentLang(string $locale): string
     {
-        if (preg_match('/(-|_)/', $locale)) {
-            $locale = preg_split('/(-|_)/', $locale, 2)[0];
+        if (preg_match('/[-_]/', $locale)) {
+            $locale = preg_split('/[-_]/', $locale, 2)[0];
         }
 
         return mb_strtolower($locale);
