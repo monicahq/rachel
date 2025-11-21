@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Models\Contact;
 use App\Models\User;
 use App\Models\Vault;
-use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 
 describe('api-contacts', function (): void {
@@ -169,7 +168,7 @@ describe('api-contacts', function (): void {
     });
 
     test('api delete a contact', function (): void {
-        \Illuminate\Support\Facades\Date::setTestNow(now());
+        Illuminate\Support\Facades\Date::setTestNow(now());
 
         Sanctum::actingAs(
             $user = User::factory()->create(),
