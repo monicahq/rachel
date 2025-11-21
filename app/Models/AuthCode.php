@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 final class AuthCode extends Model
 {
+    /** @use HasFactory<\Database\Factories\AuthCodeFactory> */
     use HasFactory;
 
     public $timestamps = false;

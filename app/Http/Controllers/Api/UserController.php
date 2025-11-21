@@ -41,7 +41,7 @@ final class UserController extends Controller
      * Get a specific user object.
      */
     #[ResponseFromApiResource(JsonResource::class, User::class)]
-    public function show(Request $request, User $user): JsonResource
+    public function show(User $user): JsonResource
     {
         return new JsonResource($user);
     }

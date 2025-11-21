@@ -45,7 +45,7 @@ final class VaultController extends Controller
      * Retrieve a vault.
      */
     #[ResponseFromApiResource(JsonResource::class, Vault::class)]
-    public function show(Request $request, Vault $vault): JsonResource
+    public function show(Vault $vault): JsonResource
     {
         return new JsonResource($vault);
     }
@@ -58,10 +58,7 @@ final class VaultController extends Controller
     #[BodyParam('description', description: 'The description of the vault. Max 65535 characters.', required: false)]
     public function store(Request $request): JsonResource
     {
-        $validated = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $this->validate($request, Vault::rules());
 
         $vault = (new CreateVault(
             user: $request->user(),
@@ -80,10 +77,7 @@ final class VaultController extends Controller
     #[BodyParam('description', description: 'The description of the vault. Max 65535 characters.', required: false)]
     public function update(Request $request, Vault $vault): JsonResource
     {
-        $validated = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $this->validate($request, Vault::rules());
 
         $vault = (new UpdateVault(
             vault: $vault,
@@ -99,7 +93,7 @@ final class VaultController extends Controller
      * Destroy a vault.
      */
     #[Response(status: 204)]
-    public function destroy(Request $request, Vault $vault): JsonResponse
+    public function destroy(Vault $vault): JsonResponse
     {
         (new DestroyVault(
             vault: $vault
