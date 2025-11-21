@@ -20,6 +20,8 @@ return new class extends Migration
             $table->foreignIdFor(Vault::class)->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug');
+
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index('slug');

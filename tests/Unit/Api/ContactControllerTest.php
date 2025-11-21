@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\Contact;
 use App\Models\User;
 use App\Models\Vault;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 
 describe('api-contacts', function (): void {
@@ -168,6 +169,8 @@ describe('api-contacts', function (): void {
     });
 
     test('api delete a contact', function (): void {
+        \Illuminate\Support\Facades\Date::setTestNow(now());
+
         Sanctum::actingAs(
             $user = User::factory()->create(),
             ['write']
@@ -182,8 +185,9 @@ describe('api-contacts', function (): void {
         $this->deleteJson("/api/vaults/{$vault->id}/contacts/".$contact->slug)
             ->assertNoContent();
 
-        $this->assertDatabaseMissing('contacts', [
+        $this->assertDatabaseHas('contacts', [
             'id' => $contact->id,
+            'deleted_at' => now(), // Soft delete check
         ]);
     });
 });
