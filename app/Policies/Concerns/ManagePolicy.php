@@ -32,9 +32,6 @@ trait ManagePolicy
      */
     protected function getVault(): ?Vault
     {
-        /** @var ?Vault $vault */
-        $vault = Route::current()->parameter('vault');
-
-        return $vault;
+        return Route::current()->parameter('vault');
     }
 }

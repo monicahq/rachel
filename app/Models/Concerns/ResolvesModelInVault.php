@@ -35,6 +35,7 @@ trait ResolvesModelInVault
                 try {
                     return $this->resolveRouteBindingById($value, $vault);
                 } catch (Exception) {
+                    return null;
                 }
             }
 

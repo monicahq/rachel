@@ -31,6 +31,7 @@ trait ResolvesModelInAccount
                 try {
                     return $this->resolveRouteBindingById($value);
                 } catch (Exception) {
+                    return null;
                 }
             }
 

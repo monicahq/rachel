@@ -39,9 +39,7 @@ final class ContactPolicy
      */
     public function create(User $user, ?Vault $vault = null): bool
     {
-        $vault ??= $this->getVault();
-
-        return $this->sameAccount($user, $vault);
+        return $this->viewAny($user, $vault);
     }
 
     /**
@@ -49,10 +47,7 @@ final class ContactPolicy
      */
     public function update(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        $vault ??= $this->getVault();
-
-        return $this->sameAccount($user, $vault)
-            && $this->sameVault($contact, $vault);
+        return $this->view($user, $contact, $vault);
     }
 
     /**
@@ -60,10 +55,7 @@ final class ContactPolicy
      */
     public function delete(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        $vault ??= $this->getVault();
-
-        return $this->sameAccount($user, $vault)
-            && $this->sameVault($contact, $vault);
+        return $this->view($user, $contact, $vault);
     }
 
     /**
@@ -71,10 +63,7 @@ final class ContactPolicy
      */
     public function restore(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        $vault ??= $this->getVault();
-
-        return $this->sameAccount($user, $vault)
-            && $this->sameVault($contact, $vault);
+        return $this->view($user, $contact, $vault);
     }
 
     /**
@@ -82,9 +71,6 @@ final class ContactPolicy
      */
     public function forceDelete(User $user, Contact $contact, ?Vault $vault = null): bool
     {
-        $vault ??= $this->getVault();
-
-        return $this->sameAccount($user, $vault)
-            && $this->sameVault($contact, $vault);
+        return $this->view($user, $contact, $vault);
     }
 }
