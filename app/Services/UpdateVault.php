@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\SlugHelper;
 use App\Models\User;
 use App\Models\Vault;
-use Illuminate\Support\Str;
 
 /**
  * Update a vault for a user.
@@ -29,10 +29,23 @@ final readonly class UpdateVault
 
     private function update(): void
     {
-        $this->vault->update([
+        $this->vault->fill([
             'name' => $this->name,
-            'slug' => Str::slug($this->name, language: $this->user->locale),
             'description' => $this->description,
         ]);
+
+        if ($this->vault->isDirty('name')) {
+            $slug = SlugHelper::generateUniqueSlug(
+                collection: $this->user->account->vaults,
+                name: $this->name,
+                locale: $this->user->locale,
+            );
+
+            $this->vault->fill([
+                'slug' => $slug,
+            ]);
+        }
+
+        $this->vault->save();
     }
 }

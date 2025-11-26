@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
+use App\Models\Vault;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -28,9 +31,7 @@ pest()->extend(Tests\TestCase::class)
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+expect()->extend('toBeOne', fn() => $this->toBe(1));
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,11 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function vault(): Vault
 {
-    // ..
+    $user = User::factory()->create();
+
+    return Vault::factory()->create([
+        'account_id' => $user->account_id,
+    ]);
 }

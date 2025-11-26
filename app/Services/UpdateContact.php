@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\SlugHelper;
 use App\Models\Contact;
 use App\Models\Vault;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 /**
  * Update a contact.
@@ -29,9 +28,22 @@ final readonly class UpdateContact
 
     private function update(): void
     {
-        $this->contact->update([
+        $this->contact->fill([
             'name' => $this->name,
-            'slug' => Str::slug($this->name, language: Auth::user()->locale),
         ]);
+
+        if ($this->contact->isDirty('name')) {
+            $slug = SlugHelper::generateUniqueSlug(
+                collection: $this->vault->contacts,
+                name: $this->name,
+                locale: $this->vault->account->users->first()->locale,
+            );
+
+            $this->contact->fill([
+                'slug' => $slug,
+            ]);
+        }
+
+        $this->contact->save();
     }
 }

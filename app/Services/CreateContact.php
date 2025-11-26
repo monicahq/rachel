@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\SlugHelper;
 use App\Models\Contact;
 use App\Models\Vault;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 /**
  * Create a contact.
@@ -30,9 +29,15 @@ final class CreateContact
 
     private function create(): void
     {
+        $slug = SlugHelper::generateUniqueSlug(
+            collection: $this->vault->contacts,
+            name: $this->name,
+            locale: $this->vault->account->users->first()->locale,
+        );
+
         $this->contact = $this->vault->contacts()->create([
             'name' => $this->name,
-            'slug' => Str::slug($this->name, language: Auth::user()->locale),
+            'slug' => $slug,
         ]);
     }
 }

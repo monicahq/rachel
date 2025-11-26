@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\SlugHelper;
 use App\Models\User;
 use App\Models\Vault;
-use Illuminate\Support\Str;
 
 /**
  * Create a vault for a user.
@@ -30,9 +30,15 @@ final class CreateVault
 
     private function create(): void
     {
+        $slug = SlugHelper::generateUniqueSlug(
+            collection: $this->user->account->vaults,
+            name: $this->name,
+            locale: $this->user->locale,
+        );
+
         $this->vault = $this->user->account->vaults()->create([
             'name' => $this->name,
-            'slug' => Str::slug($this->name, language: $this->user->locale),
+            'slug' => $slug,
             'description' => $this->description,
         ]);
     }

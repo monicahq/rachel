@@ -24,7 +24,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index('slug');
+            $table->index(['vault_id', 'slug']);
         });
     }
 
