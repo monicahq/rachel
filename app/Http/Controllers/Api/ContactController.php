@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Vault;
 use App\Services\CreateContact;
@@ -22,10 +21,11 @@ use Knuckles\Scribe\Attributes\ResponseFromApiResource;
  *
  * @subgroup Contacts
  */
-final class ContactController extends Controller
+final class ContactController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->authorizeResource(Contact::class);
         $this->middleware('abilities:read')->only(['index', 'show']);
         $this->middleware('abilities:write')->only(['store', 'update', 'delete']);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Vault;
 use App\Services\CreateVault;
 use App\Services\DestroyVault;
@@ -21,10 +20,11 @@ use Knuckles\Scribe\Attributes\ResponseFromApiResource;
  *
  * @subgroup Vaults
  */
-final class VaultController extends Controller
+final class VaultController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->authorizeResource(Vault::class);
         $this->middleware('abilities:read')->only(['index', 'show']);
         $this->middleware('abilities:write')->only(['store', 'update', 'delete']);
