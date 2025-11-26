@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Helpers\CollectionHelper;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -34,5 +36,14 @@ final class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute(5)->by($email.$request->ip());
         });
+
+        if (! Collection::hasMacro('sortByCollator')) {
+            Collection::macro('sortByCollator', function (callable|string $callback): Collection {
+                /** @var Collection */
+                $collect = $this;
+
+                return CollectionHelper::sortByCollator($collect, $callback);
+            });
+        }
     }
 }

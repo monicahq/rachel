@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,10 +15,11 @@ use Knuckles\Scribe\Attributes\ResponseFromApiResource;
  *
  * @subgroup Users
  */
-final class UserController extends Controller
+final class UserController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('abilities:read');
     }
 
@@ -41,7 +41,7 @@ final class UserController extends Controller
      * Get a specific user object.
      */
     #[ResponseFromApiResource(JsonResource::class, User::class)]
-    public function show(Request $request, User $user): JsonResource
+    public function show(User $user): JsonResource
     {
         return new JsonResource($user);
     }

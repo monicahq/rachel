@@ -18,8 +18,9 @@ it('can create a vault', function (): void {
 
     $this->assertDatabaseHas('vaults', [
         'id' => $vault->id,
+        'account_id' => $user->account_id,
         'name' => 'New Vault',
-        'account_id' => $user->account->id,
+        'slug' => 'new-vault',
     ]);
 });
 
@@ -36,9 +37,31 @@ it('can create a vault with description', function (): void {
 
     $this->assertDatabaseHas('vaults', [
         'id' => $vault->id,
+        'account_id' => $user->account_id,
         'name' => 'New Vault',
         'slug' => 'new-vault',
-        'account_id' => $user->account->id,
         'description' => 'Default one',
+    ]);
+});
+
+it('can create same vault name twice', function (): void {
+    $user = User::factory()->create();
+    Vault::factory()->create([
+        'account_id' => $user->account_id,
+        'slug' => 'new-vault',
+    ]);
+
+    $vault = (new CreateVault(
+        user: $user,
+        name: 'New Vault',
+    ))->execute();
+
+    expect($vault)->toBeInstanceOf(Vault::class);
+
+    $this->assertDatabaseHas('vaults', [
+        'id' => $vault->id,
+        'account_id' => $user->account_id,
+        'name' => 'New Vault',
+        'slug' => 'new-vault-1',
     ]);
 });

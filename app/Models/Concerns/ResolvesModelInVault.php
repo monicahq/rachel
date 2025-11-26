@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models\Concerns;
 
+use App\Models\Vault;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Override;
 
-trait ResolvesModelInAccount
+trait ResolvesModelInVault
 {
     /**
      * Retrieve the model for a bound value.
@@ -24,12 +26,14 @@ trait ResolvesModelInAccount
     {
         $field ??= $this->getRouteKeyName();
 
+        $vault = $this->getVault();
+
         try {
-            return $this->resolveRouteBindingByField($value, $field);
+            return $this->resolveRouteBindingByField($value, $field, $vault);
         } catch (ModelNotFoundException) {
             if ($field !== 'id') {
                 try {
-                    return $this->resolveRouteBindingById($value);
+                    return $this->resolveRouteBindingById($value, $vault);
                 } catch (Exception) {
                     return null;
                 }
@@ -39,19 +43,32 @@ trait ResolvesModelInAccount
         }
     }
 
-    private function resolveRouteBindingByField(mixed $value, string $field): Model
+    private function resolveRouteBindingByField(mixed $value, string $field, Vault $vault): Model
     {
         return $this->where([
             $field => $value,
-            'account_id' => Auth::user()->account_id,
+            'vault_id' => $vault->id,
         ])->firstOrFail();
     }
 
-    private function resolveRouteBindingById(mixed $value): Model
+    private function resolveRouteBindingById(mixed $value, Vault $vault): Model
     {
         return $this->where([
             'id' => $value,
-            'account_id' => Auth::user()->account_id,
+            'vault_id' => $vault->id,
         ])->firstOrFail();
+    }
+
+    private function getVault(): Vault
+    {
+        /** @var ?Vault $vault */
+        $vault = Route::current()->parameter('vault');
+
+        throw_unless($vault !== null
+            && $vault instanceof Vault
+            && $vault->account_id === Auth::user()->account_id,
+            exception: ModelNotFoundException::class);
+
+        return $vault;
     }
 }

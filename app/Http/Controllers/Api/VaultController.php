@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Vault;
 use App\Services\CreateVault;
 use App\Services\DestroyVault;
@@ -21,10 +20,11 @@ use Knuckles\Scribe\Attributes\ResponseFromApiResource;
  *
  * @subgroup Vaults
  */
-final class VaultController extends Controller
+final class VaultController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->authorizeResource(Vault::class);
         $this->middleware('abilities:read')->only(['index', 'show']);
         $this->middleware('abilities:write')->only(['store', 'update', 'delete']);
@@ -45,7 +45,7 @@ final class VaultController extends Controller
      * Retrieve a vault.
      */
     #[ResponseFromApiResource(JsonResource::class, Vault::class)]
-    public function show(Request $request, Vault $vault): JsonResource
+    public function show(Vault $vault): JsonResource
     {
         return new JsonResource($vault);
     }
@@ -58,10 +58,7 @@ final class VaultController extends Controller
     #[BodyParam('description', description: 'The description of the vault. Max 65535 characters.', required: false)]
     public function store(Request $request): JsonResource
     {
-        $validated = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $this->validate($request, Vault::rules());
 
         $vault = (new CreateVault(
             user: $request->user(),
@@ -80,10 +77,7 @@ final class VaultController extends Controller
     #[BodyParam('description', description: 'The description of the vault. Max 65535 characters.', required: false)]
     public function update(Request $request, Vault $vault): JsonResource
     {
-        $validated = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $this->validate($request, Vault::rules());
 
         $vault = (new UpdateVault(
             vault: $vault,
@@ -99,7 +93,7 @@ final class VaultController extends Controller
      * Destroy a vault.
      */
     #[Response(status: 204)]
-    public function destroy(Request $request, Vault $vault): JsonResponse
+    public function destroy(Vault $vault): JsonResponse
     {
         (new DestroyVault(
             vault: $vault
