@@ -18,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Volt::route('vaults/{vault}', 'vaults.show')
         ->name('vaults.show')
         ->missing(fn () => to_route('vaults.index'));
+    Volt::route('vaults/{vault}/contacts', 'contacts.index')->name('contacts.index');
+    Volt::route('vaults/{vault}/contacts/{contact}', 'contacts.show')->name('contacts.show');
 
     Route::redirect('settings', 'settings/profile')->name('settings.index');
     Volt::route('settings/api-token-manager', 'settings.api-token-manager')->name('settings.api-token-manager');

@@ -5,47 +5,45 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Helpers\SlugHelper;
-use App\Models\User;
+use App\Models\Contact;
 use App\Models\Vault;
 
 /**
- * Update a vault for a user.
+ * Update a contact.
  */
-final readonly class UpdateVault
+final readonly class UpdateContact
 {
     public function __construct(
+        public Contact $contact,
         public Vault $vault,
-        public User $user,
         public string $name,
-        public ?string $description = null,
     ) {}
 
-    public function execute(): Vault
+    public function execute(): Contact
     {
         $this->update();
 
-        return $this->vault;
+        return $this->contact;
     }
 
     private function update(): void
     {
-        $this->vault->fill([
+        $this->contact->fill([
             'name' => $this->name,
-            'description' => $this->description,
         ]);
 
-        if ($this->vault->isDirty('name')) {
+        if ($this->contact->isDirty('name')) {
             $slug = SlugHelper::generateUniqueSlug(
-                collection: $this->user->account->vaults,
+                collection: $this->vault->contacts,
                 name: $this->name,
-                locale: $this->user->locale,
+                locale: $this->vault->account->users->first()->locale,
             );
 
-            $this->vault->fill([
+            $this->contact->fill([
                 'slug' => $slug,
             ]);
         }
 
-        $this->vault->save();
+        $this->contact->save();
     }
 }

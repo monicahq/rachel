@@ -4,21 +4,22 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\ResolvesModelInAccount;
+use App\Models\Concerns\ResolvesModelInVault;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
 
-final class Vault extends Model
+final class Contact extends Model
 {
-    /** @use HasFactory<\Database\Factories\VaultFactory> */
+    /** @use HasFactory<\Database\Factories\ContactFactory> */
     use HasFactory;
 
     use HasUuids;
-    use ResolvesModelInAccount;
+    use ResolvesModelInVault;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -26,17 +27,15 @@ final class Vault extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'account_id',
+        'vault_id',
         'name',
         'slug',
-        'description',
     ];
 
     public static function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -50,22 +49,12 @@ final class Vault extends Model
     }
 
     /**
-     * Get the account that owns the vault.
+     * Get the vault record associated with the contact.
      *
-     * @return BelongsTo<Account, $this>
+     * @return BelongsTo<Vault, $this>
      */
-    public function account(): BelongsTo
+    public function vault(): BelongsTo
     {
-        return $this->belongsTo(Account::class);
-    }
-
-    /**
-     * Get all contacts in the vault.
-     *
-     * @return HasMany<Contact, $this>
-     */
-    public function contacts(): HasMany
-    {
-        return $this->hasMany(Contact::class);
+        return $this->belongsTo(Vault::class);
     }
 }

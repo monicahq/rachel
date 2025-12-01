@@ -2,31 +2,35 @@
 
 use App\Models\Vault;
 use App\Services\CreateVault;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Locked;
-use Livewire\Attributes\Validate;
-use Livewire\Volt\Component;
 
-new class extends Component {
-  #[Locked]
-  public Collection $vaults;
+use function Livewire\Volt\mount;
+use function Livewire\Volt\rules;
+use function Livewire\Volt\state;
+use function Livewire\Volt\title;
 
-  #[Validate(['required', 'string', 'max:255'])]
-  public string $name = '';
+title(fn (): string|array|null => __('List of vaults'));
 
-  #[Validate(['nullable', 'string', 'max:255'])]
-  public string $description = '';
+state(['vaults'])->locked();
+state(['name', 'description']);
 
-  public function mount(): void
-  {
+rules(fn (): array => Vault::rules());
+
+mount(function (Vault $vault): void {
     $this->authorize('viewAny', Vault::class);
 
-    $this->vaults = Auth::user()->account->vaults;
-  }
+    $this->vaults = Auth::user()->account->vaults->map(
+        fn (Vault $vault): array => [
+            'id' => $vault->id,
+            'name' => $vault->name,
+            'route' => route('vaults.show', $vault),
+        ],
+    );
+});
 
-  public function create(): void
-  {
+$create = function (): void {
+    $this->authorize('create', Vault::class);
+
     $validated = $this->validate();
 
     $vault = (new CreateVault(user: Auth::user(), name: $validated['name'], description: $validated['description'] ?? null))->execute();
@@ -36,7 +40,6 @@ new class extends Component {
     $this->dispatch('vault-created');
 
     $this->redirect(route('vaults.show', $vault));
-  }
 }; ?>
 
 <div>
@@ -45,12 +48,12 @@ new class extends Component {
       <!-- vaults list -->
       <div class="grid grid-cols-1 gap-10">
         @foreach ($vaults as $vault)
-          <x-link :href="route('vaults.show', $vault)">
+          <x-link :href="$vault['route']">
             <x-box class="group h-40 hover:bg-[#E4EEF3] hover:ring-1 hover:ring-gray-200 hover:dark:bg-[#202830] hover:dark:ring-gray-700" padding="p-0">
               <div class="relative h-full w-full overflow-hidden">
                 <!-- Vault name -->
                 <div class="absolute inset-0 z-10 flex items-center justify-center text-center">
-                  <span class="text-lg font-semibold">{{ $vault->name }}</span>
+                  <span class="text-lg font-semibold">{{ $vault['name'] }}</span>
                 </div>
 
                 <!-- Orbit circles -->
