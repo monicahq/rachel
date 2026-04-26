@@ -21,29 +21,28 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.2",
         "asbiin/laravel-localizer": "^4.0",
         "asbiin/laravel-webauthn": "^5.4",
         "codeat3/blade-phosphor-icons": "^2.3",
-        "erag/laravel-disposable-email": "^3.7",
+        "erag/laravel-disposable-email": "^4.1",
         "joshbrw/laravel-module-installer": "^2.0",
         "knuckleswtf/scribe": "^5.3",
         "laravel/fortify": "^1.30",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.2",
-        "laravel/tinker": "^2.10.1",
+        "laravel/tinker": "^3.0",
         "livewire/flux": "^2.1.1",
-        "livewire/volt": "^1.7.0",
+        "livewire/volt": "^1.10",
         "nwidart/laravel-modules": "^12.0"
     },
     "require-dev": {
-        "amirami/localizator": "^0.14.0-alpha",
-        "barryvdh/laravel-debugbar": "^3.16",
+        "barryvdh/laravel-debugbar": "^4.2",
         "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.7",
         "laravel-lang/common": "^6.7",
-        "laravel/boost": "^1.3",
+        "laravel/boost": "^2.0",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.25",
         "laravel/sail": "^1.41",
@@ -54,8 +53,7 @@
         "phpstan/extension-installer": "^1.4",
         "rector/rector": "^2.1",
         "roave/security-advisories": "dev-master",
-        "stichoza/google-translate-php": "^5.3",
-        "tomasvotruba/bladestan": "^0"
+        "stichoza/google-translate-php": "^5.3"
     },
     "autoload": {
         "psr-4": {
@@ -86,7 +84,8 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan monica:localize"
+            "@php artisan boost:update --ansi",
+            "#@php artisan monica:localize"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
