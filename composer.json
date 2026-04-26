@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "asbiin/laravel-localizer": "^4.0",
         "asbiin/laravel-webauthn": "^5.4",
         "codeat3/blade-phosphor-icons": "^2.3",

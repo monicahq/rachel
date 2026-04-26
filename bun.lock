@@ -1,12 +1,9 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
-      "dependencies": {
-        "@simplewebauthn/browser": "^13.2.2",
-      },
       "devDependencies": {
+        "@simplewebauthn/browser": "^13.2.2",
         "@tailwindcss/vite": "^4.1.14",
         "alpinejs": "^3.15.0",
         "axios": "^1.12.2",
