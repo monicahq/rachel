@@ -1,2 +1,2 @@
 npx lint-staged
-# composer monica:localize-check
+composer monica:localize-check

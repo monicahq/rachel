@@ -24,6 +24,7 @@
         "php": "^8.2",
         "asbiin/laravel-localizer": "^4.0",
         "asbiin/laravel-webauthn": "^5.4",
+        "asbiin/localizator": "^1.0",
         "codeat3/blade-phosphor-icons": "^2.3",
         "erag/laravel-disposable-email": "^4.1",
         "joshbrw/laravel-module-installer": "^2.0",
@@ -74,18 +75,18 @@
           "@php artisan key:generate",
           "@php artisan migrate --force",
           "@php artisan scribe:setup --clean --force",
+          "@monica:update-blacklist-domains",
           "bun install",
           "bun run build"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi",
-            "@monica:update-blacklist-domains"
+            "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
             "@php artisan boost:update --ansi",
-            "#@php artisan monica:localize"
+            "@php artisan monica:localize"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -108,7 +109,7 @@
         "monica:prettier": "bunx prettier --write resources/",
         "monica:rector": "./vendor/bin/rector process",
         "monica:static-check": "./vendor/bin/phpstan analyse",
-        "monica:update-blacklist-domains": "touch database/database.sqlite && php artisan erag:sync-disposable-email-list"
+        "monica:update-blacklist-domains": "php artisan erag:sync-disposable-email-list"
     },
     "extra": {
         "laravel": {
