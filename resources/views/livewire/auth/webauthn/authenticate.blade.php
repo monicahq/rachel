@@ -8,76 +8,76 @@ use Laravel\Fortify\Http\Requests\TwoFactorLoginRequest;
 use LaravelWebauthn\Facades\Webauthn;
 use LaravelWebauthn\Services\Webauthn\CredentialRepository;
 use Livewire\Attributes\On;
-use Livewire\Volt\Component;
 
-new class extends Component {
-  public string $action;
+new class extends Livewire\Component
+{
+    public string $action;
 
-  public string $publicKey;
+    public string $publicKey;
 
-  public bool $processing = false;
+    public bool $processing = false;
 
-  public bool $success = false;
+    public bool $success = false;
 
-  public string $errorMessage = '';
+    public string $errorMessage = '';
 
-  public bool $autofill;
+    public bool $autofill;
 
-  public string $keyKind;
+    public string $keyKind;
 
-  public function mount(string $action, bool $autofill = false, string $keyKind = 'all'): void
-  {
-    $this->action = $action;
-    $this->autofill = $autofill;
-    $this->keyKind = $keyKind;
-  }
-
-  #[On('start-authenticate')]
-  public function start(): void
-  {
-    $this->bind();
-
-    if (($user = Auth::user()) === null) {
-      $request = TwoFactorLoginRequest::createFrom(request());
-      if ($request->hasChallengedUser()) {
-        $user = $request->challengedUser();
-      }
+    public function mount(string $action, bool $autofill = false, string $keyKind = 'all'): void
+    {
+        $this->action = $action;
+        $this->autofill = $autofill;
+        $this->keyKind = $keyKind;
     }
 
-    $this->publicKey = Webauthn::prepareAssertion($user);
-    $this->errorMessage = '';
-    $this->js('start()');
-  }
+    #[On('start-authenticate')]
+    public function start(): void
+    {
+        $this->bind();
 
-  #[On('webauthn-stop')]
-  public function stop(string $message): void
-  {
-    if ($this->processing) {
-      $this->processing = false;
-      $this->errorMessage = $message;
+        if (($user = Auth::user()) === null) {
+            $request = TwoFactorLoginRequest::createFrom(request());
+            if ($request->hasChallengedUser()) {
+                $user = $request->challengedUser();
+            }
+        }
+
+        $this->publicKey = Webauthn::prepareAssertion($user);
+        $this->errorMessage = '';
+        $this->js('start()');
     }
-  }
 
-  public function callback(array $data): void
-  {
-    $this->dispatch('webauthn-authenticate', $data);
-  }
-
-  #[On('login-error')]
-  public function error(string $message): void
-  {
-    $this->processing = false;
-    $this->errorMessage = $message;
-  }
-
-  public function bind(): void
-  {
-    if ($this->keyKind === 'security') {
-      App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
-    } elseif ($this->keyKind === 'passkey') {
-      App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
+    #[On('webauthn-stop')]
+    public function stop(string $message): void
+    {
+        if ($this->processing) {
+            $this->processing = false;
+            $this->errorMessage = $message;
+        }
     }
-  }
+
+    public function callback(array $data): void
+    {
+        $this->dispatch('webauthn-authenticate', $data);
+    }
+
+    #[On('login-error')]
+    public function error(string $message): void
+    {
+        $this->processing = false;
+        $this->errorMessage = $message;
+    }
+
+    public function bind(): void
+    {
+        if ($this->keyKind === 'security') {
+            App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
+        } elseif ($this->keyKind === 'passkey') {
+            App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
+        }
+    }
 }; ?>
 
 <div wire:cloak x-data="{ run: false }">

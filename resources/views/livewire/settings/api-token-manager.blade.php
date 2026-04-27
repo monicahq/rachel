@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component
+new #[Layout('components.layouts.app.settings')] class extends Livewire\Component
 {
     /**
      * The available permissions.

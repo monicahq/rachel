@@ -33,8 +33,8 @@ return new class extends Migration
             $table->timestamp('used_at')->nullable();
             $table->timestamps();
 
-            if (app(Resolver::class)->connection($this->getConnection()) instanceof MySqlConnection) {
-                $table->index([app(Resolver::class)->raw('credentialId(255)')], 'credential_index');
+            if (resolve(Resolver::class)->connection($this->getConnection()) instanceof MySqlConnection) {
+                $table->index([resolve(Resolver::class)->raw('credentialId(255)')], 'credential_index');
             } else {
                 $table->index('credentialId');
             }

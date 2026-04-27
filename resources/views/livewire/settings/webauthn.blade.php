@@ -4,137 +4,137 @@ use App\Models\WebauthnKey;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
-use Livewire\Volt\Component;
 
-new class extends Component {
-  /**
-   * Indicates if the user is currently managing a WebauthnKey.
-   */
-  public bool $managingWebauthnKey = false;
+new class extends Livewire\Component
+{
+    /**
+     * Indicates if the user is currently managing a WebauthnKey.
+     */
+    public bool $managingWebauthnKey = false;
 
-  /**
-   * The key that is currently having its permissions managed.
-   */
-  public ?WebauthnKey $managingWebauthnKeyFor = null;
+    /**
+     * The key that is currently having its permissions managed.
+     */
+    public ?WebauthnKey $managingWebauthnKeyFor = null;
 
-  public ?string $updateKeyName = null;
+    public ?string $updateKeyName = null;
 
-  /**
-   * Indicates if the application is confirming if a WebauthnKey should be deleted.
-   */
-  public bool $confirmingWebauthnKeyDeletion = false;
+    /**
+     * Indicates if the application is confirming if a WebauthnKey should be deleted.
+     */
+    public bool $confirmingWebauthnKeyDeletion = false;
 
-  /**
-   * The ID of the WebauthnKey being deleted.
-   */
-  public ?int $webauthnKeyIdBeingDeleted = null;
+    /**
+     * The ID of the WebauthnKey being deleted.
+     */
+    public ?int $webauthnKeyIdBeingDeleted = null;
 
-  public bool $upgradingWebauthnKey = false;
+    public bool $upgradingWebauthnKey = false;
 
-  public ?WebauthnKey $upgradingWebauthnKeyFor = null;
+    public ?WebauthnKey $upgradingWebauthnKeyFor = null;
 
-  public string $keyKind;
+    public string $keyKind;
 
-  public function mount(string $keyKind = 'passkey'): void
-  {
-    $this->keyKind = $keyKind;
-  }
+    public function mount(string $keyKind = 'passkey'): void
+    {
+        $this->keyKind = $keyKind;
+    }
 
-  #[Computed]
-  public function webauthnKeys()
-  {
-    return Auth::user()->webauthnKeys->where('kind', $this->keyKind);
-  }
+    #[Computed]
+    public function webauthnKeys()
+    {
+        return Auth::user()->webauthnKeys->where('kind', $this->keyKind);
+    }
 
-  #[On('key-created')]
-  public function updateKeys(): void
-  {
-    unset($this->webauthnKeys);
-  }
+    #[On('key-created')]
+    public function updateKeys(): void
+    {
+        unset($this->webauthnKeys);
+    }
 
-  /**
-   * Allow the given token's permissions to be managed.
-   */
-  public function manageWebauthnKey(int $id): void
-  {
-    $this->managingWebauthnKey = true;
+    /**
+     * Allow the given token's permissions to be managed.
+     */
+    public function manageWebauthnKey(int $id): void
+    {
+        $this->managingWebauthnKey = true;
 
-    $this->managingWebauthnKeyFor = Auth::user()
-      ->webauthnKeys()
-      ->where('id', $id)
-      ->firstOrFail();
+        $this->managingWebauthnKeyFor = Auth::user()
+            ->webauthnKeys()
+            ->where('id', $id)
+            ->firstOrFail();
 
-    $this->updateKeyName = $this->managingWebauthnKeyFor->name;
-  }
+        $this->updateKeyName = $this->managingWebauthnKeyFor->name;
+    }
 
-  /**
-   * Update the API token's permissions.
-   */
-  public function updateWebauthnKey(): void
-  {
-    $validated = $this->validate([
-      'updateKeyName' => ['required', 'string', 'max:255'],
-    ]);
+    /**
+     * Update the API token's permissions.
+     */
+    public function updateWebauthnKey(): void
+    {
+        $validated = $this->validate([
+            'updateKeyName' => ['required', 'string', 'max:255'],
+        ]);
 
-    $this->managingWebauthnKeyFor
-      ->forceFill([
-        'name' => $validated['updateKeyName'],
-      ])
-      ->save();
+        $this->managingWebauthnKeyFor
+            ->forceFill([
+                'name' => $validated['updateKeyName'],
+            ])
+            ->save();
 
-    $this->updateKeyName = null;
+        $this->updateKeyName = null;
 
-    $this->managingWebauthnKey = false;
-  }
+        $this->managingWebauthnKey = false;
+    }
 
-  /**
-   * Confirm that the given API token should be deleted.
-   */
-  public function confirmWebauthnKeyDeletion(int $id): void
-  {
-    $this->confirmingWebauthnKeyDeletion = true;
+    /**
+     * Confirm that the given API token should be deleted.
+     */
+    public function confirmWebauthnKeyDeletion(int $id): void
+    {
+        $this->confirmingWebauthnKeyDeletion = true;
 
-    $this->webauthnKeyIdBeingDeleted = $id;
-  }
+        $this->webauthnKeyIdBeingDeleted = $id;
+    }
 
-  /**
-   * Delete the API token.
-   */
-  public function deleteWebauthnKey(): void
-  {
-    Auth::user()
-      ->webauthnKeys()
-      ->where('id', $this->webauthnKeyIdBeingDeleted)
-      ->first()
-      ->delete();
+    /**
+     * Delete the API token.
+     */
+    public function deleteWebauthnKey(): void
+    {
+        Auth::user()
+            ->webauthnKeys()
+            ->where('id', $this->webauthnKeyIdBeingDeleted)
+            ->first()
+            ->delete();
 
-    $this->updateKeys();
+        $this->updateKeys();
 
-    $this->confirmingWebauthnKeyDeletion = false;
+        $this->confirmingWebauthnKeyDeletion = false;
 
-    $this->webauthnKeyIdBeingDeleted = null;
-  }
+        $this->webauthnKeyIdBeingDeleted = null;
+    }
 
-  public function confirmUpgradeWebauthnKey(int $id): void
-  {
-    $this->upgradingWebauthnKey = true;
+    public function confirmUpgradeWebauthnKey(int $id): void
+    {
+        $this->upgradingWebauthnKey = true;
 
-    $this->upgradingWebauthnKeyFor = Auth::user()
-      ->webauthnKeys()
-      ->where('id', $id)
-      ->firstOrFail();
-  }
+        $this->upgradingWebauthnKeyFor = Auth::user()
+            ->webauthnKeys()
+            ->where('id', $id)
+            ->firstOrFail();
+    }
 
-  public function upgradeWebauthnKey(): void
-  {
-    $this->managingWebauthnKeyFor
-      ->forceFill([
-        'kind' => 'passkey',
-      ])
-      ->save();
+    public function upgradeWebauthnKey(): void
+    {
+        $this->managingWebauthnKeyFor
+            ->forceFill([
+                'kind' => 'passkey',
+            ])
+            ->save();
 
-    $this->upgradingWebauthnKey = false;
-  }
+        $this->upgradingWebauthnKey = false;
+    }
 }; ?>
 
 <div>

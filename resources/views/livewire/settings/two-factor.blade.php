@@ -13,7 +13,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.app.settings')] class extends Component
+new #[Layout('components.layouts.app.settings')] class extends Livewire\Component
 {
     #[Locked]
     public bool $twoFactorEnabled;

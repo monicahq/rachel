@@ -10,9 +10,8 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
-use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.guest')] class extends Component
+new #[Layout('components.layouts.guest')] class extends Livewire\Component
 {
     #[Validate('string|email')]
     public string $email = '';

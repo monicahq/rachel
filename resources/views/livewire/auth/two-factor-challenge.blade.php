@@ -7,25 +7,25 @@ use Laravel\Fortify\Events\ValidTwoFactorAuthenticationCodeProvided;
 use Laravel\Fortify\Http\Requests\TwoFactorLoginRequest;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
-use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.guest')] class extends Component {
-  #[On('webauthn-authenticate')]
-  public function confirm(?array $data = null): void
-  {
-    $request = TwoFactorLoginRequest::createFrom(request());
-    $user = $request->challengedUser();
+new #[Layout('components.layouts.guest')] class extends Livewire\Component
+{
+    #[On('webauthn-authenticate')]
+    public function confirm(?array $data = null): void
+    {
+        $request = TwoFactorLoginRequest::createFrom(request());
+        $user = $request->challengedUser();
 
-    if ($user instanceof User && Auth::getProvider()->validateCredentials($user, $data)) {
-      event(new ValidTwoFactorAuthenticationCodeProvided($user));
-      Auth::login($user, true);
-      Session::regenerate();
+        if ($user instanceof User && Auth::getProvider()->validateCredentials($user, $data)) {
+            event(new ValidTwoFactorAuthenticationCodeProvided($user));
+            Auth::login($user, true);
+            Session::regenerate();
 
-      $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-    } else {
-      $this->dispatch('webauthn-stop', __('Not authorized'));
+            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        } else {
+            $this->dispatch('webauthn-stop', __('Not authorized'));
+        }
     }
-  }
 }; ?>
 
 <div class="flex flex-col gap-6">

@@ -9,9 +9,8 @@ use Illuminate\Validation\Rules;
 use LaravelWebauthn\Facades\Webauthn;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
-use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.guest')] class extends Component
+new #[Layout('components.layouts.guest')] class extends Livewire\Component
 {
     public string $name = '';
 

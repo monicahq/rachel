@@ -4,19 +4,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
-use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.guest')] class extends Component {
-  #[On('webauthn-authenticate')]
-  public function confirm(?array $data = null): void
-  {
-    if (Auth::getProvider()->validateCredentials(Auth::user(), $data)) {
-      session(['auth.password_confirmed_at' => Date::now()->unix()]);
-      $this->redirectIntended(navigate: true);
-    } else {
-      $this->dispatch('webauthn-stop', __('Not authorized'));
+new #[Layout('components.layouts.guest')] class extends Livewire\Component
+{
+    #[On('webauthn-authenticate')]
+    public function confirm(?array $data = null): void
+    {
+        if (Auth::getProvider()->validateCredentials(Auth::user(), $data)) {
+            session(['auth.password_confirmed_at' => Date::now()->unix()]);
+            $this->redirectIntended(navigate: true);
+        } else {
+            $this->dispatch('webauthn-stop', __('Not authorized'));
+        }
     }
-  }
 }; ?>
 
 <div class="flex flex-col gap-6">
