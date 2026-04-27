@@ -13,7 +13,7 @@ describe('api-vaults', function (): void {
             ['read']
         );
 
-        $response = $this->getJson('/api/vaults')
+        $response = $this->getJson('/api/v1/vaults')
             ->assertOk();
 
         expect($response->json('data'))
@@ -29,7 +29,7 @@ describe('api-vaults', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->getJson('/api/vaults')
+        $response = $this->getJson('/api/v1/vaults')
             ->assertOk();
 
         expect($response->json('data.*.id'))
@@ -45,7 +45,7 @@ describe('api-vaults', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->getJson('/api/vaults/'.$vault->slug)
+        $response = $this->getJson('/api/v1/vaults/'.$vault->slug)
             ->assertOk();
 
         expect($response->json('data.id'))
@@ -61,7 +61,7 @@ describe('api-vaults', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->getJson('/api/vaults/'.$vault->id)
+        $response = $this->getJson('/api/v1/vaults/'.$vault->id)
             ->assertOk();
 
         expect($response->json('data.id'))
@@ -75,7 +75,7 @@ describe('api-vaults', function (): void {
         );
         $vault = Vault::factory()->create();
 
-        $this->getJson('/api/vaults/'.$vault->slug)
+        $this->getJson('/api/v1/vaults/'.$vault->slug)
             ->assertNotFound();
     });
 
@@ -85,7 +85,7 @@ describe('api-vaults', function (): void {
             ['write']
         );
 
-        $response = $this->postJson('/api/vaults', [
+        $response = $this->postJson('/api/v1/vaults', [
             'name' => 'my vault',
             'description' => null,
         ])
@@ -105,7 +105,7 @@ describe('api-vaults', function (): void {
             ['read']
         );
 
-        $this->postJson('/api/vaults', [
+        $this->postJson('/api/v1/vaults', [
             'name' => 'my vault',
             'description' => null,
         ])
@@ -121,7 +121,7 @@ describe('api-vaults', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->putJson('/api/vaults/'.$vault->slug, [
+        $response = $this->putJson('/api/v1/vaults/'.$vault->slug, [
             'name' => 'my vault',
             'description' => 'youpi',
         ])
@@ -146,7 +146,7 @@ describe('api-vaults', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $this->deleteJson('/api/vaults/'.$vault->slug)
+        $this->deleteJson('/api/v1/vaults/'.$vault->slug)
             ->assertNoContent();
 
         $this->assertDatabaseMissing('vaults', [

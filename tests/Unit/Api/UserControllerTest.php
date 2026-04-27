@@ -11,7 +11,7 @@ test('api current user get', function (): void {
         ['read']
     );
 
-    $response = $this->getJson('/api/user')
+    $response = $this->getJson('/api/v1/user')
         ->assertOk();
 
     expect($response->json('data.id'))
@@ -24,7 +24,7 @@ test('api user get', function (): void {
         ['read']
     );
 
-    $response = $this->getJson('/api/users/'.$user->id)
+    $response = $this->getJson('/api/v1/users/'.$user->id)
         ->assertOk();
 
     expect($response->json('data.id'))
