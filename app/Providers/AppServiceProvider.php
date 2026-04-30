@@ -31,21 +31,7 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Date::use(CarbonImmutable::class);
-
-        DB::prohibitDestructiveCommands(
-            app()->isProduction(),
-        );
-
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
-            : null,
-        );
+        $this->configureDefaults();
 
         // Enable strict mode for Eloquent models in non-production environments
         Model::shouldBeStrict(! app()->isProduction());
@@ -65,5 +51,29 @@ final class AppServiceProvider extends ServiceProvider
                 return CollectionHelper::sortByCollator($collect, $callback);
             });
         }
+    }
+
+    /**
+     * Configure default behaviors for production-ready applications.
+     *
+     * @codeCoverageIgnore
+     */
+    private function configureDefaults(): void
+    {
+        Date::use(CarbonImmutable::class);
+
+        DB::prohibitDestructiveCommands(
+            app()->isProduction(),
+        );
+
+        Password::defaults(fn (): ?Password => app()->isProduction()
+            ? Password::min(12)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()
+            : null,
+        );
     }
 }
