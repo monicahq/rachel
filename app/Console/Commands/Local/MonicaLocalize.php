@@ -182,7 +182,7 @@ final class MonicaLocalize extends Command
         for ($i = 0; $i < 100; $i++) {
 
             // Get the plural index for the given locale and count.
-            $j = app(MessageSelector::class)->getPluralIndex($locale, $i);
+            $j = resolve(MessageSelector::class)->getPluralIndex($locale, $i);
 
             if (! $result->has($j)) {
                 // Update the translation for the given plural index.

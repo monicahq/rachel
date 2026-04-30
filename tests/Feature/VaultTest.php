@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Models\Vault;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 test('users can list vaults', function (): void {
     $this->actingAs($user = User::factory()->create());
@@ -30,7 +30,7 @@ test('users can show a vault', function (): void {
 
 test('user can create a vault', function (): void {
     $this->actingAs($user = User::factory()->create());
-    $response = Volt::test('vaults.index')
+    $response = Livewire::test('pages::vaults.index')
         ->set('name', 'Test Vault')
         ->call('create');
 

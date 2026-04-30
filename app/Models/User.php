@@ -16,6 +16,19 @@ use Laravel\Sanctum\HasApiTokens;
 use LaravelWebauthn\WebauthnAuthenticatable;
 use Override;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'account_id',
+    'name',
+    'email',
+    'password',
+    'locale',
+])]
+#[\Illuminate\Database\Eloquent\Attributes\Hidden([
+    'password',
+    'remember_token',
+    'two_factor_recovery_codes',
+    'two_factor_secret',
+])]
 final class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
 {
     use HasApiTokens;
@@ -26,31 +39,6 @@ final class User extends Authenticatable implements HasLocalePreference, MustVer
     use Notifiable;
     use TwoFactorAuthenticatable;
     use WebauthnAuthenticatable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'account_id',
-        'name',
-        'email',
-        'password',
-        'locale',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-    ];
 
     /**
      * The attributes that should be cast.

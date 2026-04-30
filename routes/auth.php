@@ -5,33 +5,32 @@ declare(strict_types=1);
 use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
 
 Route::middleware('guest')->group(function (): void {
-    Volt::route('login', 'auth.login')
+    Route::livewire('login', 'pages::auth.login')
         ->name('login');
 
-    Volt::route('register', 'auth.register')
+    Route::livewire('register', 'pages::auth.register')
         ->name('register');
 
-    Volt::route('forgot-password', 'auth.forgot-password')
+    Route::livewire('forgot-password', 'pages::auth.forgot-password')
         ->name('password.request');
 
-    Volt::route('reset-password/{token}', 'auth.reset-password')
+    Route::livewire('reset-password/{token}', 'pages::auth.reset-password')
         ->name('password.reset');
 
     Route::post('auth/token', TokenController::class);
 });
 
 Route::middleware('auth')->group(function (): void {
-    Volt::route('verify-email', 'auth.verify-email')
+    Route::livewire('verify-email', 'pages::auth.verify-email')
         ->name('verification.notice');
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    Volt::route('auth/authorize', 'auth.authorize')
+    Route::livewire('auth/authorize', 'pages::auth.authorize')
         ->middleware(['password.confirm']);
 });
 

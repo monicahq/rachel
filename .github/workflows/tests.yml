@@ -23,7 +23,7 @@ jobs:
     name: Run tests
     uses: monicahq/workflows/.github/workflows/laravel.yml@v4
     with:
-      php-versions: "['8.4']"
+      php-versions: "['8.4', '8.5']"
       connections: "['sqlite', 'mysql', 'pgsql']"
       default-php-version: '8.4'
       default-connection: sqlite

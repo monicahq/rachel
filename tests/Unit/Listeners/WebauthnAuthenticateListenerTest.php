@@ -17,11 +17,11 @@ it('adds the last used at date', function (): void {
     ]);
 
     event(new AuthenticatorAssertionResponseValidationSucceededEvent(
-        $this->mock(AuthenticatorAssertionResponse::class),
-        new PublicKeyCredentialRequestOptions('challenger'),
-        'localhost',
-        (string) $user->id,
-        $webauthnKey->publicKeyCredentialSource)
+        authenticatorAssertionResponse: $this->mock(AuthenticatorAssertionResponse::class),
+        publicKeyCredentialRequestOptions: new PublicKeyCredentialRequestOptions('challenger'),
+        host: 'localhost',
+        userHandle: (string) $user->id,
+        publicKeyCredentialSource: $webauthnKey->publicKeyCredentialSource)
     );
 
     $webauthnKey->refresh();

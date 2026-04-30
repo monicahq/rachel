@@ -17,7 +17,7 @@ describe('api-contacts', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->getJson("/api/vaults/{$vault->id}/contacts")
+        $response = $this->getJson("/api/v1/vaults/{$vault->id}/contacts")
             ->assertOk();
 
         expect($response->json('data'))
@@ -31,7 +31,7 @@ describe('api-contacts', function (): void {
         );
         $vault = Vault::factory()->create();
 
-        $response = $this->getJson("/api/vaults/{$vault->id}/contacts")
+        $response = $this->getJson("/api/v1/vaults/{$vault->id}/contacts")
             ->assertNotFound();
     });
 
@@ -47,7 +47,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->getJson("/api/vaults/{$vault->id}/contacts")
+        $response = $this->getJson("/api/v1/vaults/{$vault->id}/contacts")
             ->assertOk();
 
         expect($response->json('data.*.id'))
@@ -66,7 +66,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->getJson("/api/vaults/{$vault->id}/contacts/".$contact->slug)
+        $response = $this->getJson("/api/v1/vaults/{$vault->id}/contacts/".$contact->slug)
             ->assertOk();
 
         expect($response->json('data.id'))
@@ -85,7 +85,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->getJson("/api/vaults/{$vault->id}/contacts/".$contact->id)
+        $response = $this->getJson("/api/v1/vaults/{$vault->id}/contacts/".$contact->id)
             ->assertOk();
 
         expect($response->json('data.id'))
@@ -100,7 +100,7 @@ describe('api-contacts', function (): void {
         $vault = Vault::factory()->create();
         $contact = Contact::factory()->create();
 
-        $this->get("/api/vaults/{$vault->id}/contacts/".$contact->slug)
+        $this->get("/api/v1/vaults/{$vault->id}/contacts/".$contact->slug)
             ->assertNotFound();
     });
 
@@ -113,7 +113,7 @@ describe('api-contacts', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $response = $this->postJson("/api/vaults/{$vault->id}/contacts", [
+        $response = $this->postJson("/api/v1/vaults/{$vault->id}/contacts", [
             'name' => 'my vault',
         ])
             ->assertCreated();
@@ -135,7 +135,7 @@ describe('api-contacts', function (): void {
             'account_id' => $user->account_id,
         ]);
 
-        $this->postJson("/api/vaults/{$vault->id}/contacts/", [
+        $this->postJson("/api/v1/vaults/{$vault->id}/contacts/", [
             'name' => 'my contact',
         ])
             ->assertForbidden();
@@ -153,7 +153,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $response = $this->putJson("/api/vaults/{$vault->id}/contacts/".$contact->slug, [
+        $response = $this->putJson("/api/v1/vaults/{$vault->id}/contacts/".$contact->slug, [
             'name' => 'Jean-Claude Dusse',
         ])
             ->assertOk();
@@ -181,7 +181,7 @@ describe('api-contacts', function (): void {
             'vault_id' => $vault->id,
         ]);
 
-        $this->deleteJson("/api/vaults/{$vault->id}/contacts/".$contact->slug)
+        $this->deleteJson("/api/v1/vaults/{$vault->id}/contacts/".$contact->slug)
             ->assertNoContent();
 
         $this->assertDatabaseHas('contacts', [

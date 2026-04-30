@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Livewire\Volt\Volt as LivewireVolt;
+use Livewire\Livewire;
 
 test('login screen can be rendered', function (): void {
     $response = $this->get(route('login'));
@@ -14,7 +14,7 @@ test('login screen can be rendered', function (): void {
 test('users can authenticate using the login screen', function (): void {
     $user = User::factory()->create();
 
-    $response = LivewireVolt::test('auth.login')
+    $response = Livewire::test('pages::auth.login')
         ->set('email', $user->email)
         ->set('password', 'password')
         ->call('login');
@@ -29,7 +29,7 @@ test('users can authenticate using the login screen', function (): void {
 test('users can not authenticate with invalid password', function (): void {
     $user = User::factory()->create();
 
-    $response = LivewireVolt::test('auth.login')
+    $response = Livewire::test('pages::auth.login')
         ->set('email', $user->email)
         ->set('password', 'wrong-password')
         ->call('login');
@@ -48,7 +48,7 @@ test('users with two factor enabled are redirected to two factor challenge', fun
         'two_factor_confirmed_at' => now(),
     ])->save();
 
-    $response = LivewireVolt::test('auth.login')
+    $response = Livewire::test('pages::auth.login')
         ->set('email', $user->email)
         ->set('password', 'password')
         ->call('login');

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Models\Contact;
 use App\Models\User;
 use App\Models\Vault;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 test('users can list contacts', function (): void {
     $this->actingAs($user = User::factory()->create());
@@ -41,7 +41,7 @@ test('user can create a contact', function (): void {
         'account_id' => $user->account_id,
     ]);
 
-    $response = Volt::test('contacts.index', ['vault' => $vault])
+    $response = Livewire::test('pages::contacts.index', ['vault' => $vault])
         ->set('name', 'Test Contact')
         ->call('create');
 
