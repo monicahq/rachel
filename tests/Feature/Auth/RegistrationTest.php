@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 test('registration screen can be rendered', function (): void {
     $response = $this->get(route('register'));
@@ -11,7 +11,7 @@ test('registration screen can be rendered', function (): void {
 });
 
 test('new users can register', function (): void {
-    $response = Volt::test('auth.register')
+    $response = Livewire::test('auth.register')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('password', 'password')

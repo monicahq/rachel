@@ -4,35 +4,34 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
 
 Route::get('/', fn (): View => view('welcome'))->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::livewire('dashboard', 'pages::dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
 
-    Volt::route('vaults', 'vaults.index')->name('vaults.index');
-    Volt::route('vaults/{vault}', 'vaults.show')
+    Route::livewire('vaults', 'pages::vaults.index')->name('vaults.index');
+    Route::livewire('vaults/{vault}', 'pages::vaults.show')
         ->name('vaults.show')
         ->missing(fn () => to_route('vaults.index'));
-    Volt::route('vaults/{vault}/contacts', 'contacts.index')->name('contacts.index');
-    Volt::route('vaults/{vault}/contacts/{contact}', 'contacts.show')->name('contacts.show');
+    Route::livewire('vaults/{vault}/contacts', 'pages::contacts.index')->name('contacts.index');
+    Route::livewire('vaults/{vault}/contacts/{contact}', 'pages::contacts.show')->name('contacts.show');
 
     Route::redirect('settings', 'settings/profile')->name('settings.index');
-    Volt::route('settings/api-token-manager', 'settings.api-token-manager')->name('settings.api-token-manager');
-    Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
-    Volt::route('settings/password', 'settings.password')->name('password.edit');
-    Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
+    Route::livewire('settings/api-token-manager', 'pages::settings.api-token-manager')->name('settings.api-token-manager');
+    Route::livewire('settings/profile', 'pages::settings.profile')->name('profile.edit');
+    Route::livewire('settings/password', 'pages::settings.password')->name('password.edit');
+    Route::livewire('settings/appearance', 'pages::settings.appearance')->name('appearance.edit');
 
-    Volt::route('settings/two-factor', 'settings.two-factor')
+    Route::livewire('settings/two-factor', 'pages::settings.two-factor')
         ->middleware(['password.confirm'])
         ->name('two-factor.show');
 
-    Volt::route('instance', 'instances.index')->name('instances.index');
-    Volt::route('instance/accounts/{account}', 'instances.accounts.show')->name('instances.accounts.show');
+    Route::livewire('instance', 'pages::instances.index')->name('instances.index');
+    Route::livewire('instance/accounts/{account}', 'pages::instances.accounts.show')->name('instances.accounts.show');
 });
 
 require __DIR__.'/auth.php';

@@ -1,4 +1,4 @@
 import './bootstrap';
 
-import { Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import { Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm.js';
 Livewire.start();

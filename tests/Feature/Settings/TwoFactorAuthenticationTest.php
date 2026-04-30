@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 test('two factor settings page can be rendered', function (): void {
     $user = User::factory()->create();
@@ -35,7 +35,7 @@ test('two factor authentication disabled when confirmation abandoned between req
 
     $this->actingAs($user);
 
-    $component = Volt::test('settings.two-factor');
+    $component = Livewire::test('settings.two-factor');
 
     $component->assertSet('twoFactorEnabled', false);
 
