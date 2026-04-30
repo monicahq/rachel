@@ -30,7 +30,7 @@ test('users can show a vault', function (): void {
 
 test('user can create a vault', function (): void {
     $this->actingAs($user = User::factory()->create());
-    $response = Livewire::test('vaults.index')
+    $response = Livewire::test('pages::vaults.index')
         ->set('name', 'Test Vault')
         ->call('create');
 

@@ -1,115 +1,115 @@
 <?php
 
 use App\Models\Account;
+use App\Models\User;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Livewire\Attributes\Layout;
 
-new #[Layout('layouts::instance')] class extends Livewire\Component
-{
-    public User $user;
+new #[Layout('layouts::instance')] class extends Livewire\Component {
+  public User $user;
 
-    public Account $account;
+  public Account $account;
 
-    public string $password = '';
+  public string $password = '';
 
-    public Collection $activities;
+  public Collection $activities;
 
-    public function render()
-    {
-        return $this->view()
-            ->title(fn (): string => __('Instance management'));
-    }
+  public function render()
+  {
+    return $this->view()->title(__('Instance management'));
+  }
 
-    public function mount(Account $account): void
-    {
-        $this->account = $account;
-        $this->user = $account->users()->first();
-        $this->activities = collect([
-            [
-                'action' => 'Account upgraded to Pro plan',
-                'status' => 'Upgrade',
-                'icon' => 'arrow-up',
-                'description' => 'Upgraded from Basic to Pro subscription with additional features',
-                'actor' => 'System',
-                'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-15 14:30:00'),
-                'color' => 'green',
-            ],
+  public function mount(Account $account): void
+  {
+    $this->account = $account;
+    $this->user = $account->users()->first();
+    $this->activities = collect([
+      [
+        'action' => 'Account upgraded to Pro plan',
+        'status' => 'Upgrade',
+        'icon' => 'arrow-up',
+        'description' => 'Upgraded from Basic to Pro subscription with additional features',
+        'actor' => 'System',
+        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-15 14:30:00'),
+        'color' => 'green',
+      ],
 
-            [
-                'action' => 'Profile information updated',
-                'icon' => 'pencil',
-                'description' => 'Updated email address and phone number',
-                'actor' => 'John Doe',
-                'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-14 16:15:00'),
-                'color' => 'blue',
-            ],
+      [
+        'action' => 'Profile information updated',
+        'icon' => 'pencil',
+        'description' => 'Updated email address and phone number',
+        'actor' => 'John Doe',
+        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-14 16:15:00'),
+        'color' => 'blue',
+      ],
 
-            [
-                'action' => 'Two-factor authentication enabled',
-                'status' => 'Security',
-                'icon' => 'shield-check',
-                'description' => 'Enhanced account security with 2FA',
-                'actor' => 'John Doe',
-                'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-12 10:45:00'),
-                'color' => 'purple',
-            ],
+      [
+        'action' => 'Two-factor authentication enabled',
+        'status' => 'Security',
+        'icon' => 'shield-check',
+        'description' => 'Enhanced account security with 2FA',
+        'actor' => 'John Doe',
+        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-12 10:45:00'),
+        'color' => 'purple',
+      ],
 
-            [
-                'action' => 'Payment method updated',
-                // 'icon' => 'credit-card',
-                'description' => 'Added new credit card ending in 4242',
-                'actor' => 'John Doe',
-                'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-08 15:20:00'),
-                'color' => 'orange',
-            ],
+      [
+        'action' => 'Payment method updated',
+        // 'icon' => 'credit-card',
+        'description' => 'Added new credit card ending in 4242',
+        'actor' => 'John Doe',
+        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-08 15:20:00'),
+        'color' => 'orange',
+      ],
 
-            [
-                'action' => 'Account created',
-                'status' => 'Created',
-                'icon' => 'user-plus',
-                'description' => 'New account registered with basic plan',
-                'actor' => 'John Doe',
-                'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-01 09:00:00'),
-                'color' => 'gray',
-                'last' => true,
-            ],
-        ]);
-    }
+      [
+        'action' => 'Account created',
+        'status' => 'Created',
+        'icon' => 'user-plus',
+        'description' => 'New account registered with basic plan',
+        'actor' => 'John Doe',
+        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-01 09:00:00'),
+        'color' => 'gray',
+        'last' => true,
+      ],
+    ]);
+  }
 
-    public function freeAccount(): void
-    {
-        $this->validate([
-            'password' => ['required', 'string', 'current_password'],
-        ]);
+  public function freeAccount(): void
+  {
+    $this->validate([
+      'password' => ['required', 'string', 'current_password'],
+    ]);
 
-        // TODO
+    // TODO
 
-        $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
-    }
+    $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
+  }
 
-    public function reset2fa(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
-    {
-        $this->validate([
-            'password' => ['required', 'string', 'current_password'],
-        ]);
+  public function reset2fa(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
+  {
+    $this->validate([
+      'password' => ['required', 'string', 'current_password'],
+    ]);
 
-        $disableTwoFactorAuthentication($this->user);
+    $disableTwoFactorAuthentication($this->user);
 
-        $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
-    }
+    $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
+  }
 
-    public function deleteAccount(): void
-    {
-        abort_if($this->user->id === Illuminate\Support\Facades\Auth::user()->id, 403);
+  public function deleteAccount(): void
+  {
+    abort_if($this->user->id === Illuminate\Support\Facades\Auth::user()->id, 403);
 
-        $this->validate([
-            'password' => ['required', 'string', 'current_password'],
-        ]);
+    $this->validate([
+      'password' => ['required', 'string', 'current_password'],
+    ]);
 
-        $this->account->delete();
+    $this->account->delete();
 
-        $this->redirect(route('instances.index'), navigate: true);
-    }
+    $this->redirect(route('instances.index'), navigate: true);
+  }
 }; ?>
 
 <div>
@@ -120,12 +120,12 @@ new #[Layout('layouts::instance')] class extends Livewire\Component
   ]" />
 
   <div class="mx-auto max-w-5xl space-y-6 px-2 py-2 sm:px-0 sm:py-10">
-    @include('livewire.instances.accounts.partials.account-header', ['user' => $user])
+    @include('pages::instances.accounts.partials.account-header', ['user' => $user])
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[250px_1fr]">
       <div class="space-y-6">
         <!-- sidebar -->
-        @include('livewire.instances.accounts.partials.account-sidebar')
+        @include('pages::instances.accounts.partials.account-sidebar')
 
         <!-- actions -->
         <div class="space-y-2">
@@ -153,7 +153,7 @@ new #[Layout('layouts::instance')] class extends Livewire\Component
       <div class="space-y-6">
         <x-box title="Activity Timeline">
           @foreach ($activities as $activity)
-            @include('livewire.instances.accounts.partials.activity', $activity)
+            @include('pages::instances.accounts.partials.activity', $activity)
           @endforeach
         </x-box>
       </div>

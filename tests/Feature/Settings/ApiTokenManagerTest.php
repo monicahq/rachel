@@ -8,7 +8,7 @@ use Livewire\Livewire;
 test('api token can be created', function (): void {
     $this->actingAs($user = User::factory()->create());
 
-    $response = Livewire::test('settings.api-token-manager')
+    $response = Livewire::test('pages::settings.api-token-manager')
         ->set('createApiTokenForm.name', 'token-name')
         ->call('createApiToken');
 

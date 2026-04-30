@@ -20,7 +20,7 @@ test('two factor challenge can be rendered', function (): void {
         'two_factor_confirmed_at' => now(),
     ])->save();
 
-    Livewire::test('auth.login')
+    Livewire::test('pages::auth.login')
         ->set('email', $user->email)
         ->set('password', 'password')
         ->call('login')

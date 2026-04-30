@@ -24,7 +24,7 @@ test('authorize page redirects to the correct URI', function (): void {
         'state' => 'test-state',
         'code_challenge' => 'test-code_challenge',
     ])
-        ->test('auth.authorize')
+        ->test('pages::auth.authorize')
         ->set('redirect_uri', 'https://example.com/callback')
         ->set('state', 'test-state')
         ->set('code_challenge', 'test-code_challenge')

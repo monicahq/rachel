@@ -17,7 +17,6 @@ it('adds the last used at date', function (): void {
     ]);
 
     event(new AuthenticatorAssertionResponseValidationSucceededEvent(
-        credentialId: $webauthnKey->credentialId,
         authenticatorAssertionResponse: $this->mock(AuthenticatorAssertionResponse::class),
         publicKeyCredentialRequestOptions: new PublicKeyCredentialRequestOptions('challenger'),
         host: 'localhost',
