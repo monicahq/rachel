@@ -8,20 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'has_lifetime_access',
+    'trial_ends_at',
+])]
 final class Account extends Model
 {
     /** @use HasFactory<\Database\Factories\AccountFactory> */
     use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'has_lifetime_access',
-        'trial_ends_at',
-    ];
 
     /**
      * The attributes that should be cast.

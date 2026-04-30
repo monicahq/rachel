@@ -12,6 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Override;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'account_id',
+    'name',
+    'slug',
+    'description',
+])]
 final class Vault extends Model
 {
     /** @use HasFactory<\Database\Factories\VaultFactory> */
@@ -19,18 +25,6 @@ final class Vault extends Model
 
     use HasUuids;
     use ResolvesModelInAccount;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'account_id',
-        'name',
-        'slug',
-        'description',
-    ];
 
     public static function rules(): array
     {

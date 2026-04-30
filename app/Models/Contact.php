@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'vault_id',
+    'name',
+    'slug',
+])]
 final class Contact extends Model
 {
     /** @use HasFactory<\Database\Factories\ContactFactory> */
@@ -20,17 +25,6 @@ final class Contact extends Model
     use HasUuids;
     use ResolvesModelInVault;
     use SoftDeletes;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'vault_id',
-        'name',
-        'slug',
-    ];
 
     public static function rules(): array
     {
