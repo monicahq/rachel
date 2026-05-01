@@ -107,7 +107,7 @@ If a user attempts to log in and two-factor authentication is enabled, the login
 
 ```json
 {
-  "two_factor": true
+    "two_factor": true
 }
 ```
 
@@ -127,25 +127,25 @@ Configure via `fortify.limiters.login` in config. Default configuration throttle
 
 ## Key Endpoints
 
-| Feature                 | Method   | Endpoint                                    |
-| ----------------------- | -------- | ------------------------------------------- |
-| Login                   | POST     | `/login`                                    |
-| Logout                  | POST     | `/logout`                                   |
-| Register                | POST     | `/register`                                 |
-| Password Reset Request  | POST     | `/forgot-password`                          |
-| Password Reset          | POST     | `/reset-password`                           |
-| Email Verify Notice     | GET      | `/email/verify`                             |
-| Resend Verification     | POST     | `/email/verification-notification`          |
-| Password Confirm        | POST     | `/user/confirm-password`                    |
-| Enable 2FA              | POST     | `/user/two-factor-authentication`           |
-| Confirm 2FA             | POST     | `/user/confirmed-two-factor-authentication` |
-| 2FA Challenge           | POST     | `/two-factor-challenge`                     |
-| Get QR Code             | GET      | `/user/two-factor-qr-code`                  |
-| Recovery Codes          | GET/POST | `/user/two-factor-recovery-codes`           |
-| Passkey Login Options   | GET      | `/passkeys/login/options`                   |
-| Passkey Login           | POST     | `/passkeys/login`                           |
-| Passkey Confirm Options | GET      | `/passkeys/confirm/options`                 |
-| Passkey Confirm         | POST     | `/passkeys/confirm`                         |
-| Passkey Options         | GET      | `/user/passkeys/options`                    |
-| Register Passkey        | POST     | `/user/passkeys`                            |
-| Delete Passkey          | DELETE   | `/user/passkeys/{passkey}`                  |
+| Feature                | Method   | Endpoint                                    |
+|------------------------|----------|---------------------------------------------|
+| Login                  | POST     | `/login`                                    |
+| Logout                 | POST     | `/logout`                                   |
+| Register               | POST     | `/register`                                 |
+| Password Reset Request | POST     | `/forgot-password`                          |
+| Password Reset         | POST     | `/reset-password`                           |
+| Email Verify Notice    | GET      | `/email/verify`                             |
+| Resend Verification    | POST     | `/email/verification-notification`          |
+| Password Confirm       | POST     | `/user/confirm-password`                    |
+| Enable 2FA             | POST     | `/user/two-factor-authentication`           |
+| Confirm 2FA            | POST     | `/user/confirmed-two-factor-authentication` |
+| 2FA Challenge          | POST     | `/two-factor-challenge`                     |
+| Get QR Code            | GET      | `/user/two-factor-qr-code`                  |
+| Recovery Codes         | GET/POST | `/user/two-factor-recovery-codes`           |
+| Passkey Login Options  | GET      | `/passkeys/login/options`                   |
+| Passkey Login          | POST     | `/passkeys/login`                           |
+| Passkey Confirm Options| GET      | `/passkeys/confirm/options`                 |
+| Passkey Confirm        | POST     | `/passkeys/confirm`                         |
+| Passkey Options        | GET      | `/user/passkeys/options`                    |
+| Register Passkey       | POST     | `/user/passkeys`                            |
+| Delete Passkey         | DELETE   | `/user/passkeys/{passkey}`                  |
