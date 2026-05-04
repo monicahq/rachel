@@ -4,3 +4,4 @@ vendor
 node_modules
 composer.lock
 resources/views/components/link.blade.php
+.github/skills
