@@ -35,13 +35,23 @@ test('users can show a contact', function (): void {
     $response->assertSee($contact->name);
 });
 
+test('user can visit the create contact page', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $vault = Vault::factory()->create([
+        'account_id' => $user->account_id,
+    ]);
+
+    $response = $this->get(route('contacts.create', [$vault]));
+    $response->assertStatus(200);
+});
+
 test('user can create a contact', function (): void {
     $this->actingAs($user = User::factory()->create());
     $vault = Vault::factory()->create([
         'account_id' => $user->account_id,
     ]);
 
-    $response = Livewire::test('pages::contacts.index', ['vault' => $vault])
+    $response = Livewire::test('pages::contacts.create', ['vault' => $vault])
         ->set('name', 'Test Contact')
         ->call('create');
 

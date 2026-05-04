@@ -2,7 +2,6 @@
 
 use App\Models\Contact;
 use App\Models\Vault;
-use App\Services\CreateContact;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Locked;
 
@@ -11,9 +10,10 @@ new class extends Livewire\Component {
   public $vault;
 
   #[Locked]
-  public Collection $contacts;
+  public $routes;
 
-  public string $name;
+  #[Locked]
+  public Collection $contacts;
 
   public function render()
   {
@@ -28,6 +28,16 @@ new class extends Livewire\Component {
       'id' => $vault->id,
       'name' => $vault->name,
     ];
+    $this->routes = [
+      'vaults' => [
+        'index' => route('vaults.index'),
+        'show' => route('vaults.show', $vault),
+      ],
+      'contacts' => [
+        'create' => route('contacts.create', $vault),
+        'index' => route('contacts.index', $vault),
+      ],
+    ];
     $this->contacts = $vault->contacts
       ->map(
         fn (Contact $contact): array => [
@@ -38,26 +48,16 @@ new class extends Livewire\Component {
       )
       ->sortByCollator('name');
   }
-
-  public function create(): void
-  {
-    $vault = Vault::where('account_id', Illuminate\Support\Facades\Auth::user()->account_id)->find($this->vault['id']);
-
-    $this->authorize('create', [Contact::class, $vault]);
-
-    $validated = $this->validate(Contact::rules());
-
-    $contact = (new CreateContact(vault: $vault, name: $validated['name']))->execute();
-
-    $this->reset('name');
-
-    $this->dispatch('contact-created');
-
-    $this->redirect(route('contacts.show', [$vault, $contact]));
-  }
 }; ?>
 
 <div>
+  <x-breadcrumb :items="[
+    ['label' => __('Dashboard'), 'route' => route('dashboard')],
+    ['label' => __('Vaults'), 'route' => Arr::get($routes, 'vaults.index')],
+    ['label' => $vault['name'], 'route' => Arr::get($routes, 'vaults.show')],
+    ['label' => __('Contacts')],
+  ]" />
+
   <div class="mx-auto max-w-lg px-2 py-2 sm:px-6 sm:py-6 lg:px-8">
     <section class="flex w-full flex-col gap-10">
       <!-- contacts list -->
@@ -69,38 +69,11 @@ new class extends Livewire\Component {
         @endforeach
       </div>
 
-      <x-box
-        x-data="{
-        showForm: false,
-        toggle: function() { this.showForm = !this.showForm }
-      }">
-        <div class="flex justify-center" x-show="!showForm" x-transition:enter.duration.200ms>
-          <flux:button icon="plus-circle" @click.prevent="toggle()">{{ __('Add a contact') }}</flux:button>
-        </div>
-
-        <!-- create contact form -->
-        <form method="POST" wire:submit="create" class="space-y-6" wire:cloak x-show="showForm" x-transition:enter.duration.200ms>
-          <x-input wire:model="name" id="name" :label="__('Contact name')" type="text" required />
-
-          <div class="flex items-center justify-between">
-            <flux:button variant="filled" @click.prevent="toggle()">
-              {{ __('Cancel') }}
-            </flux:button>
-
-            <div class="flex items-center gap-4">
-              <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full">
-                  {{ __('Create') }}
-                </flux:button>
-              </div>
-
-              <x-action-message class="me-3" on="contact-created">
-                {{ __('Created.') }}
-              </x-action-message>
-            </div>
-          </div>
-        </form>
-      </x-box>
+      <div class="flex justify-center">
+        <x-link :href="Arr::get($routes, 'contacts.create')">
+          <flux:button icon="plus-circle">{{ __('Add a contact') }}</flux:button>
+        </x-link>
+      </div>
     </section>
   </div>
 </div>
