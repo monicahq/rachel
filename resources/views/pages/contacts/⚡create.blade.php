@@ -72,7 +72,7 @@ new class extends Livewire\Component {
           <x-input wire:model="name" id="name" :label="__('Contact name')" type="text" required />
 
           <div class="flex items-center justify-between">
-            <x-link :href="$vault['route']">
+            <x-link :href="Arr::get($routes, 'vaults.show')">
               <flux:button variant="filled">
                 {{ __('Cancel') }}
               </flux:button>
