@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->name('vaults.show')
         ->missing(fn () => to_route('vaults.index'));
     Route::livewire('vaults/{vault}/contacts', 'pages::contacts.index')->name('contacts.index');
+    Route::livewire('vaults/{vault}/contacts/create', 'pages::contacts.create')->name('contacts.create');
     Route::livewire('vaults/{vault}/contacts/{contact}', 'pages::contacts.show')->name('contacts.show');
 
     Route::redirect('settings', 'settings/profile')->name('settings.index');
