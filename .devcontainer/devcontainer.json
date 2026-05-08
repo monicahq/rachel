@@ -5,17 +5,17 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint",
         "xdebug.php-debug",
         "bmewburn.vscode-intelephense-client",
         "xdebug.php-pack",
-        "devsense.phptools-vscode",
         "mikestead.dotenv",
         "editorconfig.editorconfig",
         "esbenp.prettier-vscode",
         "bradlc.vscode-tailwindcss",
-        "vue.volar",
-        "qwtel.sqlite-viewer"
+        "qwtel.sqlite-viewer",
+        "d3v0psdan.flux-ui-v2",
+        "kwasibaidoo.laravel-livewire-go-to",
+        "antfu.vite"
       ]
     }
   },
