@@ -3,7 +3,6 @@
 use App\Models\Contact;
 use App\Models\Vault;
 use App\Services\CreateContact;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
 
 new class extends Livewire\Component {
@@ -41,7 +40,7 @@ new class extends Livewire\Component {
 
   public function create(): void
   {
-    $vault = Vault::where('account_id', Auth::user()->account_id)->find($this->vault['id']);
+    $vault = Vault::find($this->vault['id']);
 
     $this->authorize('create', [Contact::class, $vault]);
 

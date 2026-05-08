@@ -43,30 +43,42 @@ trait ResolvesModelInVault
         }
     }
 
-    private function resolveRouteBindingByField(mixed $value, string $field, Vault $vault): Model
+    private function resolveRouteBindingByField(mixed $value, string $field, ?Vault $vault): Model
     {
+        if (!$vault instanceof \App\Models\Vault) {
+            return $this->where([
+                $field => $value,
+            ])->firstOrFail();
+        }
+
         return $this->where([
             $field => $value,
             'vault_id' => $vault->id,
         ])->firstOrFail();
     }
 
-    private function resolveRouteBindingById(mixed $value, Vault $vault): Model
+    private function resolveRouteBindingById(mixed $value, ?Vault $vault): Model
     {
+        if (!$vault instanceof \App\Models\Vault) {
+            return $this->where([
+                'id' => $value,
+            ])->firstOrFail();
+        }
+
         return $this->where([
             'id' => $value,
             'vault_id' => $vault->id,
         ])->firstOrFail();
     }
 
-    private function getVault(): Vault
+    private function getVault(): ?Vault
     {
         /** @var ?Vault $vault */
         $vault = Route::current()->parameter('vault');
 
-        throw_unless($vault !== null
-            && $vault instanceof Vault
-            && $vault->account_id === Auth::user()->account_id,
+        throw_unless($vault === null ||
+            $vault instanceof Vault &&
+            $vault->account_id === Auth::user()->account_id,
             exception: ModelNotFoundException::class);
 
         return $vault;
