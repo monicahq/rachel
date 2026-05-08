@@ -45,7 +45,7 @@ trait ResolvesModelInVault
 
     private function resolveRouteBindingByField(mixed $value, string $field, ?Vault $vault): Model
     {
-        if (!$vault instanceof \App\Models\Vault) {
+        if (! $vault instanceof Vault) {
             return $this->where([
                 $field => $value,
             ])->firstOrFail();
@@ -59,7 +59,7 @@ trait ResolvesModelInVault
 
     private function resolveRouteBindingById(mixed $value, ?Vault $vault): Model
     {
-        if (!$vault instanceof \App\Models\Vault) {
+        if (! $vault instanceof Vault) {
             return $this->where([
                 'id' => $value,
             ])->firstOrFail();
