@@ -16,12 +16,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contact_parameters', function (Blueprint $table): void {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->id();
             $table->foreignIdFor(Contact::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Vault::class)->constrained()->cascadeOnDelete();
             $table->string('key', 32);
-            $table->string('label', 255);
+            $table->string('label', 255)->nullable();
             $table->string('type', 255)->default('string');
             $table->longText('data')->nullable();
             $table->foreignIdFor(Contact::class, 'contact_ref_id')->nullable()->constrained()->nullOnDelete();

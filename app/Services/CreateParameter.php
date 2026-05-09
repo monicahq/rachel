@@ -15,8 +15,8 @@ final readonly class CreateParameter
     public function __construct(
         public Contact $contact,
         public string $key,
-        public string $label,
         public string $type,
+        public ?string $label = null,
         public ?string $data = null,
     ) {}
 
@@ -25,8 +25,8 @@ final readonly class CreateParameter
         return $this->contact->parameters()->create([
             'vault_id' => $this->contact->vault_id,
             'key' => $this->key,
-            'label' => $this->label,
             'type' => $this->type,
+            'label' => $this->label,
             'data' => $this->data,
         ]);
     }

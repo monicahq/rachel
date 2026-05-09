@@ -25,8 +25,8 @@ final class ContactParameterFactory extends Factory
             'contact_id' => Contact::factory(),
             'vault_id' => Vault::factory(),
             'key' => fake()->word(),
-            'label' => fake()->word(),
             'type' => fake()->word(),
+            'label' => fake()->word(),
             'data' => fake()->sentence(),
         ];
     }

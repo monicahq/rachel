@@ -15,7 +15,8 @@
         "qwtel.sqlite-viewer",
         "d3v0psdan.flux-ui-v2",
         "kwasibaidoo.laravel-livewire-go-to",
-        "antfu.vite"
+        "antfu.vite",
+        "cjhowe7.laravel-blade"
       ]
     }
   },

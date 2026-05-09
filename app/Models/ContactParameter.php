@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,8 +21,6 @@ final class ContactParameter extends Model
 {
     /** @use HasFactory<\Database\Factories\ContactParameterFactory> */
     use HasFactory;
-
-    use HasUuids;
 
     public static function rules(): array
     {
