@@ -14,12 +14,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'code_challenge',
     'expires_at',
 ])]
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 final class AuthCode extends Model
 {
     /** @use HasFactory<\Database\Factories\AuthCodeFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     /**
      * The attributes that should be cast.

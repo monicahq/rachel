@@ -81,8 +81,8 @@ final class ContactParameterController extends ApiController
         $parameter = (new CreateParameter(
             contact: $contact,
             key: $validated['key'],
-            label: $validated['label'],
             type: $validated['type'],
+            label: $validated['label'],
             data: $validated['data'] ?? null,
         ))->execute();
 
