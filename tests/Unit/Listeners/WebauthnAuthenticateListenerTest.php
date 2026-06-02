@@ -21,7 +21,7 @@ it('adds the last used at date', function (): void {
         publicKeyCredentialRequestOptions: new PublicKeyCredentialRequestOptions('challenger'),
         host: 'localhost',
         userHandle: (string) $user->id,
-        publicKeyCredentialSource: $webauthnKey->publicKeyCredentialSource)
+        credentialRecord: $webauthnKey->publicKeyCredentialSource)
     );
 
     $webauthnKey->refresh();

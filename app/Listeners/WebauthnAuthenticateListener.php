@@ -16,7 +16,7 @@ final class WebauthnAuthenticateListener
     public function handle(AuthenticatorAssertionResponseValidationSucceededEvent $event): void
     {
         $webauthnKey = WebauthnKey::where('user_id', $event->userHandle)
-            ->where('credentialId', Base64UrlSafe::encode($event->publicKeyCredentialSource->publicKeyCredentialId))
+            ->where('credentialId', Base64UrlSafe::encode($event->credentialRecord->publicKeyCredentialId))
             ->first();
 
         if ($webauthnKey !== null) {

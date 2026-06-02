@@ -14,25 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @codeCoverageIgnore
  */
 #[AsCommand(name: 'scribe:setup')]
+#[\Illuminate\Console\Attributes\Description('Generate the api documentation.')]
+#[\Illuminate\Console\Attributes\Signature('scribe:setup
+                            {--clean : Remove database file after generating the documentation.}
+                            {--force : Force the operation to run when in production.}')]
 final class SetupDocumentation extends Command
 {
     use ConfirmableTrait;
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'scribe:setup
-                            {--clean : Remove database file after generating the documentation.}
-                            {--force : Force the operation to run when in production.}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate the api documentation.';
 
     /**
      * Execute the console command.

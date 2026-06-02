@@ -16,26 +16,14 @@ use Symfony\Component\Console\Attribute\AsCommand;
  * @codeCoverageIgnore
  */
 #[AsCommand(name: 'monica:localize')]
-final class MonicaLocalize extends Command
-{
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'monica:localize
+#[\Illuminate\Console\Attributes\Description('Generate locale files for Monica.')]
+#[\Illuminate\Console\Attributes\Signature('monica:localize
                             {--check : Check current translations.}
                             {--update : Update the current locales.}
                             {--remove-missing : Remove missing translations.}
-                            {--restart : Restart translation of all messages.}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate locale files for Monica.';
-
+                            {--restart : Restart translation of all messages.}')]
+final class MonicaLocalize extends Command
+{
     private GoogleTranslate $googleTranslate;
 
     private int $result = 0;
