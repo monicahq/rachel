@@ -8,14 +8,14 @@ use Illuminate\Support\Collection;
 use LaravelWebauthn\Facades\Webauthn;
 use LaravelWebauthn\Services\Webauthn\CredentialRepository;
 use Override;
-use Webauthn\PublicKeyCredentialSource;
+use Webauthn\CredentialRecord;
 
 final class SecurityKeyCredentialRepository extends CredentialRepository
 {
     /**
      * List of PublicKeyCredentialSource associated to the user.
      *
-     * @return Collection<array-key,PublicKeyCredentialSource>
+     * @return Collection<array-key,CredentialRecord>
      */
     #[Override]
     protected function getAllRegisteredKeys(int|string $userId): Collection
