@@ -226,6 +226,7 @@ test('user can update an email parameter', function (): void {
     ]);
 
     Livewire::test('pages::contacts.show', ['vault' => $vault, 'contact' => $contact])
+        ->call('openEditEmailModal', $emailParameter->id)
         ->set('emailAddress', 'jane@example.com')
         ->call('updateEmail')
         ->assertHasNoErrors();
