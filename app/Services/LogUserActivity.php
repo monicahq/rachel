@@ -30,7 +30,7 @@ final readonly class LogUserActivity
             'user_id' => $user->id,
             'actor_user_id' => $actor?->id,
             'loggable_type' => $loggable?->getMorphClass(),
-            'loggable_id' => $loggable instanceof \Illuminate\Database\Eloquent\Model ? (string) $loggable->getKey() : null,
+            'loggable_id' => $loggable instanceof Model ? (string) $loggable->getKey() : null,
             'loggable_name' => $this->resolveLoggableName($loggable, $loggableName),
             'category' => $category,
             'action' => $action,
@@ -58,7 +58,7 @@ final readonly class LogUserActivity
             'user_id' => $user?->id,
             'actor_user_id' => $actor?->id,
             'loggable_type' => $loggable?->getMorphClass(),
-            'loggable_id' => $loggable instanceof \Illuminate\Database\Eloquent\Model ? (string) $loggable->getKey() : null,
+            'loggable_id' => $loggable instanceof Model ? (string) $loggable->getKey() : null,
             'loggable_name' => $this->resolveLoggableName($loggable, $loggableName),
             'category' => $category,
             'action' => $action,
@@ -72,7 +72,7 @@ final readonly class LogUserActivity
             return $loggableName;
         }
 
-        if (!$loggable instanceof \Illuminate\Database\Eloquent\Model) {
+        if (! $loggable instanceof Model) {
             return null;
         }
 

@@ -41,7 +41,7 @@ final readonly class CreateParameter
 
     private function logActivity(): void
     {
-        if (!$this->actor instanceof \App\Models\User) {
+        if (! $this->actor instanceof User) {
             return;
         }
 
