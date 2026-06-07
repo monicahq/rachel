@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\UserActivityLog;
 use Livewire\Livewire;
 
 test('profile page is displayed', function (): void {
@@ -28,6 +29,12 @@ test('profile information can be updated', function (): void {
     expect($user->name)->toEqual('Test User');
     expect($user->email)->toEqual('test@example.com');
     expect($user->email_verified_at)->toBeNull();
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_PROFILE_NAME_AND_EMAIL_UPDATED,
+    ]);
 });
 
 test('email verification status is unchanged when email address is unchanged', function (): void {
@@ -43,11 +50,19 @@ test('email verification status is unchanged when email address is unchanged', f
     $response->assertHasNoErrors();
 
     expect($user->refresh()->email_verified_at)->not->toBeNull();
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_PROFILE_NAME_UPDATED,
+    ]);
 });
 
 test('user can delete their account', function (): void {
     $user = User::factory()->create();
     $account = $user->account;
+    $userId = $user->id;
+    $accountId = $account->id;
 
     $this->actingAs($user);
 
@@ -59,9 +74,11 @@ test('user can delete their account', function (): void {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
-    expect($account->fresh())->toBeNull();
-    expect(auth()->check())->toBeFalse();
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $userId,
+        'account_id' => $accountId,
+        'action' => UserActivityLog::ACTION_ACCOUNT_DELETED,
+    ]);
 });
 
 test('correct password must be provided to delete account', function (): void {

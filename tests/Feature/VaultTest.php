@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\UserActivityLog;
 use App\Models\Vault;
 use Livewire\Livewire;
 
@@ -34,7 +35,21 @@ test('user can create a vault', function (): void {
         ->set('name', 'Test Vault')
         ->call('create');
 
+    $vault = Vault::query()
+        ->where('account_id', $user->account_id)
+        ->where('name', 'Test Vault')
+        ->firstOrFail();
+
     $response
         ->assertHasNoErrors()
         ->assertRedirect(route('vaults.show', ['vault' => 'test-vault']));
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_VAULT_CREATED,
+        'loggable_type' => Vault::class,
+        'loggable_id' => $vault->id,
+        'loggable_name' => $vault->name,
+    ]);
 });

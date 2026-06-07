@@ -6,46 +6,47 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
 
-new class extends Livewire\Component {
-  #[Locked]
-  public Collection $vaults;
+new class extends Livewire\Component
+{
+    #[Locked]
+    public Collection $vaults;
 
-  public string $name;
+    public string $name;
 
-  public string $description;
+    public string $description;
 
-  public function render()
-  {
-    return $this->view()->title(__('List of vaults'));
-  }
+    public function render()
+    {
+        return $this->view()->title(__('List of vaults'));
+    }
 
-  public function mount(Vault $vault): void
-  {
-    $this->authorize('viewAny', Vault::class);
+    public function mount(Vault $vault): void
+    {
+        $this->authorize('viewAny', Vault::class);
 
-    $this->vaults = Auth::user()->account->vaults->map(
-      fn (Vault $vault): array => [
-        'id' => $vault->id,
-        'name' => $vault->name,
-        'route' => route('vaults.show', $vault),
-      ],
-    );
-  }
+        $this->vaults = Auth::user()->account->vaults->map(
+            fn (Vault $vault): array => [
+                'id' => $vault->id,
+                'name' => $vault->name,
+                'route' => route('vaults.show', $vault),
+            ],
+        );
+    }
 
-  public function create(): void
-  {
-    $this->authorize('create', Vault::class);
+    public function create(): void
+    {
+        $this->authorize('create', Vault::class);
 
-    $validated = $this->validate(Vault::rules());
+        $validated = $this->validate(Vault::rules());
 
-    $vault = (new CreateVault(user: Auth::user(), name: $validated['name'], description: $validated['description'] ?? null))->execute();
+        $vault = (new CreateVault(user: Auth::user(), name: $validated['name'], description: $validated['description'] ?? null, actor: Auth::user()))->execute();
 
-    $this->reset('name', 'description');
+        $this->reset('name', 'description');
 
-    $this->dispatch('vault-created');
+        $this->dispatch('vault-created');
 
-    $this->redirect(route('vaults.show', $vault));
-  }
+        $this->redirect(route('vaults.show', $vault));
+    }
 }; ?>
 
 <div>

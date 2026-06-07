@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -70,6 +71,26 @@ final class User extends Authenticatable implements HasLocalePreference, MustVer
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get activity logs targeted to this user.
+     *
+     * @return HasMany<UserActivityLog, $this>
+     */
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(UserActivityLog::class);
+    }
+
+    /**
+     * Get activity logs triggered by this user.
+     *
+     * @return HasMany<UserActivityLog, $this>
+     */
+    public function activityLogsAsActor(): HasMany
+    {
+        return $this->hasMany(UserActivityLog::class, 'actor_user_id');
     }
 
     public function hasEnabledTwoFactorAuthentication(): bool

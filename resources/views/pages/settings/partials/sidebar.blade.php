@@ -14,6 +14,9 @@
         <x-setting-link :href="route('profile.edit')" icon="user">
           {{ __('Profile') }}
         </x-setting-link>
+        <x-setting-link :href="route('settings.activity')" icon="clock-counter-clockwise">
+          {{ __('Activity log') }}
+        </x-setting-link>
         <x-setting-link :href="route('password.edit')" icon="shield-chevron">
           {{ __('Security & password') }}
         </x-setting-link>

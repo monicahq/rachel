@@ -2,114 +2,83 @@
 
 use App\Models\Account;
 use App\Models\User;
+use App\Models\UserActivityLog;
+use App\Services\PresentUserActivity;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Livewire\Attributes\Layout;
 
-new #[Layout('layouts::instance')] class extends Livewire\Component {
-  public User $user;
+new #[Layout('layouts::instance')] class extends Livewire\Component
+{
+    public User $user;
 
-  public Account $account;
+    public Account $account;
 
-  public string $password = '';
+    public string $password = '';
 
-  public Collection $activities;
+    public Collection $activities;
 
-  public function render()
-  {
-    return $this->view()->title(__('Instance management'));
-  }
+    public function render()
+    {
+        return $this->view()->title(__('Instance management'));
+    }
 
-  public function mount(Account $account): void
-  {
-    $this->account = $account;
-    $this->user = $account->users()->first();
-    $this->activities = collect([
-      [
-        'action' => 'Account upgraded to Pro plan',
-        'status' => 'Upgrade',
-        'icon' => 'arrow-up',
-        'description' => 'Upgraded from Basic to Pro subscription with additional features',
-        'actor' => 'System',
-        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-15 14:30:00'),
-        'color' => 'green',
-      ],
+    public function mount(Account $account): void
+    {
+        $this->account = $account;
+        $this->user = Auth::user();
 
-      [
-        'action' => 'Profile information updated',
-        'icon' => 'pencil',
-        'description' => 'Updated email address and phone number',
-        'actor' => 'John Doe',
-        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-14 16:15:00'),
-        'color' => 'blue',
-      ],
+        $logs = UserActivityLog::with('actor')
+            ->where('account_id', $account->id)
+            ->latest()
+            ->limit(100)
+            ->get();
 
-      [
-        'action' => 'Two-factor authentication enabled',
-        'status' => 'Security',
-        'icon' => 'shield-check',
-        'description' => 'Enhanced account security with 2FA',
-        'actor' => 'John Doe',
-        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-12 10:45:00'),
-        'color' => 'purple',
-      ],
+        $presenter = resolve(PresentUserActivity::class);
 
-      [
-        'action' => 'Payment method updated',
-        // 'icon' => 'credit-card',
-        'description' => 'Added new credit card ending in 4242',
-        'actor' => 'John Doe',
-        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-08 15:20:00'),
-        'color' => 'orange',
-      ],
+        $this->activities = $logs->map(function (UserActivityLog $log, int $index) use ($logs, $presenter): array {
+            $entry = $presenter->execute($log);
+            $entry['last'] = $index === $logs->count() - 1;
 
-      [
-        'action' => 'Account created',
-        'status' => 'Created',
-        'icon' => 'user-plus',
-        'description' => 'New account registered with basic plan',
-        'actor' => 'John Doe',
-        'created_at' => Illuminate\Support\Facades\Date::parse('2025-01-01 09:00:00'),
-        'color' => 'gray',
-        'last' => true,
-      ],
-    ]);
-  }
+            return $entry;
+        });
+    }
 
-  public function freeAccount(): void
-  {
-    $this->validate([
-      'password' => ['required', 'string', 'current_password'],
-    ]);
+    public function freeAccount(): void
+    {
+        $this->validate([
+            'password' => ['required', 'string', 'current_password'],
+        ]);
 
-    // TODO
+        // TODO
 
-    $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
-  }
+        $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
+    }
 
-  public function reset2fa(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
-  {
-    $this->validate([
-      'password' => ['required', 'string', 'current_password'],
-    ]);
+    public function reset2fa(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
+    {
+        $this->validate([
+            'password' => ['required', 'string', 'current_password'],
+        ]);
 
-    $disableTwoFactorAuthentication($this->user);
+        $disableTwoFactorAuthentication($this->user);
 
-    $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
-  }
+        $this->redirect(route('instances.accounts.show', $this->account), navigate: true);
+    }
 
-  public function deleteAccount(): void
-  {
-    abort_if($this->user->id === Illuminate\Support\Facades\Auth::user()->id, 403);
+    public function deleteAccount(): void
+    {
+        abort_if($this->user->id === Auth::user()->id, 403);
 
-    $this->validate([
-      'password' => ['required', 'string', 'current_password'],
-    ]);
+        $this->validate([
+            'password' => ['required', 'string', 'current_password'],
+        ]);
 
-    $this->account->delete();
+        $this->account->delete();
 
-    $this->redirect(route('instances.index'), navigate: true);
-  }
+        $this->redirect(route('instances.index'), navigate: true);
+    }
 }; ?>
 
 <div>

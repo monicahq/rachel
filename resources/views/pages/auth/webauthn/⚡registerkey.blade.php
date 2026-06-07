@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\Activity\WebauthnKeyRegistered;
 use App\Providers\Webauthn\PasskeyCredentialRepository;
 use App\Providers\Webauthn\SecurityKeyCredentialRepository;
 use Illuminate\Support\Arr;
@@ -10,64 +11,75 @@ use LaravelWebauthn\Facades\Webauthn;
 use LaravelWebauthn\Services\Webauthn\CredentialRepository;
 use Livewire\Attributes\On;
 
-new class extends Livewire\Component {
-  public string $publicKey;
+new class extends Livewire\Component
+{
+    public string $publicKey;
 
-  public string $name = '';
+    public string $name = '';
 
-  public bool $processing = false;
+    public bool $processing = false;
 
-  public string $errorMessage = '';
+    public string $errorMessage = '';
 
-  public string $action = '';
+    public string $action = '';
 
-  public string $keyKind;
+    public string $keyKind;
 
-  public function mount(string $action, string $keyKind = 'passkey'): void
-  {
-    $this->action = $action;
-    $this->keyKind = $keyKind;
-  }
-
-  #[On('start-registration')]
-  public function registerKey(): void
-  {
-    $this->errorMessage = '';
-    $this->validate([
-      'name' => ['required', 'string', 'max:255'],
-    ]);
-
-    $this->bind();
-    $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
-
-    $this->js('start');
-  }
-
-  public function callback(array $data): void
-  {
-    try {
-      $this->bind();
-
-      $webauthnKey = resolve(ValidateKeyCreation::class)(Auth::user(), Arr::only($data, ['id', 'rawId', 'response', 'type']), $this->name);
-      $webauthnKey->kind = $this->keyKind;
-      $webauthnKey->save();
-
-      $this->name = '';
-
-      $this->dispatch('key-created', $webauthnKey);
-    } catch (Exception $e) {
-      $this->errorMessage = $e->getMessage();
+    public function mount(string $action, string $keyKind = 'passkey'): void
+    {
+        $this->action = $action;
+        $this->keyKind = $keyKind;
     }
-  }
 
-  public function bind(): void
-  {
-    if ($this->keyKind === 'security') {
-      App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
-    } elseif ($this->keyKind === 'passkey') {
-      App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
+    #[On('start-registration')]
+    public function registerKey(): void
+    {
+        $this->errorMessage = '';
+        $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $this->bind();
+        $this->publicKey = (string) Webauthn::prepareAttestation(Auth::user());
+
+        $this->js('start');
     }
-  }
+
+    public function callback(array $data): void
+    {
+        try {
+            $this->bind();
+
+            $webauthnKey = resolve(ValidateKeyCreation::class)(Auth::user(), Arr::only($data, ['id', 'rawId', 'response', 'type']), $this->name);
+            $webauthnKey->kind = $this->keyKind;
+            $webauthnKey->save();
+
+            event(
+                new WebauthnKeyRegistered(
+                    user: Auth::user(),
+                    actor: Auth::user(),
+                    metadata: [
+                        'key_kind' => $this->keyKind,
+                    ],
+                ),
+            );
+
+            $this->name = '';
+
+            $this->dispatch('key-created', $webauthnKey);
+        } catch (Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
+    }
+
+    public function bind(): void
+    {
+        if ($this->keyKind === 'security') {
+            App::bind(CredentialRepository::class, SecurityKeyCredentialRepository::class);
+        } elseif ($this->keyKind === 'passkey') {
+            App::bind(CredentialRepository::class, PasskeyCredentialRepository::class);
+        }
+    }
 }; ?>
 
 <div>

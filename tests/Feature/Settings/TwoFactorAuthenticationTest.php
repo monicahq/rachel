@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\UserActivityLog;
 use Livewire\Livewire;
 
 test('two factor settings page can be rendered', function (): void {
@@ -43,5 +44,21 @@ test('two factor authentication disabled when confirmation abandoned between req
         'id' => $user->id,
         'two_factor_secret' => null,
         'two_factor_recovery_codes' => null,
+    ]);
+});
+
+test('two factor disable action is logged', function (): void {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.two-factor')
+        ->call('disable')
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_SECURITY_TWO_FACTOR_DISABLED,
     ]);
 });

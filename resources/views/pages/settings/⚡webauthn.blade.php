@@ -1,5 +1,8 @@
 <?php
 
+use App\Events\Activity\WebauthnKeyDeleted;
+use App\Events\Activity\WebauthnKeyUpdated;
+use App\Events\Activity\WebauthnKeyUpgraded;
 use App\Models\WebauthnKey;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
@@ -85,6 +88,8 @@ new class extends Livewire\Component
         $this->updateKeyName = null;
 
         $this->managingWebauthnKey = false;
+
+        event(new WebauthnKeyUpdated(user: Auth::user(), actor: Auth::user()));
     }
 
     /**
@@ -110,6 +115,8 @@ new class extends Livewire\Component
 
         $this->updateKeys();
 
+        event(new WebauthnKeyDeleted(user: Auth::user(), actor: Auth::user()));
+
         $this->confirmingWebauthnKeyDeletion = false;
 
         $this->webauthnKeyIdBeingDeleted = null;
@@ -127,11 +134,13 @@ new class extends Livewire\Component
 
     public function upgradeWebauthnKey(): void
     {
-        $this->managingWebauthnKeyFor
+        $this->upgradingWebauthnKeyFor
             ->forceFill([
                 'kind' => 'passkey',
             ])
             ->save();
+
+        event(new WebauthnKeyUpgraded(user: Auth::user(), actor: Auth::user()));
 
         $this->upgradingWebauthnKey = false;
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Services\UpdateUserProfileInformation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
@@ -37,17 +38,19 @@ new #[Layout('layouts::settings')] class extends Livewire\Component
             'locale' => ['required', 'string', Rule::in(config('localizer.supported_locales'))],
         ]);
 
-        $user->fill($validated);
+        $newLocale = $user->locale !== $validated['locale'];
+        $emailChanged = $user->email !== $validated['email'];
 
-        if ($user->isDirty('email')) {
+        (new UpdateUserProfileInformation(user: $user, name: $validated['name'], email: $validated['email']))->execute();
+
+        if ($emailChanged) {
             $user->email_verified_at = null;
+            $user->save();
         }
 
-        $newLocale = $user->isDirty('locale');
-
-        $user->save();
-
         if ($newLocale) {
+            $user->locale = $validated['locale'];
+            $user->save();
             $this->redirect(route('profile.edit'));
         } else {
             $this->dispatch('profile-updated', name: $user->name);

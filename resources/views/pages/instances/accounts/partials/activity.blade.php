@@ -6,6 +6,7 @@
   'actor',
   'created_at',
   'color',
+  'link',
   'last' => false,
 ])
 
@@ -35,6 +36,10 @@
     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
       {{ $description }}
     </p>
+    @isset($link)
+      <a href="{{ $link }}" class="mt-2 text-sm text-blue-600 dark:text-blue-400">{{ __('View details') }}</a>
+    @endisset
+
     <div class="mt-2 flex items-center gap-x-2 text-xs text-gray-500 dark:text-gray-500">
       <span class="font-medium">{{ $actor }}</span>
       <span>•</span>

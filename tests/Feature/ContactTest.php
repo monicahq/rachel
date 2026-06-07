@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\Contact;
 use App\Models\ContactParameter;
 use App\Models\User;
+use App\Models\UserActivityLog;
 use App\Models\Vault;
 use Livewire\Livewire;
 
@@ -56,9 +57,23 @@ test('user can create a contact', function (): void {
         ->set('name', 'Test Contact')
         ->call('create');
 
+    $contact = Contact::query()
+        ->where('vault_id', $vault->id)
+        ->where('name', 'Test Contact')
+        ->firstOrFail();
+
     $response
         ->assertHasNoErrors()
         ->assertRedirect(route('contacts.show', [$vault, 'contact' => 'test-contact']));
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_CONTACT_CREATED,
+        'loggable_type' => Contact::class,
+        'loggable_id' => $contact->id,
+        'loggable_name' => $contact->name,
+    ]);
 });
 
 test('user can create a contact parameter from contact page', function (): void {
@@ -88,6 +103,15 @@ test('user can create a contact parameter from contact page', function (): void 
     ]);
 
     expect(ContactParameter::query()->where('contact_id', $contact->id)->count())->toBe(1);
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_CONTACT_PARAMETER_CREATED,
+        'loggable_type' => Contact::class,
+        'loggable_id' => $contact->id,
+        'loggable_name' => $contact->name,
+    ]);
 });
 
 test('user can add an email parameter from contact page', function (): void {
@@ -111,6 +135,15 @@ test('user can add an email parameter from contact page', function (): void {
         'label' => 'Email',
         'type' => 'string',
         'data' => 'john@example.com',
+    ]);
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_CONTACT_EMAIL_ADDED,
+        'loggable_type' => Contact::class,
+        'loggable_id' => $contact->id,
+        'loggable_name' => $contact->name,
     ]);
 });
 
@@ -137,6 +170,15 @@ test('user can delete an email parameter from contact page', function (): void {
 
     $this->assertDatabaseMissing('contact_parameters', [
         'id' => $emailParameter->id,
+    ]);
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_CONTACT_EMAIL_DELETED,
+        'loggable_type' => Contact::class,
+        'loggable_id' => $contact->id,
+        'loggable_name' => $contact->name,
     ]);
 });
 
@@ -234,5 +276,14 @@ test('user can update an email parameter', function (): void {
     $this->assertDatabaseHas('contact_parameters', [
         'id' => $emailParameter->id,
         'data' => 'jane@example.com',
+    ]);
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_CONTACT_EMAIL_UPDATED,
+        'loggable_type' => Contact::class,
+        'loggable_id' => $contact->id,
+        'loggable_name' => $contact->name,
     ]);
 });

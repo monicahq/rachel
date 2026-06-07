@@ -23,7 +23,9 @@
         </div>
         <div class="flex items-center gap-x-2">
           <x-phosphor-user class="size-4 text-gray-500" />
-          <p class="text-gray-500">213 contacts</p>
+          <p class="text-gray-500">
+            {{ trans_choice(':count Contact|:count Contacts', $user->account->contacts->count()) }}
+          </p>
         </div>
       </div>
     </div>
