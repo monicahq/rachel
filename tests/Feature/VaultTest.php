@@ -50,6 +50,8 @@ test('user can create a vault', function (): void {
         'action' => UserActivityLog::ACTION_VAULT_CREATED,
         'loggable_type' => Vault::class,
         'loggable_id' => $vault->id,
-        'loggable_name' => $vault->name,
+        'metadata' => json_encode([
+            'vault_name' => $vault->name,
+        ]),
     ]);
 });

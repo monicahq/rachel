@@ -23,7 +23,6 @@ final readonly class LogUserActivity
         ?User $actor = null,
         array $metadata = [],
         ?Model $loggable = null,
-        ?string $loggableName = null,
     ): UserActivityLog {
         return UserActivityLog::create([
             'account_id' => $user->account_id,
@@ -31,7 +30,6 @@ final readonly class LogUserActivity
             'actor_user_id' => $actor?->id,
             'loggable_type' => $loggable?->getMorphClass(),
             'loggable_id' => $loggable instanceof Model ? (string) $loggable->getKey() : null,
-            'loggable_name' => $this->resolveLoggableName($loggable, $loggableName),
             'category' => $category,
             'action' => $action,
             'metadata' => $metadata,
@@ -51,7 +49,6 @@ final readonly class LogUserActivity
         ?User $actor = null,
         array $metadata = [],
         ?Model $loggable = null,
-        ?string $loggableName = null,
     ): UserActivityLog {
         return UserActivityLog::create([
             'account_id' => $account->id,
@@ -59,31 +56,9 @@ final readonly class LogUserActivity
             'actor_user_id' => $actor?->id,
             'loggable_type' => $loggable?->getMorphClass(),
             'loggable_id' => $loggable instanceof Model ? (string) $loggable->getKey() : null,
-            'loggable_name' => $this->resolveLoggableName($loggable, $loggableName),
             'category' => $category,
             'action' => $action,
             'metadata' => $metadata,
         ]);
-    }
-
-    private function resolveLoggableName(?Model $loggable, ?string $loggableName): ?string
-    {
-        if ($loggableName !== null && $loggableName !== '') {
-            return $loggableName;
-        }
-
-        if (! $loggable instanceof Model) {
-            return null;
-        }
-
-        foreach (['name', 'label', 'title'] as $attribute) {
-            $value = $loggable->getAttribute($attribute);
-
-            if (is_string($value) && $value !== '') {
-                return $value;
-            }
-        }
-
-        return null;
     }
 }

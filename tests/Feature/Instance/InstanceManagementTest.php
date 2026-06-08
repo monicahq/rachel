@@ -20,7 +20,7 @@ test('it can access the account page', function (): void {
 test('it displays persisted account activities', function (): void {
     $this->actingAs($user = User::factory()->create());
 
-    UserActivityLog::query()->create([
+    UserActivityLog::factory()->create([
         'account_id' => $user->account_id,
         'user_id' => $user->id,
         'actor_user_id' => $user->id,

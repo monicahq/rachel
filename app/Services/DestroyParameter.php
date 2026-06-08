@@ -39,8 +39,10 @@ final readonly class DestroyParameter
         event(new ContactEmailDeleted(
             user: $this->actor,
             actor: $this->actor,
+            metadata: [
+                'contact_name' => $contact->name,
+            ],
             loggable: $contact,
-            loggableName: $contact->name,
         ));
     }
 }

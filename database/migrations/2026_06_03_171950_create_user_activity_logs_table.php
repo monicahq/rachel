@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(Account::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(User::class, 'actor_user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->morphs('loggable', 'user_activity_logs_loggable_index');
+            $table->nullableMorphs('loggable', 'user_activity_logs_loggable_index');
             $table->string('category', 64);
             $table->string('action', 128);
             $table->json('metadata')->nullable();

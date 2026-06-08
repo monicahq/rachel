@@ -49,8 +49,10 @@ final readonly class CreateParameter
             event(new ContactEmailAdded(
                 user: $this->actor,
                 actor: $this->actor,
+                metadata: [
+                    'contact_name' => $this->contact->name,
+                ],
                 loggable: $this->contact,
-                loggableName: $this->contact->name,
             ));
 
             return;
@@ -61,9 +63,9 @@ final readonly class CreateParameter
             actor: $this->actor,
             metadata: [
                 'parameter_key' => $this->key,
+                'contact_name' => $this->contact->name,
             ],
             loggable: $this->contact,
-            loggableName: $this->contact->name,
         ));
     }
 }

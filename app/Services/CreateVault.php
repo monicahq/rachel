@@ -55,7 +55,6 @@ final class CreateVault
                 'vault_name' => $this->vault->name,
             ],
             loggable: $this->vault,
-            loggableName: $this->vault->name,
         ));
     }
 }

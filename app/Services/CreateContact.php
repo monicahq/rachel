@@ -56,7 +56,6 @@ final class CreateContact
                 'contact_name' => $this->contact->name,
             ],
             loggable: $this->contact,
-            loggableName: $this->contact->name,
         ));
     }
 }

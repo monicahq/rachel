@@ -72,7 +72,9 @@ test('user can create a contact', function (): void {
         'action' => UserActivityLog::ACTION_CONTACT_CREATED,
         'loggable_type' => Contact::class,
         'loggable_id' => $contact->id,
-        'loggable_name' => $contact->name,
+        'metadata' => json_encode([
+            'contact_name' => $contact->name,
+        ]),
     ]);
 });
 
@@ -110,7 +112,10 @@ test('user can create a contact parameter from contact page', function (): void 
         'action' => UserActivityLog::ACTION_CONTACT_PARAMETER_CREATED,
         'loggable_type' => Contact::class,
         'loggable_id' => $contact->id,
-        'loggable_name' => $contact->name,
+        'metadata' => json_encode([
+            'parameter_key' => 'nickname',
+            'contact_name' => $contact->name,
+        ]),
     ]);
 });
 
@@ -143,7 +148,9 @@ test('user can add an email parameter from contact page', function (): void {
         'action' => UserActivityLog::ACTION_CONTACT_EMAIL_ADDED,
         'loggable_type' => Contact::class,
         'loggable_id' => $contact->id,
-        'loggable_name' => $contact->name,
+        'metadata' => json_encode([
+            'contact_name' => $contact->name,
+        ]),
     ]);
 });
 
@@ -178,7 +185,9 @@ test('user can delete an email parameter from contact page', function (): void {
         'action' => UserActivityLog::ACTION_CONTACT_EMAIL_DELETED,
         'loggable_type' => Contact::class,
         'loggable_id' => $contact->id,
-        'loggable_name' => $contact->name,
+        'metadata' => json_encode([
+            'contact_name' => $contact->name,
+        ]),
     ]);
 });
 
@@ -284,6 +293,8 @@ test('user can update an email parameter', function (): void {
         'action' => UserActivityLog::ACTION_CONTACT_EMAIL_UPDATED,
         'loggable_type' => Contact::class,
         'loggable_id' => $contact->id,
-        'loggable_name' => $contact->name,
+        'metadata' => json_encode([
+            'contact_name' => $contact->name,
+        ]),
     ]);
 });

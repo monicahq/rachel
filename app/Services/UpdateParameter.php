@@ -52,8 +52,10 @@ final readonly class UpdateParameter
         event(new ContactEmailUpdated(
             user: $this->actor,
             actor: $this->actor,
+            metadata: [
+                'contact_name' => $contact->name,
+            ],
             loggable: $contact,
-            loggableName: $contact->name,
         ));
     }
 }
