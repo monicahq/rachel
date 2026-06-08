@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Events\Activity\AccountDeleted;
 use App\Models\User;
 
 /**
@@ -18,15 +17,6 @@ final readonly class DeleteUserAccount
 
     public function execute(): void
     {
-        $this->logActivity();
         $this->user->delete();
-    }
-
-    private function logActivity(): void
-    {
-        event(new AccountDeleted(
-            user: $this->user,
-            actor: $this->user,
-        ));
     }
 }

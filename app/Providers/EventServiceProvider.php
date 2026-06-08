@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Events\Activity\AccountDeleted;
 use App\Events\Activity\ContactCreated;
 use App\Events\Activity\ContactEmailAdded;
 use App\Events\Activity\ContactEmailDeleted;
@@ -44,7 +43,6 @@ final class EventServiceProvider extends ServiceProvider
         WebauthnKeyUpdated::class,
         WebauthnKeyDeleted::class,
         WebauthnKeyUpgraded::class,
-        AccountDeleted::class,
         VaultCreated::class,
         ContactCreated::class,
         ContactParameterCreated::class,
