@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Actions\Logout;
+use App\Services\DeleteUserAccount;
 use Illuminate\Support\Facades\Auth;
 
 new class extends Livewire\Component
@@ -16,7 +17,11 @@ new class extends Livewire\Component
             'password' => ['required', 'string', 'current_password'],
         ]);
 
-        tap(Auth::user(), $logout(...))->delete();
+        $user = Auth::user();
+
+        (new DeleteUserAccount(user: $user))->execute();
+
+        $logout();
 
         $this->redirect('/', navigate: true);
     }

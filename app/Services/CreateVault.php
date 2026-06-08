@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\Activity\VaultCreated;
 use App\Helpers\SlugHelper;
 use App\Models\User;
 use App\Models\Vault;
@@ -19,11 +20,13 @@ final class CreateVault
         public readonly User $user,
         public readonly string $name,
         public readonly ?string $description = null,
+        private readonly ?User $actor = null,
     ) {}
 
     public function execute(): Vault
     {
         $this->create();
+        $this->logActivity();
 
         return $this->vault;
     }
@@ -41,5 +44,17 @@ final class CreateVault
             'slug' => $slug,
             'description' => $this->description,
         ]);
+    }
+
+    private function logActivity(): void
+    {
+        event(new VaultCreated(
+            user: $this->user,
+            actor: $this->actor ?? $this->user,
+            metadata: [
+                'vault_name' => $this->vault->name,
+            ],
+            loggable: $this->vault,
+        ));
     }
 }

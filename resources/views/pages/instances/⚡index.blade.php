@@ -41,22 +41,22 @@ new #[Layout('layouts::instance')] class extends Livewire\Component
     <!-- stats -->
     <div class="grid grid-cols-1 gap-2 sm:gap-6 lg:grid-cols-3">
       <x-box>
-        <p class="mb-1 text-sm text-gray-500">Total accounts</p>
+        <p class="mb-1 text-sm text-gray-500">{{ __('Total accounts') }}</p>
         <p class="text-2xl font-semibold">{{ $total_accounts }}</p>
       </x-box>
 
       <x-box>
-        <p class="mb-1 text-sm text-gray-500">New accounts last 30 days</p>
+        <p class="mb-1 text-sm text-gray-500">{{ __('New accounts last 30 days') }}</p>
         <p class="text-2xl font-semibold">{{ $accounts_last_30 }}</p>
       </x-box>
 
       <x-box>
-        <p class="mb-1 text-sm text-gray-500">Active accounts last 30 days</p>
+        <p class="mb-1 text-sm text-gray-500">{{ __('Active accounts last 30 days') }}</p>
         <p class="text-2xl font-semibold">1000</p>
       </x-box>
     </div>
 
-    <x-box title="Latest accounts" description="These are the latest accounts created on the instance." padding="p-0">
+    <x-box title="{{ __('Latest accounts') }}" description="{{ __('These are the latest accounts created on the instance.') }}" padding="p-0">
       <x-table>
         <x-table.rows>
           @foreach ($last_accounts as $account)
@@ -79,7 +79,7 @@ new #[Layout('layouts::instance')] class extends Livewire\Component
               </x-table.cell>
 
               <x-table.cell class="hidden sm:inline-block">
-                <x-badge color="green">Paid</x-badge>
+                <x-badge color="green">{{ __('Paid') }}</x-badge>
               </x-table.cell>
             </x-table.row>
           @endforeach

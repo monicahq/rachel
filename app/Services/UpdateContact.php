@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Helpers\SlugHelper;
 use App\Models\Contact;
+use App\Models\User;
 use App\Models\Vault;
 
 /**
@@ -17,6 +18,7 @@ final readonly class UpdateContact
         public Contact $contact,
         public Vault $vault,
         public string $name,
+        public ?User $actor = null,
     ) {}
 
     public function execute(): Contact

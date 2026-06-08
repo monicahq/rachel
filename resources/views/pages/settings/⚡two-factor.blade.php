@@ -1,5 +1,8 @@
 <?php
 
+use App\Events\Activity\TwoFactorConfirmed;
+use App\Events\Activity\TwoFactorDisabled;
+use App\Events\Activity\TwoFactorEnabled;
 use App\Models\User;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
@@ -55,6 +58,8 @@ new #[Layout('layouts::settings')] class extends Livewire\Component
     {
         $enableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
 
+        event(new TwoFactorEnabled(user: Illuminate\Support\Facades\Auth::user(), actor: Illuminate\Support\Facades\Auth::user()));
+
         if (! $this->requiresConfirmation) {
             $this->twoFactorEnabled = auth()
                 ->user()
@@ -94,6 +99,8 @@ new #[Layout('layouts::settings')] class extends Livewire\Component
         $this->closeModal();
 
         $this->twoFactorEnabled = true;
+
+        event(new TwoFactorConfirmed(user: Illuminate\Support\Facades\Auth::user(), actor: Illuminate\Support\Facades\Auth::user()));
     }
 
     /**
@@ -112,6 +119,8 @@ new #[Layout('layouts::settings')] class extends Livewire\Component
     public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
         $disableTwoFactorAuthentication(Illuminate\Support\Facades\Auth::user());
+
+        event(new TwoFactorDisabled(user: Illuminate\Support\Facades\Auth::user(), actor: Illuminate\Support\Facades\Auth::user()));
 
         $this->twoFactorEnabled = false;
     }

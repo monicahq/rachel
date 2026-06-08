@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\Activity\ContactEmailUpdated;
 use App\Models\ContactParameter;
+use App\Models\User;
 
 /**
  * Update a parameter.
@@ -17,6 +19,7 @@ final readonly class UpdateParameter
         public string $label,
         public string $type,
         public ?string $data = null,
+        public ?User $actor = null,
     ) {}
 
     public function execute(): ContactParameter
@@ -29,7 +32,30 @@ final readonly class UpdateParameter
         ]);
 
         $this->parameter->save();
+        $this->logActivity();
 
         return $this->parameter;
+    }
+
+    private function logActivity(): void
+    {
+        if (! $this->actor || $this->key !== 'email') {
+            return;
+        }
+
+        $contact = $this->parameter->contact;
+
+        if (! $contact) {
+            return;
+        }
+
+        event(new ContactEmailUpdated(
+            user: $this->actor,
+            actor: $this->actor,
+            metadata: [
+                'contact_name' => $contact->name,
+            ],
+            loggable: $contact,
+        ));
     }
 }

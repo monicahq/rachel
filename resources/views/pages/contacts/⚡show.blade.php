@@ -4,220 +4,224 @@ use App\Models\Contact;
 use App\Models\ContactParameter;
 use App\Models\Vault;
 use App\Services\CreateParameter;
+use App\Services\DestroyParameter;
+use App\Services\UpdateParameter;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
 
-new class extends Livewire\Component {
-  #[Locked]
-  public $contact;
+new class extends Livewire\Component
+{
+    #[Locked]
+    public $contact;
 
-  #[Locked]
-  public $vault;
+    #[Locked]
+    public $vault;
 
-  #[Locked]
-  public $routes;
+    #[Locked]
+    public $routes;
 
-  public string $parameterKey = '';
+    public string $parameterKey = '';
 
-  public string $parameterLabel = '';
+    public string $parameterLabel = '';
 
-  public string $parameterType = 'string';
+    public string $parameterType = 'string';
 
-  public ?string $parameterData = null;
+    public ?string $parameterData = null;
 
-  public string $emailAddress = '';
+    public string $emailAddress = '';
 
-  public bool $showEmailModal = false;
+    public bool $showEmailModal = false;
 
-  public bool $editingEmail = false;
+    public bool $editingEmail = false;
 
-  public ?int $editingEmailId = null;
+    public ?int $editingEmailId = null;
 
-  public function render()
-  {
-    return $this->view()->title($this->contact['name']);
-  }
-
-  public function mount(Vault $vault, Contact $contact): void
-  {
-    $this->authorize('view', [$contact, $vault]);
-
-    $this->vault = [
-      'id' => $vault->id,
-      'name' => $vault->name,
-    ];
-    $this->contact = [
-      'id' => $contact->id,
-      'name' => $contact->name,
-      'parameters' => $this->parametersMap($contact->parameters),
-    ];
-    $this->routes = [
-      'vaults' => [
-        'index' => route('vaults.index'),
-        'show' => route('vaults.show', $vault),
-      ],
-      'contacts' => [
-        'index' => route('contacts.index', $vault),
-      ],
-    ];
-  }
-
-  public function createParameter(): void
-  {
-    $vault = Vault::find($this->vault['id']);
-    $contact = Contact::find($this->contact['id']);
-
-    $this->authorize('update', [$contact, $vault]);
-
-    $validated = $this->validate([
-      'parameterKey' => ContactParameter::rules()['key'],
-      'parameterLabel' => ContactParameter::rules()['label'],
-      'parameterType' => ContactParameter::rules()['type'],
-      'parameterData' => ContactParameter::rules()['data'],
-    ]);
-
-    (new CreateParameter(contact: $contact, key: $validated['parameterKey'], type: $validated['parameterType'], label: $validated['parameterLabel'], data: $validated['parameterData'] ?? null))->execute();
-
-    $this->reset('parameterKey', 'parameterLabel', 'parameterType', 'parameterData');
-    $this->parameterType = 'string';
-
-    $contact->load('parameters');
-
-    $this->contact['parameters'] = $this->parametersMap($contact->parameters);
-
-    $this->dispatch('parameter-created');
-  }
-
-  public function addEmail(): void
-  {
-    $vault = Vault::find($this->vault['id']);
-    $contact = Contact::find($this->contact['id']);
-
-    $this->authorize('update', [$contact, $vault]);
-
-    $validated = $this->validate([
-      'emailAddress' => 'required|email|max:255',
-    ]);
-
-    (new CreateParameter(contact: $contact, key: 'email', type: 'string', label: 'Email', data: $validated['emailAddress']))->execute();
-
-    $this->reset('emailAddress');
-
-    $contact->load('parameters');
-
-    $this->contact['parameters'] = $this->parametersMap($contact->parameters);
-
-    $this->dispatch('email-added');
-
-    $this->closeEmailModal();
-  }
-
-  public function openAddEmailModal(): void
-  {
-    $this->editingEmail = false;
-    $this->editingEmailId = null;
-    $this->emailAddress = '';
-    $this->showEmailModal = true;
-  }
-
-  public function openEditEmailModal(int $emailId): void
-  {
-    $emails = $this->contact['parameters']['email'] ?? [];
-    $email = collect($emails)->firstWhere('id', $emailId);
-
-    if ($email) {
-      $this->editingEmail = true;
-      $this->editingEmailId = $emailId;
-      $this->emailAddress = $email['data'];
-      $this->showEmailModal = true;
-    }
-  }
-
-  public function closeEmailModal(): void
-  {
-    $this->showEmailModal = false;
-    $this->editingEmail = false;
-    $this->editingEmailId = null;
-    $this->reset('emailAddress');
-    $this->resetValidation();
-  }
-
-  public function updateEmail(): void
-  {
-    $vault = Vault::find($this->vault['id']);
-    $contact = Contact::find($this->contact['id']);
-
-    $this->authorize('update', [$contact, $vault]);
-
-    $validated = $this->validate([
-      'emailAddress' => 'required|email|max:255',
-    ]);
-
-    $parameter = ContactParameter::findOrFail($this->editingEmailId);
-
-    if ($parameter->key !== 'email') {
-      $this->addError('emailAddress', __('Invalid parameter'));
-
-      return;
+    public function render()
+    {
+        return $this->view()->title($this->contact['name']);
     }
 
-    $parameter->update(['data' => $validated['emailAddress']]);
+    public function mount(Vault $vault, Contact $contact): void
+    {
+        $this->authorize('view', [$contact, $vault]);
 
-    $this->reset('emailAddress');
-
-    $contact->load('parameters');
-
-    $this->contact['parameters'] = $this->parametersMap($contact->parameters);
-
-    $this->dispatch('email-updated');
-
-    $this->closeEmailModal();
-  }
-
-  public function deleteEmailParameter(int $parameterId): void
-  {
-    $vault = Vault::find($this->vault['id']);
-    $contact = Contact::find($this->contact['id']);
-
-    $this->authorize('update', [$contact, $vault]);
-
-    $parameter = ContactParameter::findOrFail($parameterId);
-
-    if ($parameter->key !== 'email') {
-      $this->addError('emailAddress', __('Invalid parameter'));
-
-      return;
-    }
-
-    $parameter->delete();
-
-    $contact->load('parameters');
-
-    $this->contact['parameters'] = $this->parametersMap($contact->parameters);
-
-    $this->dispatch('email-deleted');
-  }
-
-  private function parametersMap(Collection $parameters): array
-  {
-    return $parameters
-      ->groupBy('key')
-      ->map(
-        fn (Collection $group): array => $group
-          ->map(
-            fn (ContactParameter $parameter): array => [
-              'id' => $parameter->id,
-              'key' => $parameter->key,
-              'label' => $parameter->label,
-              'type' => $parameter->type,
-              'data' => $parameter->data,
+        $this->vault = [
+            'id' => $vault->id,
+            'name' => $vault->name,
+        ];
+        $this->contact = [
+            'id' => $contact->id,
+            'name' => $contact->name,
+            'parameters' => $this->parametersMap($contact->parameters),
+        ];
+        $this->routes = [
+            'vaults' => [
+                'index' => route('vaults.index'),
+                'show' => route('vaults.show', $vault),
             ],
-          )
-          ->values()
-          ->all(),
-      )
-      ->all();
-  }
+            'contacts' => [
+                'index' => route('contacts.index', $vault),
+            ],
+        ];
+    }
+
+    public function createParameter(): void
+    {
+        $vault = Vault::find($this->vault['id']);
+        $contact = Contact::find($this->contact['id']);
+
+        $this->authorize('update', [$contact, $vault]);
+
+        $validated = $this->validate([
+            'parameterKey' => ContactParameter::rules()['key'],
+            'parameterLabel' => ContactParameter::rules()['label'],
+            'parameterType' => ContactParameter::rules()['type'],
+            'parameterData' => ContactParameter::rules()['data'],
+        ]);
+
+        (new CreateParameter(contact: $contact, key: $validated['parameterKey'], type: $validated['parameterType'], label: $validated['parameterLabel'], data: $validated['parameterData'] ?? null, actor: Auth::user()))->execute();
+
+        $this->reset('parameterKey', 'parameterLabel', 'parameterType', 'parameterData');
+        $this->parameterType = 'string';
+
+        $contact->load('parameters');
+
+        $this->contact['parameters'] = $this->parametersMap($contact->parameters);
+
+        $this->dispatch('parameter-created');
+    }
+
+    public function addEmail(): void
+    {
+        $vault = Vault::find($this->vault['id']);
+        $contact = Contact::find($this->contact['id']);
+
+        $this->authorize('update', [$contact, $vault]);
+
+        $validated = $this->validate([
+            'emailAddress' => 'required|email|max:255',
+        ]);
+
+        (new CreateParameter(contact: $contact, key: 'email', type: 'string', label: 'Email', data: $validated['emailAddress'], actor: Auth::user()))->execute();
+
+        $this->reset('emailAddress');
+
+        $contact->load('parameters');
+
+        $this->contact['parameters'] = $this->parametersMap($contact->parameters);
+
+        $this->dispatch('email-added');
+
+        $this->closeEmailModal();
+    }
+
+    public function openAddEmailModal(): void
+    {
+        $this->editingEmail = false;
+        $this->editingEmailId = null;
+        $this->emailAddress = '';
+        $this->showEmailModal = true;
+    }
+
+    public function openEditEmailModal(int $emailId): void
+    {
+        $emails = $this->contact['parameters']['email'] ?? [];
+        $email = collect($emails)->firstWhere('id', $emailId);
+
+        if ($email) {
+            $this->editingEmail = true;
+            $this->editingEmailId = $emailId;
+            $this->emailAddress = $email['data'];
+            $this->showEmailModal = true;
+        }
+    }
+
+    public function closeEmailModal(): void
+    {
+        $this->showEmailModal = false;
+        $this->editingEmail = false;
+        $this->editingEmailId = null;
+        $this->reset('emailAddress');
+        $this->resetValidation();
+    }
+
+    public function updateEmail(): void
+    {
+        $vault = Vault::find($this->vault['id']);
+        $contact = Contact::find($this->contact['id']);
+
+        $this->authorize('update', [$contact, $vault]);
+
+        $validated = $this->validate([
+            'emailAddress' => 'required|email|max:255',
+        ]);
+
+        $parameter = ContactParameter::findOrFail($this->editingEmailId);
+
+        if ($parameter->key !== 'email') {
+            $this->addError('emailAddress', __('Invalid parameter'));
+
+            return;
+        }
+
+        (new UpdateParameter(parameter: $parameter, key: $parameter->key, label: $parameter->label, type: $parameter->type, data: $validated['emailAddress'], actor: Auth::user()))->execute();
+
+        $this->reset('emailAddress');
+
+        $contact->load('parameters');
+
+        $this->contact['parameters'] = $this->parametersMap($contact->parameters);
+
+        $this->dispatch('email-updated');
+
+        $this->closeEmailModal();
+    }
+
+    public function deleteEmailParameter(int $parameterId): void
+    {
+        $vault = Vault::find($this->vault['id']);
+        $contact = Contact::find($this->contact['id']);
+
+        $this->authorize('update', [$contact, $vault]);
+
+        $parameter = ContactParameter::findOrFail($parameterId);
+
+        if ($parameter->key !== 'email') {
+            $this->addError('emailAddress', __('Invalid parameter'));
+
+            return;
+        }
+
+        (new DestroyParameter(parameter: $parameter, actor: Auth::user()))->execute();
+
+        $contact->load('parameters');
+
+        $this->contact['parameters'] = $this->parametersMap($contact->parameters);
+
+        $this->dispatch('email-deleted');
+    }
+
+    private function parametersMap(Collection $parameters): array
+    {
+        return $parameters
+            ->groupBy('key')
+            ->map(
+                fn (Collection $group): array => $group
+                    ->map(
+                        fn (ContactParameter $parameter): array => [
+                            'id' => $parameter->id,
+                            'key' => $parameter->key,
+                            'label' => $parameter->label,
+                            'type' => $parameter->type,
+                            'data' => $parameter->data,
+                        ],
+                    )
+                    ->values()
+                    ->all(),
+            )
+            ->all();
+    }
 }; ?>
 
 <div class="dark:text-white">

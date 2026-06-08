@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\UserActivityLog;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 
@@ -22,6 +23,12 @@ test('password can be updated', function (): void {
     $response->assertHasNoErrors();
 
     expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
+
+    $this->assertDatabaseHas('user_activity_logs', [
+        'user_id' => $user->id,
+        'account_id' => $user->account_id,
+        'action' => UserActivityLog::ACTION_SECURITY_PASSWORD_UPDATED,
+    ]);
 });
 
 test('correct password must be provided to update password', function (): void {

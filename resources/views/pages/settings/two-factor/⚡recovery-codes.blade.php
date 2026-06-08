@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\Activity\TwoFactorRecoveryCodesRegenerated;
 use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Livewire\Attributes\Locked;
 
@@ -22,6 +23,8 @@ new class extends Livewire\Component
     public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
     {
         $generateNewRecoveryCodes(auth()->user());
+
+        event(new TwoFactorRecoveryCodesRegenerated(user: auth()->user(), actor: auth()->user()));
 
         $this->loadRecoveryCodes();
     }

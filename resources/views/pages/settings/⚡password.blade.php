@@ -1,7 +1,7 @@
 <?php
 
+use App\Services\UpdateUserPassword;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
@@ -30,9 +30,7 @@ new #[Layout('layouts::settings')] class extends Livewire\Component
             throw $e;
         }
 
-        Auth::user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+        (new UpdateUserPassword(user: Auth::user(), password: $validated['password']))->execute();
 
         $this->reset('current_password', 'password', 'password_confirmation');
 

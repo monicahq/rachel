@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::redirect('settings', 'settings/profile')->name('settings.index');
     Route::livewire('settings/api-token-manager', 'pages::settings.api-token-manager')->name('settings.api-token-manager');
     Route::livewire('settings/profile', 'pages::settings.profile')->name('profile.edit');
+    Route::livewire('settings/activity', 'pages::settings.activity')->name('settings.activity');
     Route::livewire('settings/password', 'pages::settings.password')->name('password.edit');
     Route::livewire('settings/appearance', 'pages::settings.appearance')->name('appearance.edit');
 

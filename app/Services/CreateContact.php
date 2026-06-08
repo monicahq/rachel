@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\Activity\ContactCreated;
 use App\Helpers\SlugHelper;
 use App\Models\Contact;
+use App\Models\User;
 use App\Models\Vault;
 
 /**
@@ -18,11 +20,13 @@ final class CreateContact
     public function __construct(
         public readonly Vault $vault,
         public readonly string $name,
+        private readonly ?User $actor = null,
     ) {}
 
     public function execute(): Contact
     {
         $this->create();
+        $this->logActivity();
 
         return $this->contact;
     }
@@ -39,5 +43,19 @@ final class CreateContact
             'name' => $this->name,
             'slug' => $slug,
         ]);
+    }
+
+    private function logActivity(): void
+    {
+        $actor = $this->actor ?? $this->vault->account->users->first();
+
+        event(new ContactCreated(
+            user: $actor,
+            actor: $actor,
+            metadata: [
+                'contact_name' => $this->contact->name,
+            ],
+            loggable: $this->contact,
+        ));
     }
 }
